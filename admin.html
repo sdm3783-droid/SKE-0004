@@ -3,45 +3,80 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>근골격계 조사 — 관리자 대시보드</title>
+<title>근골격계 조사 — 통합 관리자 대시보드</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
   :root {
-    --bg: #080b10; --surface: #0e1318; --border: #1e2d3d;
-    --accent: #00d4ff; --text: #d4e4f7; --text2: #6b8aaa;
+    --bg: #080b10; --surface: #0e1318; --surface2: #1a2430; --border: #1e2d3d;
+    --accent: #00d4ff; --success: #00e87a; --danger: #ff4d4d; --text: #d4e4f7; --text2: #6b8aaa;
   }
+  *{box-sizing:border-box; margin:0; padding:0;}
   body { font-family: 'Noto Sans KR', sans-serif; background: var(--bg); color: var(--text); padding: 20px; }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; max-width: 1000px; margin: 0 auto; }
-  h2 { margin-bottom: 20px; font-weight: 900; color: var(--accent); }
-  table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-  th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
-  th { font-size: 13px; color: var(--text2); text-transform: uppercase; }
-  td { font-size: 14px; }
+  
+  .container { max-width: 1200px; margin: 0 auto; }
+  .header-area { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  h2 { font-weight: 900; color: var(--accent); letter-spacing: -0.5px; }
+
+  /* 테이블 스타일 */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--surface2); padding: 14px; text-align: left; font-size: 12px; color: var(--text2); text-transform: uppercase; }
+  td { padding: 14px; border-bottom: 1px solid var(--border); font-size: 14px; cursor: pointer; }
+  tr:hover td { background: rgba(0, 212, 255, 0.05); }
+
+  /* 뱃지 */
   .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
-  .badge-pain { background: rgba(255, 77, 77, 0.1); color: #ff4d4d; border: 1px solid #ff4d4d; }
-  .badge-ok { background: rgba(0, 232, 122, 0.1); color: #00e87a; border: 1px solid #00e87a; }
-  .btn-refresh { background: var(--accent); color: #000; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 700; margin-bottom: 15px; }
+  .badge-pain { background: rgba(255, 77, 77, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+  .badge-ok { background: rgba(0, 232, 122, 0.1); color: var(--success); border: 1px solid var(--success); }
+
+  /* 모달(팝업) 스타일 */
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+  .modal.active { display: flex; }
+  .modal-content { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; padding: 30px; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+  .close-btn { cursor: pointer; font-size: 24px; color: var(--text2); }
+
+  .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+  .detail-item { background: var(--surface2); padding: 12px; border-radius: 8px; }
+  .detail-label { font-size: 11px; color: var(--text2); margin-bottom: 4px; }
+  .detail-value { font-size: 14px; font-weight: 600; }
+  .full-width { grid-column: span 2; }
 </style>
 </head>
 <body>
 
-<div class="card">
-  <h2>🦴 근골격계 조사 관리자 대시보드</h2>
-  <button class="btn-refresh" onclick="location.reload()">↻ 데이터 새로고침</button>
-  <div id="stat-text" style="margin-bottom: 10px; color: var(--text2);">조사 결과를 불러오는 중...</div>
-  
-  <table>
-    <thead>
-      <tr>
-        <th>성명</th>
-        <th>나이/성별</th>
-        <th>부서/라인</th>
-        <th>통증 여부</th>
-        <th>제출 일시</th>
-      </tr>
-    </thead>
-    <tbody id="data-list"></tbody>
-  </table>
+<div class="container">
+  <div class="header-area">
+    <h2>🦴 근골격계 조사 대시보드</h2>
+    <button style="padding: 10px 20px; cursor:pointer;" onclick="location.reload()">새로고침</button>
+  </div>
+
+  <div class="card">
+    <table>
+      <thead>
+        <tr>
+          <th>성명</th>
+          <th>부서/라인</th>
+          <th>통증여부</th>
+          <th>통증부위</th>
+          <th>제출일시</th>
+        </tr>
+      </thead>
+      <tbody id="list-body">
+        </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="modal" id="detail-modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modal-name">상세 정보</h3>
+      <span class="close-btn" onclick="window.closeModal()">&times;</span>
+    </div>
+    <div class="detail-grid" id="modal-body">
+      </div>
+  </div>
 </div>
 
 <script type="module">
@@ -60,41 +95,51 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  async function loadSurveys() {
-    const list = document.getElementById('data-list');
-    try {
-      const q = query(collection(db, "surveys"), orderBy("submittedAt", "desc"));
-      const snapshot = await getDocs(q);
-      
-      list.innerHTML = '';
-      document.getElementById('stat-text').textContent = `총 ${snapshot.size}명의 응답 데이터가 있습니다.`;
+  window.allData = [];
 
-      snapshot.forEach(doc => {
-        const d = doc.data();
-        const date = d.submittedAt ? d.submittedAt.toDate().toLocaleString('ko-KR') : '-';
-        
-        list.innerHTML += `
-          <tr>
-            <td><strong>${d.name || '-'}</strong></td>
-            <td>${d.age || '-'}세 / ${d.gender || '-'}</td>
-            <td>${d.dept || '-'}${d.line ? ' / ' + d.line : ''}</td>
-            <td>
-              ${d.hasPain === '예' 
-                ? '<span class="badge badge-pain">⚠ 통증 있음</span>' 
-                : '<span class="badge badge-ok">✓ 통증 없음</span>'}
-            </td>
-            <td style="font-size: 12px; color: #6b8aaa;">${date}</td>
-          </tr>
-        `;
-      });
-    } catch (e) {
-      console.error(e);
-      list.innerHTML = '<tr><td colspan="5">데이터를 가져오는데 실패했습니다. 콘솔을 확인하세요.</td></tr>';
-    }
+  async function loadData() {
+    const tbody = document.getElementById('list-body');
+    const q = query(collection(db, "surveys"), orderBy("submittedAt", "desc"));
+    const snapshot = await getDocs(q);
+    
+    tbody.innerHTML = '';
+    window.allData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+    window.allData.forEach((d, index) => {
+      const date = d.submittedAt ? d.submittedAt.toDate().toLocaleString('ko-KR') : '-';
+      tbody.innerHTML += `
+        <tr onclick="window.openModal(${index})">
+          <td><strong>${d.name}</strong></td>
+          <td>${d.dept || '-'}/${d.line || '-'}</td>
+          <td>${d.hasPain === '예' ? '<span class="badge badge-pain">통증있음</span>' : '<span class="badge badge-ok">정상</span>'}</td>
+          <td>${d.painParts ? d.painParts.join(', ') : '-'}</td>
+          <td style="color:var(--text2); font-size:12px;">${date}</td>
+        </tr>
+      `;
+    });
   }
 
-  loadSurveys();
-</script>
+  window.openModal = (index) => {
+    const d = window.allData[index];
+    document.getElementById('modal-name').textContent = d.name + " 님의 상세 기록";
+    const body = document.getElementById('modal-body');
+    
+    body.innerHTML = `
+      <div class="detail-item"><div class="detail-label">나이/성별</div><div class="detail-value">${d.age}세 / ${d.gender}</div></div>
+      <div class="detail-item"><div class="detail-label">결혼여부</div><div class="detail-value">${d.marriage || '-'}</div></div>
+      <div class="detail-item"><div class="detail-label">경력</div><div class="detail-value">${d.careerYr || 0}년 ${d.careerMo || 0}개월</div></div>
+      <div class="detail-item"><div class="detail-label">근무시간</div><div class="detail-value">${d.workHr || 0}시간</div></div>
+      <div class="detail-item full-width"><div class="detail-label">작업내용</div><div class="detail-value">${d.jobDesc || '-'}</div></div>
+      <div class="detail-item"><div class="detail-label">취미활동</div><div class="detail-value">${d.hobby ? d.hobby.join(', ') : '-'}</div></div>
+      <div class="detail-item"><div class="detail-label">가사노동</div><div class="detail-value">${d.chores || '-'}</div></div>
+      <div class="detail-item full-width"><div class="detail-label">통증부위 상세</div><div class="detail-value">${JSON.stringify(d.painData || '없음')}</div></div>
+    `;
+    document.getElementById('detail-modal').classList.add('active');
+  };
 
+  window.closeModal = () => document.getElementById('detail-modal').classList.remove('active');
+
+  loadData();
+</script>
 </body>
 </html>
