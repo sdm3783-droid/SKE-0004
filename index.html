@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>근골격계질환 증상조사표</title>
     <style>
-        /* (스타일 부분은 사용자님의 기존 디자인 가이드라인을 유지하되 가독성을 높였습니다) */
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
         :root {
             --bg:#0f0f13;--surface:#1a1a22;--surface2:#22222e;--border:#2e2e3e;
@@ -14,7 +13,7 @@
         }
         *{box-sizing:border-box;margin:0;padding:0;}
         body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-        .screen{display:none;padding:20px 16px 100px;}
+        .screen{display:none;padding:20px 16px 120px;}
         .screen.active{display:block;}
         .q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:12px;}
         .q-text{font-size:14px;font-weight:600;margin-bottom:12px;}
@@ -29,16 +28,16 @@
         .mini-opts{display:flex;flex-wrap:wrap;gap:5px;}
         .mini-btn{background:var(--surface);border:1px solid var(--border);padding:6px 10px;border-radius:6px;font-size:11px;cursor:pointer;}
         .mini-btn.selected{background:var(--accent);color:#000;border-color:var(--accent);}
-        .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,15,19,0.9);padding:15px;display:flex;gap:10px;border-top:1px solid var(--border);}
+        .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,15,19,0.9);padding:15px;display:flex;gap:10px;border-top:1px solid var(--border);z-index:100;}
         .btn{flex:1;padding:15px;border:none;border-radius:10px;font-weight:700;cursor:pointer;}
         .btn-next{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
     </style>
 </head>
 <body>
 
-<div id="loading-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:999;display:flex;align-items:center;justify-content:center;flex-direction:column;">
+<div id="loading-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:999;align-items:center;justify-content:center;flex-direction:column;">
     <div style="width:40px;height:40px;border:3px solid #333;border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;"></div>
-    <p style="margin-top:15px;">제출 중...</p>
+    <p style="margin-top:15px;">데이터 전송 중...</p>
 </div>
 
 <div class="screen active" id="step1">
@@ -48,10 +47,12 @@
     </div>
     <div class="q-card">
         <div class="q-text">나이(만) 및 성별 *</div>
-        <div style="display:flex;gap:10px;">
+        <div style="display:flex;gap:10px;margin-bottom:10px;">
             <input type="number" id="q-age" class="q-input" placeholder="나이">
-            <div class="option-btn" onclick="selectGender('남', this)" style="flex:1;margin:0;">남</div>
-            <div class="option-btn" onclick="selectGender('여', this)" style="flex:1;margin:0;">여</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+            <div class="option-btn g-opt" onclick="window.selectGender('남', this)" style="flex:1;">남</div>
+            <div class="option-btn g-opt" onclick="window.selectGender('여', this)" style="flex:1;">여</div>
         </div>
     </div>
     <div class="q-card">
@@ -62,19 +63,19 @@
         </div>
     </div>
     <div class="bottom-nav">
-        <button class="btn btn-next" onclick="goStep(2)">다음 (통증 확인) →</button>
+        <button class="btn btn-next" onclick="window.goStep(2)">다음 (통증 확인) →</button>
     </div>
 </div>
 
 <div class="screen" id="step2">
     <div class="q-card">
         <div class="q-text">지난 1년간 작업 관련 통증이 있었습니까? *</div>
-        <div class="option-btn" onclick="selectPain('아니오', this)">아니오 (종료)</div>
-        <div class="option-btn" onclick="selectPain('예', this)">예 (상세 입력)</div>
+        <div class="option-btn p-opt" onclick="window.selectPain('아니오', this)">아니오 (종료)</div>
+        <div class="option-btn p-opt" onclick="window.selectPain('예', this)">예 (상세 입력)</div>
     </div>
     <div class="bottom-nav">
-        <button class="btn" onclick="goStep(1)">이전</button>
-        <button class="btn btn-next" onclick="handleStep2Next()">다음 단계 →</button>
+        <button class="btn" onclick="window.goStep(1)">이전</button>
+        <button class="btn btn-next" onclick="window.handleStep2Next()">다음 단계 →</button>
     </div>
 </div>
 
@@ -82,18 +83,18 @@
     <div class="q-card">
         <div class="q-text">통증 부위를 선택하세요 (중복 가능)</div>
         <div class="body-parts">
-            <div class="part-btn" onclick="togglePart('목', this)">목</div>
-            <div class="part-btn" onclick="togglePart('어깨', this)">어깨</div>
-            <div class="part-btn" onclick="togglePart('팔/팔꿈치', this)">팔/팔꿈치</div>
-            <div class="part-btn" onclick="togglePart('손/손목/손가락', this)">손/손목/손가락</div>
-            <div class="part-btn" onclick="togglePart('허리', this)">허리</div>
-            <div class="part-btn" onclick="togglePart('다리/발', this)">다리/발</div>
+            <div class="part-btn" onclick="window.togglePart('목', this)">목</div>
+            <div class="part-btn" onclick="window.togglePart('어깨', this)">어깨</div>
+            <div class="part-btn" onclick="window.togglePart('팔/팔꿈치', this)">팔/팔꿈치</div>
+            <div class="part-btn" onclick="window.togglePart('손/손목/손가락', this)">손/손목/손가락</div>
+            <div class="part-btn" onclick="window.togglePart('허리', this)">허리</div>
+            <div class="part-btn" onclick="window.togglePart('다리/발', this)">다리/발</div>
         </div>
     </div>
     <div id="pain-area"></div>
     <div class="bottom-nav">
-        <button class="btn" onclick="goStep(2)">이전</button>
-        <button class="btn btn-next" onclick="submitSurvey()">최종 제출 ✓</button>
+        <button class="btn" onclick="window.goStep(2)">이전</button>
+        <button class="btn btn-next" onclick="window.submitSurvey()">최종 제출 ✓</button>
     </div>
 </div>
 
@@ -120,7 +121,7 @@
     const db = getFirestore(app);
 
     window.state = {
-        name: '', age: '', gender: '', careerYr: 0, careerMo: 0,
+        name: '', age: '', gender: '', careerYr: '', careerMo: '',
         hasPain: '', painParts: new Set(), painData: {}
     };
 
@@ -132,20 +133,20 @@
 
     window.selectGender = (g, btn) => {
         state.gender = g;
-        btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('.g-opt').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
     };
 
     window.selectPain = (p, btn) => {
         state.hasPain = p;
-        btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+        document.querySelectorAll('.p-opt').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
     };
 
     window.handleStep2Next = () => {
         if(!state.hasPain) return alert('통증 여부를 선택하세요.');
-        if(state.hasPain === '아니오') submitSurvey();
-        else goStep(3);
+        if(state.hasPain === '아니오') window.submitSurvey();
+        else window.goStep(3);
     };
 
     window.togglePart = (part, btn) => {
@@ -164,44 +165,37 @@
         const area = document.getElementById('pain-area');
         area.innerHTML = '';
         state.painParts.forEach(part => {
+            const d = state.painData[part];
             area.innerHTML += `
                 <div class="q-card pain-detail-panel">
-                    <h3 style="color:var(--accent)">📍 ${part} 통증 상세</h3>
-                    
+                    <h3 style="color:var(--accent)">📍 ${part} 상세</h3>
                     <div class="sub-q-title">1. 구체적 부위?</div>
                     <div class="mini-opts">
-                        ${['오른쪽','왼쪽','양쪽모두'].map(v => `<div class="mini-btn ${state.painData[part].pos===v?'selected':''}" onclick="setDetail('${part}','pos','${v}',this)">${v}</div>`).join('')}
+                        ${['오른쪽','왼쪽','양쪽모두'].map(v => `<div class="mini-btn ${d.pos===v?'selected':''}" onclick="window.setDetail('${part}','pos','${v}',this)">${v}</div>`).join('')}
                     </div>
-
-                    <div class="sub-q-title">2. 한번 아프면 지속 기간?</div>
+                    <div class="sub-q-title">2. 통증 지속 기간?</div>
                     <div class="mini-opts">
-                        ${['1일미만','1주미만','1달미만','6달미만','6달이상'].map(v => `<div class="mini-btn ${state.painData[part].duration===v?'selected':''}" onclick="setDetail('${part}','duration','${sStr(v)}',this)">${v}</div>`).join('')}
+                        ${['1일미만','1주미만','1달미만','6달미만','6달이상'].map(v => `<div class="mini-btn ${d.duration===v?'selected':''}" onclick="window.setDetail('${part}','duration','${v}',this)">${v}</div>`).join('')}
                     </div>
-
                     <div class="sub-q-title">3. 아픈 정도?</div>
                     <div class="mini-opts">
-                        ${['약한통증','중간통증','심한통증','매우심한통증'].map(v => `<div class="mini-btn ${state.painData[part].level===v?'selected':''}" onclick="setDetail('${part}','level','${v}',this)">${v}</div>`).join('')}
+                        ${['약한통증','중간통증','심한통증','매우심한통증'].map(v => `<div class="mini-btn ${d.level===v?'selected':''}" onclick="window.setDetail('${part}','level','${v}',this)">${v}</div>`).join('')}
                     </div>
-
                     <div class="sub-q-title">4. 지난 1년간 빈도?</div>
                     <div class="mini-opts">
-                        ${['6개월1회','2~3달1회','1달1회','1주1회','매일'].map(v => `<div class="mini-btn ${state.painData[part].freq===v?'selected':''}" onclick="setDetail('${part}','freq','${v}',this)">${v}</div>`).join('')}
+                        ${['6개월1회','2~3달1회','1달1회','1주1회','매일'].map(v => `<div class="mini-btn ${d.freq===v?'selected':''}" onclick="window.setDetail('${part}','freq','${v}',this)">${v}</div>`).join('')}
                     </div>
-
                     <div class="sub-q-title">5. 지난 1주일간 증상?</div>
                     <div class="mini-opts">
-                        ${['아니오','예'].map(v => `<div class="mini-btn ${state.painData[part].lastWeek===v?'selected':''}" onclick="setDetail('${part}','lastWeek','${v}',this)">${v}</div>`).join('')}
+                        ${['아니오','예'].map(v => `<div class="mini-btn ${d.lastWeek===v?'selected':''}" onclick="window.setDetail('${part}','lastWeek','${v}',this)">${v}</div>`).join('')}
                     </div>
-
-                    <div class="sub-q-title">6. 취한 조치 (복수선택)?</div>
+                    <div class="sub-q-title">6. 취한 조치 (중복가능)?</div>
                     <div class="mini-opts">
-                        ${['치료(병원)','약국','병가/산재','작업전환','없음'].map(v => `<div class="mini-btn ${state.painData[part].action.includes(v)?'selected':''}" onclick="toggleAction('${part}','${v}',this)">${sStr(v)}</div>`).join('')}
+                        ${['치료','약국','병가','작업전환','없음'].map(v => `<div class="mini-btn ${d.action.includes(v)?'selected':''}" onclick="window.toggleAction('${part}','${v}',this)">${v}</div>`).join('')}
                     </div>
                 </div>`;
         });
     }
-
-    function sStr(v){ return v; }
 
     window.setDetail = (part, field, val, btn) => {
         state.painData[part][field] = val;
@@ -211,9 +205,20 @@
 
     window.toggleAction = (part, val, btn) => {
         const list = state.painData[part].action;
-        const idx = list.indexOf(val);
-        if(idx > -1) { list.splice(idx, 1); btn.classList.remove('selected'); }
-        else { list.push(val); btn.classList.add('selected'); }
+        if(val === '없음') {
+            state.painData[part].action = ['없음'];
+            btn.parentElement.querySelectorAll('.mini-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        } else {
+            const noneIdx = list.indexOf('없음');
+            if(noneIdx > -1) {
+                list.splice(noneIdx, 1);
+                btn.parentElement.querySelector('.mini-btn:last-child').classList.remove('selected');
+            }
+            const idx = list.indexOf(val);
+            if(idx > -1) { list.splice(idx, 1); btn.classList.remove('selected'); }
+            else { list.push(val); btn.classList.add('selected'); }
+        }
     };
 
     window.submitSurvey = async () => {
@@ -223,7 +228,7 @@
         state.careerMo = document.getElementById('q-careerMo').value;
 
         if(!state.name || !state.age) return alert('성명과 나이는 필수입니다.');
-
+        
         document.getElementById('loading-overlay').style.display = 'flex';
         try {
             const docRef = await addDoc(collection(db, "surveys"), {
@@ -234,7 +239,7 @@
             document.getElementById('doc-id').innerText = "ID: " + docRef.id;
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('result-screen').classList.add('active');
-        } catch (e) { alert(e.message); }
+        } catch (e) { alert("오류: " + e.message); }
         finally { document.getElementById('loading-overlay').style.display = 'none'; }
     };
 </script>
