@@ -63,11 +63,16 @@
         </div>
     </div>
     <div class="q-card">
-        <div class="q-title">직장 경력</div>
+        <div class="q-title">직장 및 작업 경력</div>
         <div class="sub-desc">현 직장 근무 기간</div>
         <div class="grid-2">
             <div class="input-row"><input type="number" id="careerYr" class="q-input"><span style="margin:0 5px 10px 5px">년</span></div>
             <div class="input-row"><input type="number" id="careerMo" class="q-input"><span style="margin:0 5px 10px 5px">개월</span></div>
+        </div>
+        <div class="sub-desc" style="margin-top:10px;">현 작업 수행 기간</div>
+        <div class="grid-2">
+            <div class="input-row"><input type="number" id="jobYr" class="q-input"><span style="margin:0 5px 10px 5px">년</span></div>
+            <div class="input-row"><input type="number" id="jobMo" class="q-input"><span style="margin:0 5px 10px 5px">개월</span></div>
         </div>
     </div>
     <div class="bottom-nav"><button class="btn btn-next" onclick="window.go(2)">다음 단계 →</button></div>
@@ -75,32 +80,22 @@
 
 <div class="screen" id="s2">
     <div class="q-card">
-        <div class="q-title">현 작업 정보</div>
-        <input type="text" id="dept" class="q-input" placeholder="작업 부서">
-        <input type="text" id="line" class="q-input" placeholder="라인/공정">
-        <div class="sub-desc">현재 하고 있는 작업(구체적으로)</div>
-        <input type="text" id="jobDetail" class="q-input" placeholder="작업 내용 입력">
-        <div class="sub-desc">현 작업 수행 기간</div>
+        <div class="q-title">작업 및 근무 정보</div>
+        <input type="text" id="dept" class="q-input" placeholder="부서명">
+        <input type="text" id="line" class="q-input" placeholder="라인/공정명">
         <div class="grid-2">
-            <div class="input-row"><input type="number" id="jobYr" class="q-input"><span style="margin:0 5px 10px 5px">년</span></div>
-            <div class="input-row"><input type="number" id="jobMo" class="q-input"><span style="margin:0 5px 10px 5px">개월</span></div>
+            <div class="input-row"><span class="sub-desc">1일 근무</span><input type="number" id="workHr" class="q-input"><span>시</span></div>
+            <div class="input-row"><span class="sub-desc">휴식횟수</span><input type="number" id="restCnt" class="q-input"><span>회</span></div>
         </div>
     </div>
     <div class="q-card">
-        <div class="q-title">이전 작업 경력</div>
-        <input type="text" id="prevJob" class="q-input" placeholder="이전 작업 내용">
-        <div class="grid-2">
-            <div class="input-row"><input type="number" id="prevJobYr" class="q-input"><span style="margin:0 5px 10px 5px">년</span></div>
-            <div class="input-row"><input type="number" id="prevJobMo" class="q-input"><span style="margin:0 5px 10px 5px">개월</span></div>
-        </div>
-    </div>
-    <div class="q-card">
-        <div class="q-title">근무 및 휴식 시간</div>
-        <div class="input-row"><span class="sub-desc" style="width:100px">1일 근무시간</span><input type="number" id="workHr" class="q-input"><span>시간</span></div>
-        <div class="grid-2">
-            <div class="input-row"><input type="number" id="restMin" class="q-input"><span>분씩</span></div>
-            <div class="input-row"><input type="number" id="restCnt" class="q-input"><span>회 휴식</span></div>
-        </div>
+        <div class="q-title">여가 및 취미활동 (주 2~3회 이상)</div>
+        <div class="opt-btn h-opt" onclick="window.toggleHobby('컴퓨터',this)">컴퓨터 관련활동</div>
+        <div class="opt-btn h-opt" onclick="window.toggleHobby('테니스',this)">테니스/배드민턴/스쿼시</div>
+        <div class="opt-btn h-opt" onclick="window.toggleHobby('악기',this)">악기연주</div>
+        <div class="opt-btn h-opt" onclick="window.toggleHobby('구기',this)">축구/농구/스키</div>
+        <div class="opt-btn h-opt" onclick="window.toggleHobby('뜨개질',this)">뜨개질/붓글씨</div>
+        <div class="opt-btn" id="h-none" onclick="window.setHobbyNone(this)">해당사항 없음</div>
     </div>
     <div class="bottom-nav">
         <button class="btn btn-prev" onclick="window.go(1)">이전</button>
@@ -110,29 +105,20 @@
 
 <div class="screen" id="s3">
     <div class="q-card">
-        <div class="q-title">여가 및 취미활동 (복수)</div>
-        <div class="opt-btn h-opt" onclick="window.toggleHobby('컴퓨터',this)">컴퓨터 관련활동</div>
-        <div class="opt-btn h-opt" onclick="window.toggleHobby('테니스',this)">테니스/배드민턴/스쿼시</div>
-        <div class="opt-btn h-opt" onclick="window.toggleHobby('악기',this)">악기연주</div>
-        <div class="opt-btn h-opt" onclick="window.toggleHobby('구기',this)">축구/농구/스키</div>
-        <div class="opt-btn h-opt" onclick="window.toggleHobby('뜨개질',this)">뜨개질/붓글씨</div>
-        <div class="opt-btn" id="h-none" onclick="window.setHobbyNone(this)">해당사항 없음</div>
-    </div>
-
-    <div class="q-card">
-        <div class="q-title">과거 질병/사고 이력</div>
-        <div class="sub-desc">의사 진단 질병</div>
+        <div class="q-title">과거 질병 진단 여부</div>
         <div class="grid-2">
             <div class="opt-btn d-opt" onclick="window.setVal('hasDiag','예',this); document.getElementById('diag-area').style.display='block';">예</div>
             <div class="opt-btn d-opt" onclick="window.setVal('hasDiag','아니오',this); document.getElementById('diag-area').style.display='none';">아니오</div>
         </div>
         <div id="diag-area" style="display:none; margin-top:10px;">
             <div class="mini-opts">
-                ${['류머티스','당뇨병','루프스병','통풍','알코올','기타'].map(v=>`<div class="mini-btn" onclick="window.toggleSet('diagList','${v}',this)">${v}</div>`).join('')}
+                ${['류머티스','당뇨병','통풍','기타'].map(v=>`<div class="mini-btn" onclick="window.toggleSet('diagList','${v}',this)">${v}</div>`).join('')}
             </div>
             <div class="grid-2"><div class="mini-btn ds-btn" onclick="window.setVal('diagStatus','완치',this)">완치</div><div class="mini-btn ds-btn" onclick="window.setVal('diagStatus','치료중',this)">치료중</div></div>
         </div>
-        <div class="sub-desc" style="margin-top:20px;">사고 및 상해 이력 (4번 문항)</div>
+    </div>
+    <div class="q-card">
+        <div class="q-title">사고 및 상해 이력 (4번 문항)</div>
         <div class="grid-2">
             <div class="opt-btn i-opt" onclick="window.setVal('hasInjury','예',this); document.getElementById('injury-area').style.display='block';">예</div>
             <div class="opt-btn i-opt" onclick="window.setVal('hasInjury','아니오',this); document.getElementById('injury-area').style.display='none';">아니오</div>
@@ -142,7 +128,6 @@
             <div class="grid-2"><div class="mini-btn is-btn" onclick="window.setVal('injuryStatus','완치',this)">완치</div><div class="mini-btn is-btn" onclick="window.setVal('injuryStatus','치료중',this)">치료중</div></div>
         </div>
     </div>
-
     <div class="bottom-nav">
         <button class="btn btn-prev" onclick="window.go(2)">이전</button>
         <button class="btn btn-next" onclick="window.go(4)">다음 단계 →</button>
@@ -157,7 +142,7 @@
     </div>
     <div id="pain-detail-section" style="display:none;">
         <div class="q-card">
-            <div class="q-title">통증 부위 선택 (6개 부위 전체)</div>
+            <div class="q-title">통증 부위 (6개 부위 전체)</div>
             <div class="body-parts">
                 <div class="part-btn" onclick="window.togglePart('목',this)">목</div>
                 <div class="part-btn" onclick="window.togglePart('어깨',this)">어깨</div>
@@ -168,11 +153,7 @@
             </div>
         </div>
         <div class="guide-box">
-            <b>&lt;아픈 정도 보기&gt;</b><br>
-            - 약함: 약간 불편한 정도(작업 중 못 느낌)<br>
-            - 중간: 작업 중 통증, 휴식 시 사라짐<br>
-            - 심함: 작업 중 심한 통증, 귀가 후에도 지속<br>
-            - 매우 심함: 통증 때문에 잠을 설침
+            <b>&lt;보기&gt;</b> 약함: 약간 불편 / 중간: 휴식 시 괜찮음 / 심함: 귀가 후에도 지속 / 매우 심함: 잠을 설침
         </div>
         <div id="pain-panels"></div>
     </div>
@@ -266,8 +247,8 @@
                     <div class="sub-desc">${idx++}. 지속기간</div><div class="mini-opts">${['1일미만','1주미만','1달미만','6달미만','6달이상'].map(v=>`<div class="mini-btn ${d.dur===v?'selected':''}" onclick="window.setPainDetail('${part}','dur','${v}',this)">${v}</div>`).join('')}</div>
                     <div class="sub-desc">${idx++}. 아픈정도</div><div class="mini-opts">${['약함','중간','심함','매우심함'].map(v=>`<div class="mini-btn ${d.level===v?'selected':''}" onclick="window.setPainDetail('${part}','level','${v}',this)">${v}</div>`).join('')}</div>
                     <div class="sub-desc">${idx++}. 빈도</div><div class="mini-opts">${['6개월1회','2~3달1회','1달1회','1주1회','매일'].map(v=>`<div class="mini-btn ${d.freq===v?'selected':''}" onclick="window.setPainDetail('${part}','freq','${v}',this)">${v}</div>`).join('')}</div>
-                    <div class="sub-desc">${idx++}. 최근1주 증상</div><div class="mini-opts">${['예','아니오'].map(v=>`<div class="mini-btn ${d.lastWeek===v?'selected':''}" onclick="window.setPainDetail('${part}','lastWeek','${v}',this)">${v}</div>`).join('')}</div>
-                    <div class="sub-desc">${idx++}. 조치(중복)</div><div class="mini-opts">${['치료','약국','병가','작업전환','없음'].map(v=>`<div class="mini-btn ${d.action.includes(v)?'selected':''}" onclick="window.toggleAction('${part}','${v}',this)">${v}</div>`).join('')}</div>
+                    <div class="sub-desc">${idx++}. 최근증상</div><div class="mini-opts">${['예','아니오'].map(v=>`<div class="mini-btn ${d.lastWeek===v?'selected':''}" onclick="window.setPainDetail('${part}','lastWeek','${v}',this)">${v}</div>`).join('')}</div>
+                    <div class="sub-desc">${idx++}. 조치(중복)</div><div class="mini-opts">${['치료','약국','병가','전환','없음'].map(v=>`<div class="mini-btn ${d.action.includes(v)?'selected':''}" onclick="window.toggleAction('${part}','${v}',this)">${v}</div>`).join('')}</div>
                 </div>`;
         });
     }
@@ -300,13 +281,10 @@
         try {
             await addDoc(collection(db, "surveys"), {
                 ...state,
-                name: document.getElementById('name').value, 
-                age: document.getElementById('age').value,
+                name: document.getElementById('name').value, age: document.getElementById('age').value,
                 career: `${document.getElementById('careerYr').value}년 ${document.getElementById('careerMo').value}개월`,
-                dept: document.getElementById('dept').value, line: document.getElementById('line').value, jobDetail: document.getElementById('jobDetail').value,
-                jobPeriod: `${document.getElementById('jobYr').value}년 ${document.getElementById('jobMo').value}개월`,
-                prevJob: `${document.getElementById('prevJob').value} (${document.getElementById('prevJobYr').value}년 ${document.getElementById('prevJobMo').value}개월)`,
-                workTime: `${document.getElementById('workHr').value}시간 / 휴식 ${document.getElementById('restMin').value}분 ${document.getElementById('restCnt').value}회`,
+                dept: document.getElementById('dept').value, line: document.getElementById('line').value,
+                workTime: `${document.getElementById('workHr').value}시간 / 휴식 ${document.getElementById('restCnt').value}회`,
                 hobbies: Array.from(state.hobbies), diagList: Array.from(state.diagList), injuryParts: Array.from(state.injuryParts),
                 painParts: Array.from(state.painParts), createdAt: serverTimestamp()
             });
