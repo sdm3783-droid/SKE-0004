@@ -1,9 +1,9 @@
 <script type="module">
-  // 1. Firebase 모듈 불러오기
+  // 1. Firebase SDK 임포트
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, deleteDoc, doc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  // 2. Firebase 설정 (본인의 키값 그대로 유지)
+  // 2. Firebase 설정 (index.html과 동일한 설정 사용)
   const firebaseConfig = {
     apiKey: "AIzaSyC93mYiLYMrF-5IsIzfYnlGQdnK0sdPEfE",
     authDomain: "ske-0004.firebaseapp.com",
@@ -14,242 +14,172 @@
     measurementId: "G-E82SNM9EDC"
   };
 
-  // 3. Firebase 초기화
+  // 3. 초기화
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // --- 설문 상태 관리 변수 ---
-  window.state = {
-    name:'', age:'', gender:'', careerYr:'', careerMo:'', marriage:'',
-    dept:'', line:'', jobDesc:'', jobYr:'', jobMo:'', workHr:'', restMin:'', restCnt:'',
-    hobby: new Set(), chores:'', workload:'', diag:'', diagStatus:'',
-    injury:'', injuryParts: new Set(), hasPain:'', painParts: new Set(), painData:{}
-  };
-
+  // 전역 변수
+  window.allRecords = [];
+  window.filteredRecords = [];
   const PARTS_ORDER = ['목','어깨','팔/팔꿈치','손/손목/손가락','허리','다리/발'];
-  const SIDES_FOR = {'목':false,'어깨':true,'팔/팔꿈치':true,'손/손목/손가락':true,'허리':false,'다리/발':true};
 
-  // --- 함수 정의 (전역에서 사용할 수 있게 window에 할당) ---
-  window.startSurvey = () => {
-    document.getElementById('screen-intro').classList.remove('active');
-    document.getElementById('sticky-header').style.display='block';
-    showScreen('1');
-  };
+  // 4. 데이터 불러오기 함수
+  window.loadData = async function() {
+    const tableArea = document.getElementById('table-area');
+    const tableCount = document.getElementById('table-count');
+    tableArea.innerHTML = '<div class="spinner"></div>';
+    tableCount.textContent = '로딩 중...';
 
-  window.showScreen = (id) => {
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById('screen-'+id).classList.add('active');
-    updateProgress(id);
-    window.scrollTo(0,0);
-  };
-
-  function updateProgress(id) {
-    const map={'1':{pct:33,label:'기본 정보',step:'Step 1 / 3'},'2':{pct:66,label:'통증 여부',step:'Step 2 / 3'},'3':{pct:90,label:'통증 상세',step:'Step 3 / 3'},'result':{pct:100,label:'완료',step:'완료'}};
-    const m = map[id] || map['1'];
-    document.getElementById('prog-fill').style.width=m.pct+'%';
-    document.getElementById('prog-label').textContent=m.label;
-    document.getElementById('prog-pct').textContent=m.pct+'%';
-    document.getElementById('header-step-label').textContent=m.step;
-  }
-
-  window.goPrev = (f) => { if(f===2) showScreen('1'); else if(f===3) showScreen('2'); };
-
-  window.goNext = async (f) => {
-    if(f===1){
-      collectSection1();
-      if(!validateSection1()) return;
-      showScreen('2');
-    } else if(f===2){
-      if(!state.hasPain){ shake('pain-no'); shake('pain-yes'); return; }
-      if(state.hasPain==='아니오'){ await submitToFirebase(); buildResult(); showScreen('result'); }
-      else showScreen('3');
-    } else if(f===3){
-      if(state.painParts.size===0){ alert('통증 부위를 선택해주세요.'); return; }
-      await submitToFirebase();
-      buildResult();
-      showScreen('result');
-    }
-  };
-
-  function collectSection1() {
-    state.name=document.getElementById('q-name').value.trim();
-    state.age=document.getElementById('q-age').value;
-    state.careerYr=document.getElementById('q-career-yr').value;
-    state.careerMo=document.getElementById('q-career-mo').value;
-    state.dept=document.getElementById('q-dept').value.trim();
-    state.line=document.getElementById('q-line').value.trim();
-    state.jobDesc=document.getElementById('q-job-desc').value.trim();
-    state.jobYr=document.getElementById('q-job-yr').value;
-    state.jobMo=document.getElementById('q-job-mo').value;
-    state.workHr=document.getElementById('q-work-hr').value;
-    state.restMin=document.getElementById('q-rest-min').value;
-    state.restCnt=document.getElementById('q-rest-cnt').value;
-  }
-
-  function validateSection1() {
-    if(!state.name){ shake('qc-name'); document.getElementById('q-name').focus(); return false; }
-    if(!state.age || !state.gender){ shake('qc-basic'); return false; }
-    return true;
-  }
-
-  function shake(id) {
-    const el=document.getElementById(id); if(!el) return;
-    el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
-  }
-
-  // 🔥 핵심: Firebase 데이터 전송 함수
-  async function submitToFirebase() {
-    document.getElementById('loading-overlay').style.display='flex';
     try {
-      // 데이터 정리
-      const finalData = {
-        submittedAt: serverTimestamp(), // 서버 시간 기준
-        name: state.name, age: state.age, gender: state.gender,
-        careerYr: state.careerYr, careerMo: state.careerMo,
-        marriage: state.marriage, dept: state.dept, line: state.line,
-        jobDesc: state.jobDesc, jobYr: state.jobYr, jobMo: state.jobMo,
-        workHr: state.workHr, restMin: state.restMin, restCnt: state.restCnt,
-        hobby: [...state.hobby].join('|'), chores: state.chores, workload: state.workload,
-        diag: state.diag, diagStatus: state.diagStatus,
-        injury: state.injury, injuryParts: [...state.injuryParts].join('|'),
-        hasPain: state.hasPain,
-        painParts: [...state.painParts].join('|'),
-        // 통증 상세 데이터 변환 (Set 객체는 전송이 안 되므로 배열로 변환)
-        painData: Object.fromEntries(
-          Object.entries(state.painData).map(([part, d]) => [part, {
-            ...d,
-            action: d.action ? [...d.action].join('|') : ''
-          }])
-        )
-      };
-
-      // Firestore의 'surveys' 컬렉션에 추가
-      const docRef = await addDoc(collection(db, "surveys"), finalData);
-      state._submitId = docRef.id; // 파이어베이스가 생성한 문서 ID 저장
-      document.getElementById('submit-id-display').textContent = docRef.id;
+      // 'surveys' 컬렉션에서 시간순(최신순)으로 쿼리
+      const q = query(collection(db, "surveys"), orderBy("submittedAt", "desc"));
+      const querySnapshot = await getDocs(q);
       
+      const records = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        // Firebase Timestamp를 JS Date 객체로 변환
+        const submittedAt = data.submittedAt ? data.submittedAt.toDate() : new Date();
+        records.push({ id: doc.id, ...data, submittedAt: submittedAt });
+      });
+
+      window.allRecords = records;
+      updateStats();
+      renderTable();
+      renderChart();
     } catch (e) {
-      console.error("Firebase 전송 에러:", e);
-      alert("데이터 저장 중 오류가 발생했습니다.");
-    } finally {
-      document.getElementById('loading-overlay').style.display='none';
+      console.error("데이터 로드 실패:", e);
+      tableArea.innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">로드 실패: ${e.message}</div></div>`;
     }
-  }
-
-  // --- UI 상호작용 함수들 ---
-  window.selectRadio = (btn, group) => {
-    const parent = btn.closest('.options-grid') || btn.parentElement;
-    parent.querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-    state[group] = btn.querySelector('.opt-label').textContent;
-    btn.closest('.q-card') && btn.closest('.q-card').classList.add('has-answer');
   };
 
-  window.toggleCheck = (btn, group, value) => {
-    document.getElementById('hobby-none').classList.remove('selected');
-    state.hobby.delete('해당사항 없음');
-    if(btn.classList.contains('selected')){ btn.classList.remove('selected'); state[group].delete(value); }
-    else{ btn.classList.add('selected'); state[group].add(value); }
-  };
+  // 통계 업데이트
+  function updateStats() {
+    const total = allRecords.length;
+    const painCount = allRecords.filter(r => r.hasPain === '예').length;
+    const today = new Date().toLocaleDateString('ko-KR');
+    const todayCount = allRecords.filter(r => {
+      const d = new Date(r.submittedAt);
+      return d.toLocaleDateString('ko-KR') === today;
+    }).length;
 
-  window.toggleNone = (btn, group) => {
-    btn.closest('.options-grid').querySelectorAll('.option-btn').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected'); state[group] = new Set(['해당사항 없음']);
-  };
-
-  window.selectGender = (g) => {
-    document.getElementById('opt-male').classList.toggle('selected', g==='남');
-    document.getElementById('opt-female').classList.toggle('selected', g==='여');
-    state.gender = g;
-  };
-
-  window.selectMarriage = (m) => {
-    document.getElementById('opt-married').classList.toggle('selected', m==='기혼');
-    document.getElementById('opt-single').classList.toggle('selected', m==='미혼');
-    state.marriage = m;
-  };
-
-  window.selectDiag = (v) => {
-    document.getElementById('diag-no').classList.toggle('selected', v==='아니오');
-    document.getElementById('diag-yes').classList.toggle('selected', v==='예');
-    state.diag = v;
-    document.getElementById('diag-detail').style.display = v==='예' ? 'block' : 'none';
-  };
-
-  window.selectInjury = (v) => {
-    document.getElementById('injury-no').classList.toggle('selected', v==='아니오');
-    document.getElementById('injury-yes').classList.toggle('selected', v==='예');
-    state.injury = v;
-    document.getElementById('injury-detail').style.display = v==='예' ? 'block' : 'none';
-  };
-
-  window.selectPain = (v) => {
-    document.getElementById('pain-no').classList.toggle('selected', v==='아니오');
-    document.getElementById('pain-yes').classList.toggle('selected', v==='예');
-    state.hasPain = v;
-  };
-
-  window.selectMini = (btn, key) => {
-    btn.parentElement.querySelectorAll('.mini-opt').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected'); state[key] = btn.textContent;
-  };
-
-  window.toggleMiniCheck = (btn, key) => {
-    btn.classList.toggle('selected');
-    const val = btn.textContent;
-    if(btn.classList.contains('selected')) state.injuryParts.add(val);
-    else state.injuryParts.delete(val);
-  };
-
-  window.toggleBodyPart = (btn, part) => {
-    btn.classList.toggle('selected');
-    if(btn.classList.contains('selected')){ state.painParts.add(part); if(!state.painData[part]) state.painData[part]={}; }
-    else { state.painParts.delete(part); }
-    renderPainDetails();
-  };
-
-  function renderPainDetails() {
-    const container = document.getElementById('pain-details');
-    container.innerHTML = '';
-    PARTS_ORDER.forEach(part => {
-      if(!state.painParts.has(part)) return;
-      const d = state.painData[part] || {};
-      const hasSide = SIDES_FOR[part];
-      container.innerHTML += `
-        <div class="pain-detail-panel">
-          <div class="panel-title">📍 ${part}</div>
-          ${hasSide ? `<div class="sub-q"><div class="sub-q-text">① 통증 부위</div><div class="mini-options">${['오른쪽','왼쪽','양쪽 모두'].map(s=>`<div class="mini-opt${d.side===s?' selected':''}" onclick="window.setPainField('${part}','side','${s}',this)">${s}</div>`).join('')}</div></div>` : ''}
-          <div class="sub-q"><div class="sub-q-text">② 통증 지속 기간</div><div class="mini-options">${['1일 미만','1일~1주일','1주일~1달','1달~6개월','6개월 이상'].map(s=>`<div class="mini-opt${d.duration===s?' selected':''}" onclick="window.setPainField('${part}','duration','${s}',this)">${s}</div>`).join('')}</div></div>
-          <div class="sub-q"><div class="sub-q-text">③ 통증 정도</div><div class="mini-options">${['약함','중간','심함','매우심함'].map(s=>`<div class="mini-opt${d.level===s?' selected':''}" onclick="window.setPainField('${part}','level','${s}',this)">${s}</div>`).join('')}</div></div>
-          <div class="sub-q"><div class="sub-q-text">④ 경험 빈도</div><div class="mini-options">${['6개월 1번','2~3달 1번','1달 1번','1주 1번','매일'].map(s=>`<div class="mini-opt${d.freq===s?' selected':''}" onclick="window.setPainField('${part}','freq','${s}',this)">${s}</div>`).join('')}</div></div>
-          <div class="sub-q"><div class="sub-q-text">⑤ 최근 1주일 증상</div><div class="mini-options">${['아니오','예'].map(s=>`<div class="mini-opt${d.lastWeek===s?' selected':''}" onclick="window.setPainField('${part}','lastWeek','${s}',this)">${s}</div>`).join('')}</div></div>
-          <div class="sub-q" style="margin-bottom:0"><div class="sub-q-text">⑥ 취한 조치</div><div class="mini-options">${['병원치료','약국','병가','작업전환','없음'].map(s=>`<div class="mini-opt${(d.action||new Set()).has?.(s)?' selected':''}" onclick="window.togglePainAction('${part}','${s}',this)">${s}</div>`).join('')}</div></div>
-        </div>`;
+    const partCount = {};
+    allRecords.forEach(r => {
+      if (r.painParts) r.painParts.split('|').forEach(p => { if(p) partCount[p] = (partCount[p]||0)+1; });
     });
+    const topPart = Object.entries(partCount).sort((a,b)=>b[1]-a[1])[0];
+
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-pain').textContent = painCount;
+    document.getElementById('stat-pain-pct').textContent = total ? `전체의 ${Math.round(painCount/total*100)}%` : '—';
+    document.getElementById('stat-top-part').textContent = topPart ? topPart[0] : '없음';
+    document.getElementById('stat-top-part-cnt').textContent = topPart ? `${topPart[1]}명 호소` : '—';
+    document.getElementById('stat-today').textContent = todayCount;
+    document.getElementById('stat-today-date').textContent = today;
   }
 
-  window.setPainField = (part, field, value, btn) => {
-    if(!state.painData[part]) state.painData[part]={};
-    state.painData[part][field] = value;
-    btn.parentElement.querySelectorAll('.mini-opt').forEach(b=>b.classList.remove('selected'));
-    btn.classList.add('selected');
-  };
+  // 차트 렌더링
+  function renderChart() {
+    const partCount = {};
+    PARTS_ORDER.forEach(p => partCount[p] = 0);
+    allRecords.forEach(r => {
+      if (r.painParts) r.painParts.split('|').forEach(p => { if(partCount[p]!==undefined) partCount[p]++; });
+    });
+    const max = Math.max(...Object.values(partCount), 1);
+    const section = document.getElementById('chart-section');
+    if (allRecords.length > 0) section.style.display = 'block';
 
-  window.togglePainAction = (part, value, btn) => {
-    if(!state.painData[part]) state.painData[part]={};
-    if(!state.painData[part].action) state.painData[part].action = new Set();
-    btn.classList.toggle('selected');
-    if(btn.classList.contains('selected')) state.painData[part].action.add(value);
-    else state.painData[part].action.delete(value);
-  };
-
-  function buildResult() {
-    // 결과 화면 빌드 로직 (기존과 동일)
-    const rows = [['성명', state.name], ['나이', state.age+'세'], ['부서/라인', state.dept + '/' + state.line]];
-    document.getElementById('result-basic').innerHTML = `<div class="result-card-title">👤 기본 정보 요약</div>` + 
-      rows.map(([k,v])=>`<div class="result-row"><span class="result-key">${k}</span><span class="result-val">${v}</span></div>`).join('');
+    document.getElementById('part-chart').innerHTML = PARTS_ORDER.map(p => `
+      <div class="chart-row">
+        <div class="chart-label">${p}</div>
+        <div class="chart-bar-wrap"><div class="chart-bar" style="width:${Math.round(partCount[p]/max*100)}%"></div></div>
+        <div class="chart-val">${partCount[p]}명</div>
+      </div>`).join('');
   }
 
-  window.resetSurvey = () => { location.reload(); };
+  // 테이블 렌더링
+  window.renderTable = function() {
+    const qInput = document.getElementById('search-input').value.toLowerCase();
+    window.filteredRecords = allRecords.filter(r => 
+      !qInput || 
+      (r.name||'').toLowerCase().includes(qInput) || 
+      (r.dept||'').toLowerCase().includes(qInput) ||
+      (r.id||'').toLowerCase().includes(qInput)
+    );
 
+    document.getElementById('table-count').textContent = `${filteredRecords.length} / ${allRecords.length} 건`;
+
+    if (filteredRecords.length === 0) {
+      document.getElementById('table-area').innerHTML = `<div class="empty"><div class="empty-text">데이터가 없습니다.</div></div>`;
+      return;
+    }
+
+    let html = `<table><thead><tr><th>이름</th><th>부서/라인</th><th>성별/나이</th><th>통증여부</th><th>통증부위</th><th>제출일시</th></tr></thead><tbody>`;
+    filteredRecords.forEach((r, idx) => {
+      const dt = new Date(r.submittedAt).toLocaleString('ko-KR', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'});
+      const parts = (r.painParts||'').split('|').filter(Boolean);
+      html += `<tr onclick="window.openModal(${idx})">
+        <td class="name">${r.name||'—'}</td>
+        <td class="dept">${r.dept||'—'} / ${r.line||'—'}</td>
+        <td>${r.gender||'—'} / ${r.age||'—'}세</td>
+        <td>${r.hasPain==='예' ? '<span class="badge badge-pain">⚠ 통증</span>' : '<span class="badge badge-ok">✓ 정상</span>'}</td>
+        <td>${parts.map(p=>`<span class="badge badge-part">${p}</span>`).join('')}</td>
+        <td class="mono">${dt}</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    document.getElementById('table-area').innerHTML = html;
+  };
+
+  // 모달 창 열기
+  window.openModal = function(idx) {
+    const r = filteredRecords[idx];
+    document.getElementById('modal-title').textContent = `${r.name} 님의 상세 정보`;
+    // 상세 정보 바디 구성 (기존 로직과 유사하므로 요약)
+    let bodyHtml = `<div class="detail-grid">
+      <div class="detail-item"><div class="detail-key">성명</div><div class="detail-val">${r.name}</div></div>
+      <div class="detail-item"><div class="detail-key">부서/라인</div><div class="detail-val">${r.dept}/${r.line}</div></div>
+      <div class="detail-item"><div class="detail-key">통증부위</div><div class="detail-val">${r.painParts || '없음'}</div></div>
+    </div>`;
+    
+    // 통증 상세가 있다면 추가
+    if(r.painData) {
+        bodyHtml += `<div class="detail-section-title" style="margin-top:20px;">부위별 상세</div>`;
+        Object.entries(r.painData).forEach(([part, d]) => {
+            bodyHtml += `<div class="pain-part-block">
+                <div class="pain-part-name">${part}</div>
+                <div class="pain-grid">
+                    <div><div class="pain-item-key">정도</div><div class="pain-item-val">${d.level || '-'}</div></div>
+                    <div><div class="pain-item-key">빈도</div><div class="pain-item-val">${d.freq || '-'}</div></div>
+                </div>
+            </div>`;
+        });
+    }
+
+    document.getElementById('modal-body').innerHTML = bodyHtml;
+    document.getElementById('modal').classList.add('open');
+  };
+
+  window.closeModal = function() {
+    document.getElementById('modal').classList.remove('open');
+  };
+
+  // 🔥 데이터 삭제 기능 (Firebase 연동)
+  window.clearAllData = async function() {
+    if (!confirm("정말로 모든 데이터를 삭제하시겠습니까? 파이어베이스 서버의 데이터가 영구 삭제됩니다.")) return;
+    const pw = prompt("삭제를 확인하려면 '전체삭제'라고 입력하세요.");
+    if (pw !== '전체삭제') return;
+
+    try {
+      const deletePromises = allRecords.map(r => deleteDoc(doc(db, "surveys", r.id)));
+      await Promise.all(deletePromises);
+      alert("모든 데이터가 삭제되었습니다.");
+      loadData(); // 목록 새로고침
+    } catch (e) {
+      alert("삭제 중 오류 발생: " + e.message);
+    }
+  };
+
+  // 초기 로드
+  loadData();
 </script>
