@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>근골격계 조사 대시보드 (2026)</title>
+    <title>관리자 대시보드 (2026)</title>
     <style>
         body { font-family:sans-serif; background:#f0f2f5; padding:20px; color:#1c1e21; }
         .container { max-width:1200px; margin:0 auto; }
@@ -14,24 +14,16 @@
         .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; }
         .m-box { background:#fff; padding:30px; border-radius:16px; width:95%; max-width:700px; max-height:90vh; overflow-y:auto; }
         .badge { background:#ff4d4d; color:#fff; padding:2px 6px; border-radius:4px; font-size:11px; }
-        .detail-item { margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px; }
+        .detail-item { margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px; line-height:1.6; }
         .pain-card { border-left:4px solid #4f8ef7; background:#f9fbff; padding:15px; border-radius:8px; margin-top:10px; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="card">
-        <h2>📊 2026 근골격계 조사 통합 대시보드</h2>
-        <table id="main-table">
-            <thead>
-                <tr>
-                    <th>제출일시</th>
-                    <th>성명(연령)</th>
-                    <th>부서/라인</th>
-                    <th>통증여부</th>
-                    <th>현직장경력</th>
-                </tr>
-            </thead>
+        <h2>📊 2026 근골격계 조사 대시보드</h2>
+        <table>
+            <thead><tr><th>제출일시</th><th>성명(연령)</th><th>부서/라인</th><th>통증여부</th><th>질병유무</th></tr></thead>
             <tbody id="list"></tbody>
         </table>
     </div>
@@ -39,9 +31,9 @@
 
 <div id="modal" class="modal" onclick="if(event.target==this) this.style.display='none'">
     <div class="m-box">
-        <h2 id="m-title" style="margin-bottom:20px; color:#4f8ef7;">상세 정보</h2>
+        <h2 id="m-title" style="color:#4f8ef7; margin-bottom:20px;">상세 데이터</h2>
         <div id="m-content"></div>
-        <button onclick="document.getElementById('modal').style.display='none'" style="margin-top:20px; width:100%; padding:12px; background:#f0f2f5; border:none; border-radius:8px; cursor:pointer;">닫기</button>
+        <button onclick="document.getElementById('modal').style.display='none'" style="margin-top:20px; width:100%; padding:12px; border:none; border-radius:8px; cursor:pointer;">닫기</button>
     </div>
 </div>
 
@@ -76,37 +68,29 @@
                 <td><b>${r.name}</b> (${r.age || '-'})</td>
                 <td>${r.dept || '-'}/${r.line || '-'}</td>
                 <td>${r.hasPain==='예' ? '<span class="badge">통증</span>' : '정상'}</td>
-                <td>${r.career || '-'}</td>
+                <td>${r.hasDiag || '아니오'}</td>
             </tr>`;
         });
     }
 
     window.show = (idx) => {
         const r = all[idx];
-        document.getElementById('m-title').innerText = `${r.name} 님 조사 데이터`;
+        document.getElementById('m-title').innerText = `${r.name} 님 상세 데이터`;
         let html = `
             <div class="detail-item">
                 <p><b>기본:</b> ${r.gender} / ${r.marriage} / ${r.age}세</p>
                 <p><b>경력:</b> 현직장 ${r.career} / 현작업 ${r.jobPeriod}</p>
-                <p><b>이전작업:</b> ${r.prevJob}</p>
-                <p><b>부서/라인:</b> ${r.dept} / ${r.line}</p>
-                <p><b>근무조건:</b> ${r.workTime}</p>
                 <p><b>부담정도:</b> <span style="color:red">${r.burden}</span></p>
             </div>
             <div class="detail-item">
+                <p><b>질병 진단:</b> ${r.hasDiag} ${r.hasDiag==='예' ? `(${r.diagList.join(', ')}) - ${r.diagStatus}` : ''}</p>
                 <p><b>생활습관:</b> 가사 ${r.chores} / 취미 ${r.hobbies.join(', ')}</p>
-                <p><b>질병진단:</b> ${r.diag}</p>
             </div>`;
 
         if(r.painData) {
             Object.entries(r.painData).forEach(([part, d]) => {
                 const sideText = (part === '목' || part === '허리') ? '' : `[위치: ${d.side}] `;
-                html += `
-                <div class="pain-card">
-                    <b style="color:#4f8ef7;">📍 ${part}</b>
-                    <p style="font-size:13px; margin-top:5px;">${sideText}지속: ${d.dur} | 정도: ${d.level} | 빈도: ${d.freq}</p>
-                    <p style="font-size:13px;">최근1주: ${d.lastWeek} | 조치: ${d.action.join(', ')}</p>
-                </div>`;
+                html += `<div class="pain-card"><b>📍 ${part}</b><p style="font-size:13px;">${sideText}지속: ${d.dur} | 정도: ${d.level} | 빈도: ${d.freq}</p><p style="font-size:13px;">최근1주: ${d.lastWeek} | 조치: ${d.action.join(', ')}</p></div>`;
             });
         }
         html += `<div style="text-align:right; margin-top:20px;"><button onclick="window.del('${r.id}')" style="background:none; border:none; color:#bbb; cursor:pointer; font-size:11px;">데이터 영구 삭제</button></div>`;
@@ -115,10 +99,7 @@
     };
 
     window.del = async (id) => {
-        if(confirm('데이터를 삭제할까요?')) {
-            await deleteDoc(doc(db, "surveys", id));
-            location.reload();
-        }
+        if(confirm('데이터를 삭제할까요?')) { await deleteDoc(doc(db, "surveys", id)); location.reload(); }
     };
     load();
 </script>
