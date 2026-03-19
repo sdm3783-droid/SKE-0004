@@ -2,11 +2,11 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>관리자 대시보드 (2026 통합)</title>
+    <title>관리자 대시보드 (2026)</title>
     <style>
-        body { font-family:sans-serif; background:#f0f2f5; padding:20px; }
+        body { font-family:sans-serif; background:#f0f2f5; padding:20px; color:#1c1e21; }
         .card { background:#fff; border-radius:12px; padding:20px; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
-        table { width:100%; border-collapse:collapse; font-size:13px; }
+        table { width:100%; border-collapse:collapse; background:#fff; font-size:13px; }
         th, td { border:1px solid #e1e4e8; padding:12px; text-align:left; }
         th { background:#f8f9fa; color:#4f8ef7; }
         tr:hover { background:#f1faff; cursor:pointer; }
@@ -17,7 +17,7 @@
 </head>
 <body>
 <div class="card">
-    <h2>📊 2026 근골격계 조사 통합 대시보드</h2>
+    <h2>📊 2026 근골격계 조사 대시보드</h2>
     <table>
         <thead><tr><th>제출일시</th><th>성명(연령)</th><th>부서/라인</th><th>통증여부</th><th>사고이력</th></tr></thead>
         <tbody id="list"></tbody>
@@ -28,7 +28,7 @@
     <div class="m-box">
         <h2 id="m-title" style="color:#4f8ef7; margin-bottom:20px;">상세 조사 데이터</h2>
         <div id="m-content"></div>
-        <button onclick="document.getElementById('modal').style.display='none'" style="margin-top:20px; width:100%; padding:12px; cursor:pointer;">닫기</button>
+        <button onclick="document.getElementById('modal').style.display='none'" style="margin-top:20px; width:100%; padding:12px; border:none; border-radius:8px; cursor:pointer;">닫기</button>
     </div>
 </div>
 
@@ -62,7 +62,7 @@
                 <td>${time}</td>
                 <td><b>${r.name}</b> (${r.age})</td>
                 <td>${r.dept || '-'}/${r.line || '-'}</td>
-                <td>${r.hasPain==='예' ? '통증' : '정상'}</td>
+                <td>${r.hasPain==='예' ? '통증있음' : '정상'}</td>
                 <td>${r.hasInjury || '아니오'}</td>
             </tr>`;
         });
@@ -70,12 +70,12 @@
 
     window.show = (idx) => {
         const r = all[idx];
-        document.getElementById('m-title').innerText = `${r.name} 님 상세기록`;
-        let html = `<div><p><b>경력:</b> 현직장 ${r.career} / 현작업 ${r.jobPeriod}</p><p><b>근무:</b> ${r.workTime}</p><p><b>질병:</b> ${r.hasDiag} (${r.diagList ? r.diagList.join(', ') : ''})</p><p><b>사고:</b> ${r.hasInjury} (${r.injuryParts ? r.injuryParts.join(', ') : ''})</p></div>`;
+        document.getElementById('m-title').innerText = `${r.name} 님 기록`;
+        let html = `<div><p><b>기본:</b> ${r.career} / ${r.workTime}</p><p><b>질병:</b> ${r.hasDiag} / <b>사고:</b> ${r.hasInjury}</p></div>`;
         if(r.painData) {
             Object.entries(r.painData).forEach(([part, d]) => {
                 const sideText = (part === '목' || part === '허리') ? '' : `[위치: ${d.side}] `;
-                html += `<div class="pain-card"><b>📍 ${part}</b><br>${sideText}지속: ${d.dur} | 정도: ${d.level} | 빈도: ${d.freq}<br>최근1주: ${d.lastWeek} | 조치: ${d.action ? d.action.join(', ') : ''}</div>`;
+                html += `<div class="pain-card"><b>📍 ${part}</b><br>${sideText}지속: ${d.dur} | 정도: ${d.level} | 빈도: ${d.freq}<br>최근: ${d.lastWeek} | 조치: ${d.action ? d.action.join(', ') : ''}</div>`;
             });
         }
         html += `<button onclick="window.del('${r.id}')" style="margin-top:20px; color:#ccc; border:none; background:none; cursor:pointer;">삭제</button>`;
@@ -84,7 +84,7 @@
     };
 
     window.del = async (id) => {
-        if(confirm('삭제할까요?')) { await deleteDoc(doc(db, "surveys", id)); location.reload(); }
+        if(confirm('삭제하시겠습니까?')) { await deleteDoc(doc(db, "surveys", id)); location.reload(); }
     };
     load();
 </script>
