@@ -49,7 +49,7 @@
 
 <div class="screen active" id="s1">
     <div class="q-card">
-        <div class="q-title">기본 인적사항</div>
+        <div class="q-title">인적사항</div>
         <input type="text" id="name" class="q-input" placeholder="성명">
         <div class="input-row"><input type="number" id="age" class="q-input" placeholder="만 연령"><span style="margin:0 10px 10px 5px">세</span></div>
         <div class="grid-2">
@@ -62,7 +62,8 @@
         </div>
     </div>
     <div class="q-card">
-        <div class="q-title">현 직장 경력</div>
+        <div class="q-title">직장 경력</div>
+        <div class="sub-desc">현 직장 근무 기간</div>
         <div class="grid-2">
             <div class="input-row"><input type="number" id="careerYr" class="q-input"><span style="margin:0 5px 10px 5px">년</span></div>
             <div class="input-row"><input type="number" id="careerMo" class="q-input"><span style="margin:0 5px 10px 5px">개월</span></div>
@@ -73,15 +74,30 @@
 
 <div class="screen" id="s2">
     <div class="q-card">
-        <div class="q-title">작업 정보</div>
-        <input type="text" id="dept" class="q-input" placeholder="부서명">
-        <input type="text" id="line" class="q-input" placeholder="라인/공정명">
-        <input type="text" id="jobDetail" class="q-input" placeholder="수행 작업 (구체적으로)">
+        <div class="q-title">현 작업 정보</div>
+        <input type="text" id="dept" class="q-input" placeholder="작업 부서">
+        <input type="text" id="line" class="q-input" placeholder="라인/공정">
+        <div class="sub-desc">현재 하고 있는 작업(구체적으로)</div>
+        <input type="text" id="jobDetail" class="q-input" placeholder="작업 내용 입력">
+        <div class="sub-desc">현 작업 수행 기간</div>
+        <div class="grid-2">
+            <div class="input-row"><input type="number" id="jobYr" class="q-input"><span style="margin:0 5px 10px 5px">년</span></div>
+            <div class="input-row"><input type="number" id="jobMo" class="q-input"><span style="margin:0 5px 10px 5px">개월</span></div>
+        </div>
     </div>
     <div class="q-card">
-        <div class="q-title">근무 및 휴식</div>
+        <div class="q-title">이전 작업 경력</div>
+        <div class="sub-desc">현 작업을 하기 전에 했던 작업</div>
+        <input type="text" id="prevJob" class="q-input" placeholder="이전 작업 내용">
         <div class="grid-2">
-            <div class="input-row"><span class="sub-desc" style="width:70px">근무시간</span><input type="number" id="workHr" class="q-input"><span>시</span></div>
+            <div class="input-row"><input type="number" id="prevJobYr" class="q-input"><span style="margin:0 5px 10px 5px">년</span></div>
+            <div class="input-row"><input type="number" id="prevJobMo" class="q-input"><span style="margin:0 5px 10px 5px">개월</span></div>
+        </div>
+    </div>
+    <div class="q-card">
+        <div class="q-title">근무 시간</div>
+        <div class="grid-2">
+            <div class="input-row"><span class="sub-desc" style="width:70px">1일 근무</span><input type="number" id="workHr" class="q-input"><span>시</span></div>
             <div class="input-row"><span class="sub-desc" style="width:70px">휴식(회당)</span><input type="number" id="restMin" class="q-input"><span>분</span></div>
         </div>
     </div>
@@ -93,22 +109,33 @@
 
 <div class="screen" id="s3">
     <div class="q-card">
-        <div class="q-title">여가 및 취미활동 (주 2~3회 이상)</div>
+        <div class="q-title">1. 여가 및 취미활동 (주 2~3회 이상)</div>
         <div class="opt-btn h-opt" onclick="window.toggleHobby('컴퓨터',this)">컴퓨터 관련활동</div>
-        <div class="opt-btn h-opt" onclick="window.toggleHobby('운동',this)">스포츠/운동</div>
+        <div class="opt-btn h-opt" onclick="window.toggleHobby('테니스/배드민턴',this)">테니스/배드민턴/스쿼시</div>
+        <div class="opt-btn h-opt" onclick="window.toggleHobby('악기연주',this)">악기연주(피아노, 바이올린 등)</div>
+        <div class="opt-btn h-opt" onclick="window.toggleHobby('구기종목',this)">축구/족구/농구/스키</div>
+        <div class="opt-btn h-opt" onclick="window.toggleHobby('뜨개질/붓글씨',this)">뜨개질, 자수, 붓글씨</div>
         <div class="opt-btn" id="h-none" onclick="window.setHobbyNone(this)">해당사항 없음</div>
     </div>
 
     <div class="q-card">
-        <div class="q-title">과거 질병 진단 여부</div>
-        <div class="sub-desc">의사에게 진단받은 적이 있습니까?</div>
+        <div class="q-title">2. 가사 노동 시간 (하루 평균)</div>
+        <div class="opt-btn c-opt" onclick="window.setVal('chores','거의 하지 않는다',this)">거의 하지 않는다</div>
+        <div class="opt-btn c-opt" onclick="window.setVal('chores','1시간 미만',this)">1시간 미만</div>
+        <div class="opt-btn c-opt" onclick="window.setVal('chores','1~2시간 미만',this)">1~2시간 미만</div>
+        <div class="opt-btn c-opt" onclick="window.setVal('chores','2~3시간 미만',this)">2~3시간 미만</div>
+        <div class="opt-btn c-opt" onclick="window.setVal('chores','3시간 이상',this)">3시간 이상</div>
+    </div>
+
+    <div class="q-card">
+        <div class="q-title">3. 과거 질병 진단 여부</div>
+        <div class="sub-desc">류머티스 관절염, 당뇨병, 루프스병, 통풍, 알코올 중독 등</div>
         <div class="grid-2">
             <div class="opt-btn d-opt" onclick="window.setVal('hasDiag','예',this); document.getElementById('diag-detail').style.display='block';">예</div>
             <div class="opt-btn d-opt" onclick="window.setVal('hasDiag','아니오',this); document.getElementById('diag-detail').style.display='none';">아니오</div>
         </div>
-        
         <div id="diag-detail" style="display:none; margin-top:15px; padding:15px; background:#f8f9fa; border-radius:10px;">
-            <div class="sub-desc">해당되는 질병을 선택하세요 (중복 가능)</div>
+            <div class="sub-desc">질병 종류 선택 (중복 가능)</div>
             <div class="mini-opts">
                 <div class="mini-btn" onclick="window.toggleSet('diagList','류머티스 관절염',this)">류머티스 관절염</div>
                 <div class="mini-btn" onclick="window.toggleSet('diagList','당뇨병',this)">당뇨병</div>
@@ -117,7 +144,7 @@
                 <div class="mini-btn" onclick="window.toggleSet('diagList','알코올 중독',this)">알코올 중독</div>
                 <div class="mini-btn" onclick="window.toggleSet('diagList','기타 통증',this)">기타 통증</div>
             </div>
-            <div class="sub-desc" style="margin-top:15px;">현재 상태는?</div>
+            <div class="sub-desc" style="margin-top:10px;">현재 상태</div>
             <div class="grid-2">
                 <div class="mini-btn ds-btn" onclick="window.setVal('diagStatus','완치',this)">완치</div>
                 <div class="mini-btn ds-btn" onclick="window.setVal('diagStatus','치료/관찰 중',this)">치료/관찰 중</div>
@@ -126,8 +153,10 @@
     </div>
 
     <div class="q-card">
-        <div class="q-title">작업의 육체적 부담 정도</div>
+        <div class="q-title">4. 육체적 부담 정도</div>
         <div class="opt-btn w-opt" onclick="window.setVal('burden','전혀 힘들지 않음',this)">전혀 힘들지 않음</div>
+        <div class="opt-btn w-opt" onclick="window.setVal('burden','견딜만 함',this)">견딜만 함</div>
+        <div class="opt-btn w-opt" onclick="window.setVal('burden','약간 힘듦',this)">약간 힘듦</div>
         <div class="opt-btn w-opt" onclick="window.setVal('burden','매우 힘듦',this)">매우 힘듦</div>
     </div>
     <div class="bottom-nav">
@@ -138,17 +167,20 @@
 
 <div class="screen" id="s4">
     <div class="q-card">
-        <div class="q-title">지난 1년간 통증 경험 유무</div>
+        <div class="q-title">통증 경험 유무</div>
         <div class="opt-btn p-opt" onclick="window.setVal('hasPain','예',this)">예 (상세 입력)</div>
         <div class="opt-btn p-opt" onclick="window.setVal('hasPain','아니오',this)">아니오 (종료)</div>
     </div>
     <div id="pain-detail-section" style="display:none;">
         <div class="q-card">
-            <div class="q-title">통증 부위 선택</div>
+            <div class="q-title">통증 부위 (복수 선택)</div>
             <div class="body-parts">
                 <div class="part-btn" onclick="window.togglePart('목',this)">목</div>
                 <div class="part-btn" onclick="window.togglePart('어깨',this)">어깨</div>
+                <div class="part-btn" onclick="window.togglePart('팔/팔꿈치',this)">팔/팔꿈치</div>
+                <div class="part-btn" onclick="window.togglePart('손목/손',this)">손목/손</div>
                 <div class="part-btn" onclick="window.togglePart('허리',this)">허리</div>
+                <div class="part-btn" onclick="window.togglePart('다리/발',this)">다리/발</div>
             </div>
         </div>
         <div id="pain-panels"></div>
@@ -194,7 +226,6 @@
 
     window.setVal = (key, val, btn) => {
         state[key] = val;
-        const selector = btn.classList.contains('mini-btn') ? '.ds-btn' : (btn.classList.contains('g-opt') ? '.g-opt' : (btn.classList.contains('m-opt') ? '.m-opt' : (btn.classList.contains('d-opt') ? '.d-opt' : '.p-opt')));
         btn.parentElement.querySelectorAll(btn.classList.contains('mini-btn') ? '.mini-btn' : '.opt-btn').forEach(b => b.classList.remove('selected'));
         btn.classList.add('selected');
         if(key === 'hasPain') document.getElementById('pain-detail-section').style.display = (val === '예') ? 'block' : 'none';
@@ -242,6 +273,9 @@
                     ${isPair ? `<div class="sub-desc">1. 위치</div><div class="mini-opts">${['오른쪽','왼쪽','양쪽'].map(v=>`<div class="mini-btn ${d.side===v?'selected':''}" onclick="window.setPainDetail('${part}','side','${v}',this)">${v}</div>`).join('')}</div>` : ''}
                     <div class="sub-desc">${isPair?2:1}. 지속기간</div><div class="mini-opts">${['1일미만','1주미만','1달미만','6달미만','6달이상'].map(v=>`<div class="mini-btn ${d.dur===v?'selected':''}" onclick="window.setPainDetail('${part}','dur','${v}',this)">${v}</div>`).join('')}</div>
                     <div class="sub-desc">${isPair?3:2}. 아픈정도</div><div class="mini-opts">${['약함','중간','심함','매우심함'].map(v=>`<div class="mini-btn ${d.level===v?'selected':''}" onclick="window.setPainDetail('${part}','level','${v}',this)">${v}</div>`).join('')}</div>
+                    <div class="sub-desc">${isPair?4:3}. 빈도</div><div class="mini-opts">${['6개월1회','2~3달1회','1달1회','1주1회','매일'].map(v=>`<div class="mini-btn ${d.freq===v?'selected':''}" onclick="window.setPainDetail('${part}','freq','${v}',this)">${v}</div>`).join('')}</div>
+                    <div class="sub-desc">${isPair?5:4}. 최근1주 증상</div><div class="mini-opts">${['예','아니오'].map(v=>`<div class="mini-btn ${d.lastWeek===v?'selected':''}" onclick="window.setPainDetail('${part}','lastWeek','${v}',this)">${v}</div>`).join('')}</div>
+                    <div class="sub-desc">${isPair?6:5}. 조치(중복)</div><div class="mini-opts">${['치료','약국','병가','작업전환','없음'].map(v=>`<div class="mini-btn ${d.action.includes(v)?'selected':''}" onclick="window.toggleAction('${part}','${v}',this)">${v}</div>`).join('')}</div>
                 </div>`;
         });
     }
@@ -252,6 +286,22 @@
         btn.classList.add('selected');
     };
 
+    window.toggleAction = (part, val, btn) => {
+        const list = state.painData[part].action;
+        if(val === '없음') {
+            state.painData[part].action = ['없음'];
+            btn.parentElement.querySelectorAll('.mini-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+        } else {
+            const idx = list.indexOf(val);
+            if(idx > -1) list.splice(idx, 1); else list.push(val);
+            btn.classList.toggle('selected');
+            btn.parentElement.querySelector('.mini-btn:last-child').classList.remove('selected');
+            const noneIdx = list.indexOf('없음');
+            if(noneIdx > -1) list.splice(noneIdx,1);
+        }
+    };
+
     window.submit = async () => {
         if(!document.getElementById('name').value) return alert('성명을 입력해주세요.');
         document.getElementById('loading').style.display='flex';
@@ -260,7 +310,9 @@
                 ...state,
                 name: document.getElementById('name').value, age: document.getElementById('age').value,
                 career: `${document.getElementById('careerYr').value}년 ${document.getElementById('careerMo').value}개월`,
+                jobPeriod: `${document.getElementById('jobYr').value}년 ${document.getElementById('jobMo').value}개월`,
                 dept: document.getElementById('dept').value, line: document.getElementById('line').value, jobDetail: document.getElementById('jobDetail').value,
+                prevJob: `${document.getElementById('prevJob').value} (${document.getElementById('prevJobYr').value}년 ${document.getElementById('prevJobMo').value}개월)`,
                 workTime: `${document.getElementById('workHr').value}시간 / 휴식 ${document.getElementById('restMin').value}분`,
                 hobbies: Array.from(state.hobbies), diagList: Array.from(state.diagList),
                 painParts: Array.from(state.painParts), createdAt: serverTimestamp()
