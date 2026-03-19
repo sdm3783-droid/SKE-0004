@@ -14,6 +14,7 @@
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
   .header{position:sticky;top:0;z-index:100;background:rgba(15,15,19,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
   .header-title{font-size:15px;font-weight:700;}
   .header-sub{font-size:11px;color:var(--text2);margin-top:2px;}
@@ -21,9 +22,12 @@
   .progress-label{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:6px;}
   .progress-bar{height:4px;background:var(--border);border-radius:2px;}
   .progress-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.4s ease;}
+
   .screen{display:none;}
   .screen.active{display:block;}
-  .intro-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;background:radial-gradient(ellipse at 20% 80%,rgba(79,142,247,.12),transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(124,92,252,.12),transparent 60%),var(--bg);}
+
+  .intro-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;
+    background:radial-gradient(ellipse at 20% 80%,rgba(79,142,247,.12),transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(124,92,252,.12),transparent 60%),var(--bg);}
   .intro-icon{width:80px;height:80px;border-radius:24px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:36px;margin-bottom:28px;box-shadow:0 20px 60px rgba(79,142,247,.3);}
   .intro-title{font-size:22px;font-weight:900;text-align:center;line-height:1.4;margin-bottom:8px;}
   .intro-sub{font-size:13px;color:var(--text2);text-align:center;line-height:1.7;margin-bottom:32px;}
@@ -31,41 +35,64 @@
   .intro-info-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;}
   .info-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:7px;flex-shrink:0;}
   .info-text{font-size:13px;color:var(--text2);line-height:1.6;}
+
   .section-wrap{padding:0 16px 100px;}
   .section-header{padding:28px 4px 20px;border-bottom:1px solid var(--border);margin-bottom:20px;}
-  .section-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.3);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;margin-bottom:10px;}
+  .section-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.3);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
   .section-title{font-size:18px;font-weight:800;line-height:1.4;}
-  .section-desc{font-size:13px;color:var(--text2);margin-top:6px;}
-  .q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:12px;}
-  .q-number{font-size:10px;font-weight:700;color:var(--accent);margin-bottom:8px;}
-  .q-text{font-size:14px;font-weight:500;margin-bottom:14px;}
+  .section-desc{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.6;}
+
+  .q-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:12px;transition:border-color .2s;}
+  .q-card.has-answer{border-color:rgba(79,142,247,.4);}
+  .q-number{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;}
+  .q-text{font-size:14px;font-weight:500;line-height:1.7;margin-bottom:14px;}
   .q-required{color:var(--danger);}
-  .q-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:14px;padding:12px 14px;outline:none;}
+
+  .q-input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:14px;padding:12px 14px;outline:none;transition:border-color .2s;}
+  .q-input:focus{border-color:var(--accent);}
   .input-row{display:flex;gap:8px;align-items:center;}
-  .input-unit{font-size:13px;color:var(--text2);}
+  .input-unit{font-size:13px;color:var(--text2);white-space:nowrap;}
+  .input-row .q-input{flex:1;}
+  .sub-label{font-size:11px;color:var(--text2);margin-bottom:4px;}
+
   .options-grid{display:flex;flex-direction:column;gap:8px;}
-  .option-btn{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;}
+  .option-btn{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;}
   .option-btn.selected{background:rgba(79,142,247,.12);border-color:var(--accent);}
-  .opt-icon{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;}
+  .opt-icon{width:20px;height:20px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;}
   .option-btn.selected .opt-icon{background:var(--accent);border-color:var(--accent);}
-  .opt-label{font-size:13px;font-weight:500;}
+  .option-btn .opt-icon::after{content:'';width:6px;height:6px;border-radius:50%;background:white;opacity:0;}
+  .option-btn.selected .opt-icon::after{opacity:1;}
+  .option-btn.checkbox .opt-icon{border-radius:6px;}
+  .opt-label{font-size:13px;font-weight:500;line-height:1.4;}
+
   .body-parts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px;}
-  .body-part-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;cursor:pointer;text-align:center;}
+  .body-part-btn{background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 8px;cursor:pointer;text-align:center;transition:all .15s;-webkit-tap-highlight-color:transparent;}
   .body-part-btn.selected{background:rgba(79,142,247,.12);border-color:var(--accent);}
+  .body-part-icon{font-size:24px;margin-bottom:4px;}
+  .body-part-label{font-size:12px;font-weight:600;}
+
   .pain-detail-panel{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
   .panel-title{font-size:13px;font-weight:800;color:var(--accent);margin-bottom:14px;}
+  .sub-q{margin-bottom:14px;}
+  .sub-q-text{font-size:12px;font-weight:600;color:var(--text2);margin-bottom:8px;}
   .mini-options{display:flex;flex-wrap:wrap;gap:6px;}
-  .mini-opt{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:7px 11px;font-size:12px;cursor:pointer;}
+  .mini-opt{background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:7px 11px;font-size:12px;font-weight:500;cursor:pointer;}
   .mini-opt.selected{background:rgba(79,142,247,.15);border-color:var(--accent);color:var(--accent);font-weight:700;}
+
+  .pain-legend{background:rgba(79,142,247,.06);border:1px solid rgba(79,142,247,.2);border-radius:var(--radius-sm);padding:12px;margin-top:8px;}
+  .pain-legend-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:8px;}
+  .legend-row{font-size:11px;color:var(--text2);margin-bottom:4px;line-height:1.5;}
+
   .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(15,15,19,0.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:12px 16px;display:flex;gap:10px;z-index:200;}
-  .btn{flex:1;padding:15px;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;}
+  .btn{flex:1;padding:15px;border:none;border-radius:var(--radius-sm);font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;}
   .btn-prev{background:var(--surface2);color:var(--text2);border:1px solid var(--border);flex:0 0 80px;}
   .btn-next{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;}
   .btn-submit{background:linear-gradient(135deg,var(--success),#20a060);color:white;}
+
   .loading-overlay{position:fixed;inset:0;background:rgba(15,15,19,.9);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;}
   .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px;}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .result-wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px;background:var(--bg);}
+
   .shake{animation:shake .4s ease;border-color:var(--danger)!important;}
   @keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
 </style>
@@ -74,28 +101,29 @@
 
 <div id="loading-overlay" class="loading-overlay" style="display:none;">
   <div class="spinner"></div>
-  <div class="loading-text">제출 중입니다...</div>
+  <div class="loading-text">데이터를 안전하게 전송 중입니다...</div>
 </div>
 
 <div class="screen active" id="screen-intro">
   <div class="intro-wrap">
     <div class="intro-icon">🦴</div>
     <div class="intro-title">근골격계질환<br>증상조사표</div>
-    <div class="intro-sub">작업 관련 근골격계 증상을 확인하기 위한<br>조사표입니다. 약 5분 소요됩니다.</div>
+    <div class="intro-sub">작업 관련 근골격계 증상을 확인하기 위한<br>공식 조사표입니다. 약 5~7분 소요됩니다.</div>
     <div class="intro-info">
-      <div class="intro-info-row"><div class="info-dot"></div><div class="info-text">솔직한 답변이 정확한 분석을 돕습니다.</div></div>
-      <div class="intro-info-row"><div class="info-dot"></div><div class="info-text">모든 정보는 보안 처리됩니다.</div></div>
+      <div class="intro-info-row"><div class="info-dot"></div><div class="info-text">솔직하게 답변해 주셔야 정확한 분석이 가능합니다.</div></div>
+      <div class="intro-info-row"><div class="info-dot"></div><div class="info-text">모든 답변은 파이어베이스 서버에 안전하게 저장됩니다.</div></div>
     </div>
-    <button class="btn btn-next" style="width:100%;max-width:300px;" onclick="window.startSurvey()">설문 시작하기 →</button>
+    <button class="btn btn-next" style="max-width:340px;width:100%;" onclick="window.startSurvey()">설문 시작하기 →</button>
   </div>
 </div>
 
 <div id="sticky-header" style="display:none;">
   <div class="header">
     <div>
-      <div class="header-title">근골격계 증상조사표</div>
+      <div class="header-title">근골격계질환 증상조사표</div>
       <div class="header-sub" id="header-step-label">Step 1 / 3</div>
     </div>
+    <div style="font-size:20px;">🦴</div>
   </div>
   <div class="progress-wrap">
     <div class="progress-label"><span id="prog-label">기본 정보</span><span id="prog-pct">0%</span></div>
@@ -106,28 +134,97 @@
 <div class="screen" id="screen-1">
   <div class="section-wrap">
     <div class="section-header">
-      <div class="section-badge">Step 1</div>
+      <div class="section-badge">Step 1 / 3</div>
       <div class="section-title">기본 정보</div>
+      <div class="section-desc">개인 정보 및 작업 환경에 대해 알려주세요</div>
     </div>
+
     <div class="q-card" id="qc-name">
       <div class="q-number">Q1</div>
       <div class="q-text">성명 <span class="q-required">*</span></div>
       <input class="q-input" type="text" id="q-name" placeholder="이름을 입력하세요">
     </div>
+
     <div class="q-card" id="qc-basic">
       <div class="q-number">Q2</div>
-      <div class="q-text">나이 및 성별 <span class="q-required">*</span></div>
-      <input class="q-input" type="number" id="q-age" placeholder="나이(만)" style="margin-bottom:10px;">
-      <div style="display:flex;gap:8px;">
-        <div class="option-btn" id="opt-male" onclick="window.selectGender('남')" style="flex:1;"><div class="opt-icon"></div><div class="opt-label">남</div></div>
-        <div class="option-btn" id="opt-female" onclick="window.selectGender('여')" style="flex:1;"><div class="opt-icon"></div><div class="opt-label">여</div></div>
+      <div class="q-text">기본 정보 <span class="q-required">*</span></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+        <div>
+          <div class="sub-label">나이 (만)</div>
+          <div class="input-row"><input class="q-input" type="number" id="q-age" placeholder="0"><span class="input-unit">세</span></div>
+        </div>
+        <div>
+          <div class="sub-label">성별</div>
+          <div style="display:flex;gap:6px;">
+            <div class="option-btn" id="opt-male" onclick="window.selectGender('남')" style="flex:1;justify-content:center;"><div class="opt-label">남</div></div>
+            <div class="option-btn" id="opt-female" onclick="window.selectGender('여')" style="flex:1;justify-content:center;"><div class="opt-label">여</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <div>
+          <div class="sub-label">현 직장 경력</div>
+          <div class="input-row"><input class="q-input" type="number" id="q-career-yr" placeholder="년"><span class="input-unit">년</span></div>
+          <div class="input-row" style="margin-top:6px;"><input class="q-input" type="number" id="q-career-mo" placeholder="월"><span class="input-unit">개월</span></div>
+        </div>
+        <div>
+          <div class="sub-label">결혼 여부</div>
+          <div style="display:flex;gap:6px;">
+            <div class="option-btn" id="opt-married" onclick="window.selectMarriage('기혼')" style="flex:1;justify-content:center;"><div class="opt-label">기혼</div></div>
+            <div class="option-btn" id="opt-single" onclick="window.selectMarriage('미혼')" style="flex:1;justify-content:center;"><div class="opt-label">미혼</div></div>
+          </div>
+        </div>
       </div>
     </div>
+
     <div class="q-card">
       <div class="q-number">Q3</div>
       <div class="q-text">부서 및 라인</div>
-      <input class="q-input" type="text" id="q-dept" placeholder="부서" style="margin-bottom:10px;">
-      <input class="q-input" type="text" id="q-line" placeholder="라인">
+      <input class="q-input" type="text" id="q-dept" placeholder="부서 (예: 생산팀)" style="margin-bottom:10px;">
+      <input class="q-input" type="text" id="q-line" placeholder="라인 (예: A라인)">
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">Q4</div>
+      <div class="q-text">현재 작업 내용</div>
+      <input class="q-input" type="text" id="q-job-desc" placeholder="수행 중인 작업을 입력하세요">
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">Q5</div>
+      <div class="q-text">1일 근무 및 휴식</div>
+      <div class="input-row" style="margin-bottom:8px;"><span class="input-unit">근무</span><input class="q-input" type="number" id="q-work-hr"><span class="input-unit">시간</span></div>
+      <div class="input-row"><span class="input-unit">휴식</span><input class="q-input" type="number" id="q-rest-min"><span class="input-unit">분씩</span><input class="q-input" type="number" id="q-rest-cnt"><span class="input-unit">회</span></div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">Q6</div>
+      <div class="q-text">취미 활동 (복수 선택)</div>
+      <div class="options-grid">
+        <div class="option-btn checkbox" onclick="window.toggleCheck(this,'hobby','컴퓨터')"><div class="opt-label">💻 컴퓨터 관련</div></div>
+        <div class="option-btn checkbox" onclick="window.toggleCheck(this,'hobby','악기')"><div class="opt-label">🎹 악기 연주</div></div>
+        <div class="option-btn checkbox" onclick="window.toggleCheck(this,'hobby','운동')"><div class="opt-label">⚽ 운동 (축구/테니스 등)</div></div>
+        <div class="option-btn checkbox" id="hobby-none" onclick="window.toggleNone(this,'hobby')"><div class="opt-label">해당사항 없음</div></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">Q7</div>
+      <div class="q-text">가사 노동 시간</div>
+      <div class="options-grid">
+        <div class="option-btn" onclick="window.selectRadio(this,'chores')"><div class="opt-label">거의 안 함</div></div>
+        <div class="option-btn" onclick="window.selectRadio(this,'chores')"><div class="opt-label">1시간 미만</div></div>
+        <div class="option-btn" onclick="window.selectRadio(this,'chores')"><div class="opt-label">2시간 이상</div></div>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-number">Q8</div>
+      <div class="q-text">질병 진단 여부</div>
+      <div style="display:flex;gap:8px;">
+        <div class="option-btn" id="diag-no" onclick="window.selectDiag('아니오')" style="flex:1;justify-content:center;"><div class="opt-label">아니오</div></div>
+        <div class="option-btn" id="diag-yes" onclick="window.selectDiag('예')" style="flex:1;justify-content:center;"><div class="opt-label">예</div></div>
+      </div>
     </div>
   </div>
   <div class="bottom-nav">
@@ -138,14 +235,14 @@
 <div class="screen" id="screen-2">
   <div class="section-wrap">
     <div class="section-header">
-      <div class="section-badge">Step 2</div>
-      <div class="section-title">통증 유무</div>
+      <div class="section-badge">Step 2 / 3</div>
+      <div class="section-title">통증 여부</div>
     </div>
     <div class="q-card">
-      <div class="q-text">지난 1년간 통증이나 불편함이 있었습니까? <span class="q-required">*</span></div>
+      <div class="q-text">지난 1년간 작업 관련 통증이 있었나요? <span class="q-required">*</span></div>
       <div class="options-grid">
-        <div class="option-btn" id="pain-no" onclick="window.selectPain('아니오')"><div class="opt-icon"></div><div class="opt-label">아니오</div></div>
-        <div class="option-btn" id="pain-yes" onclick="window.selectPain('예')"><div class="opt-icon"></div><div class="opt-label">예 (상세 작성)</div></div>
+        <div class="option-btn" id="pain-no" onclick="window.selectPain('아니오')"><div class="opt-label">아니오 — 종료</div></div>
+        <div class="option-btn" id="pain-yes" onclick="window.selectPain('예')"><div class="opt-label">예 — 상세 작성</div></div>
       </div>
     </div>
   </div>
@@ -158,14 +255,16 @@
 <div class="screen" id="screen-3">
   <div class="section-wrap">
     <div class="section-header">
-      <div class="section-badge">Step 3</div>
-      <div class="section-title">상세 정보</div>
+      <div class="section-badge">Step 3 / 3</div>
+      <div class="section-title">통증 상세</div>
     </div>
     <div class="body-parts">
       <div class="body-part-btn" onclick="window.toggleBodyPart(this,'목')">목</div>
       <div class="body-part-btn" onclick="window.toggleBodyPart(this,'어깨')">어깨</div>
-      <div class="body-part-btn" onclick="window.toggleBodyPart(this,'허리')">허리</div>
+      <div class="body-part-btn" onclick="window.toggleBodyPart(this,'팔')">팔</div>
       <div class="body-part-btn" onclick="window.toggleBodyPart(this,'손목')">손목</div>
+      <div class="body-part-btn" onclick="window.toggleBodyPart(this,'허리')">허리</div>
+      <div class="body-part-btn" onclick="window.toggleBodyPart(this,'다리')">다리</div>
     </div>
     <div id="pain-details"></div>
   </div>
@@ -179,8 +278,11 @@
   <div class="result-wrap">
     <div class="intro-icon">✅</div>
     <div class="intro-title">제출 완료!</div>
-    <div id="submit-id-display" style="margin-top:20px; color:var(--text2);">ID: -</div>
-    <button class="btn-next btn" onclick="location.reload()" style="margin-top:30px;">새로 작성하기</button>
+    <div class="submit-id-box" style="margin-top:20px;">
+      <div class="submit-id-label">문서 고유 ID</div>
+      <div class="submit-id-val" id="submit-id-display">-</div>
+    </div>
+    <button class="btn btn-next" onclick="location.reload()" style="margin-top:30px;">새로 작성하기</button>
   </div>
 </div>
 
@@ -194,19 +296,18 @@
     projectId: "ske-0004",
     storageBucket: "ske-0004.firebasestorage.app",
     messagingSenderId: "704127486318",
-    appId: "1:704127486318:web:3b8c2c5562978231d3597f",
-    measurementId: "G-E82SNM9EDC"
+    appId: "1:704127486318:web:3b8c2c5562978231d3597f"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // 전역 상태
   window.state = {
-    name:'', age:'', gender:'', dept:'', line:'', hasPain:'', painParts: new Set(), painData: {}
+    name:'', age:'', gender:'', careerYr:'', careerMo:'', marriage:'',
+    dept:'', line:'', jobDesc:'', workHr:'', restMin:'', restCnt:'',
+    hobby: new Set(), chores:'', diag:'', hasPain:'', painParts: new Set(), painData: {}
   };
 
-  // 모든 함수를 window에 연결하여 HTML에서 직접 접근 가능하게 함
   window.startSurvey = () => {
     document.getElementById('screen-intro').classList.remove('active');
     document.getElementById('sticky-header').style.display='block';
@@ -216,16 +317,11 @@
   window.showScreen = (id) => {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-' + id).classList.add('active');
-    updateProgress(id);
+    const p = {'1':33, '2':66, '3':90, 'result':100}[id];
+    document.getElementById('prog-fill').style.width = p + '%';
+    document.getElementById('prog-pct').textContent = p + '%';
     window.scrollTo(0,0);
   };
-
-  function updateProgress(id) {
-    const map = {'1':33, '2':66, '3':90, 'result':100};
-    const pct = map[id] || 0;
-    document.getElementById('prog-fill').style.width = pct + '%';
-    document.getElementById('prog-pct').textContent = pct + '%';
-  }
 
   window.goPrev = (f) => window.showScreen(f - 1);
 
@@ -233,74 +329,104 @@
     if(f === 1) {
       state.name = document.getElementById('q-name').value.trim();
       state.age = document.getElementById('q-age').value;
-      if(!state.name || !state.age || !state.gender) { alert('필수 항목을 채워주세요.'); return; }
+      if(!state.name || !state.age || !state.gender) { alert('필수 항목을 입력해주세요.'); return; }
       window.showScreen('2');
     } else if(f === 2) {
-      if(!state.hasPain) { alert('통증 여부를 선택하세요.'); return; }
-      if(state.hasPain === '아니오') await window.submitData();
+      if(!state.hasPain) { alert('통증 여부를 선택해주세요.'); return; }
+      if(state.hasPain === '아니오') await window.submitToFirebase();
       else window.showScreen('3');
     } else if(f === 3) {
-      if(state.painParts.size === 0) { alert('부위를 선택하세요.'); return; }
-      await window.submitData();
+      if(state.painParts.size === 0) { alert('통증 부위를 선택해주세요.'); return; }
+      await window.submitToFirebase();
     }
   };
 
-  window.submitData = async () => {
+  window.submitToFirebase = async () => {
     document.getElementById('loading-overlay').style.display = 'flex';
     try {
       const docRef = await addDoc(collection(db, "surveys"), {
         ...window.state,
-        painParts: Array.from(window.state.painParts),
+        hobby: Array.from(state.hobby),
+        painParts: Array.from(state.painParts),
         submittedAt: serverTimestamp()
       });
-      document.getElementById('submit-id-display').textContent = 'ID: ' + docRef.id;
+      document.getElementById('submit-id-display').textContent = docRef.id;
       window.showScreen('result');
     } catch (e) {
-      alert("오류 발생: " + e.message);
+      alert("전송 실패: " + e.message);
     } finally {
       document.getElementById('loading-overlay').style.display = 'none';
     }
   };
 
+  // --- UI 상호작용 함수들 ---
   window.selectGender = (g) => {
     state.gender = g;
-    document.getElementById('opt-male').classList.toggle('selected', g === '남');
-    document.getElementById('opt-female').classList.toggle('selected', g === '여');
+    document.getElementById('opt-male').classList.toggle('selected', g==='남');
+    document.getElementById('opt-female').classList.toggle('selected', g==='여');
   };
-
+  window.selectMarriage = (m) => {
+    state.marriage = m;
+    document.getElementById('opt-married').classList.toggle('selected', m==='기혼');
+    document.getElementById('opt-single').classList.toggle('selected', m==='미혼');
+  };
+  window.selectDiag = (d) => {
+    state.diag = d;
+    document.getElementById('diag-no').classList.toggle('selected', d==='아니오');
+    document.getElementById('diag-yes').classList.toggle('selected', d==='예');
+  };
   window.selectPain = (p) => {
     state.hasPain = p;
-    document.getElementById('pain-no').classList.toggle('selected', p === '아니오');
-    document.getElementById('pain-yes').classList.toggle('selected', p === '예');
+    document.getElementById('pain-no').classList.toggle('selected', p==='아니오');
+    document.getElementById('pain-yes').classList.toggle('selected', p==='예');
   };
-
+  window.selectRadio = (btn, group) => {
+    btn.parentElement.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    state[group] = btn.innerText;
+  };
+  window.toggleCheck = (btn, group, val) => {
+    btn.classList.toggle('selected');
+    if(btn.classList.contains('selected')) state[group].add(val);
+    else state[group].delete(val);
+  };
+  window.toggleNone = (btn, group) => {
+    btn.parentElement.querySelectorAll('.option-btn').forEach(b => {
+      b.classList.remove('selected');
+      state[group].clear();
+    });
+    btn.classList.add('selected');
+    state[group].add('해당없음');
+  };
   window.toggleBodyPart = (btn, part) => {
     btn.classList.toggle('selected');
     if(btn.classList.contains('selected')) state.painParts.add(part);
     else state.painParts.delete(part);
-    renderDetails();
+    renderPainDetails();
   };
 
-  function renderDetails() {
+  function renderPainDetails() {
     const container = document.getElementById('pain-details');
     container.innerHTML = '';
     state.painParts.forEach(part => {
       container.innerHTML += `
         <div class="pain-detail-panel">
-          <div class="panel-title">📍 ${part} 통증 정도</div>
-          <div class="mini-options">
-            ${['약함','중간','심함'].map(lv => `<div class="mini-opt" onclick="window.setLv('${part}','${lv}',this)">${lv}</div>`).join('')}
+          <div class="panel-title">📍 ${part} 통증 상세</div>
+          <div class="sub-q">
+            <div class="sub-q-text">통증 정도</div>
+            <div class="mini-options">
+              ${['약함','중간','심함'].map(lv => `<div class="mini-opt" onclick="window.setPainField('${part}','level','${lv}',this)">${lv}</div>`).join('')}
+            </div>
           </div>
         </div>`;
     });
   }
-
-  window.setLv = (part, lv, btn) => {
-    state.painData[part] = lv;
+  window.setPainField = (part, field, val, btn) => {
+    if(!state.painData[part]) state.painData[part] = {};
+    state.painData[part][field] = val;
     btn.parentElement.querySelectorAll('.mini-opt').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
   };
 </script>
-
 </body>
 </html>
