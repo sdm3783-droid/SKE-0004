@@ -647,5 +647,28 @@ function buildResult(){
 
 function resetSurvey(){location.reload();}
 </script>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyC93mYiLYMrF-5IsIzfYnlGQdnK0sdPEfE",
+    authDomain: "ske-0004.firebaseapp.com",
+    projectId: "ske-0004",
+    storageBucket: "ske-0004.firebasestorage.app",
+    messagingSenderId: "704127486318",
+    appId: "1:704127486318:web:3b8c2c5562978231d3597f",
+    measurementId: "G-E82SNM9EDC"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 </body>
 </html>
