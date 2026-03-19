@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>근골격계 조사 — 관리자 대시보드</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+  :root {
+    --bg: #080b10;
+    --surface: #0e1318;
+    --surface2: #141b22;
+    --surface3: #1a2430;
+    --border: #1e2d3d;
+    --border2: #243547;
+    --accent: #00d4ff;
+    --accent2: #0090ff;
+    --success: #00e87a;
+    --warning: #ffb020;
+    --danger: #ff4d4d;
+    --purple: #a78bfa;
+    --text: #d4e4f7;
+    --text2: #6b8aaa;
+    --text3: #3a5570;
+    --mono: 'JetBrains Mono', monospace;
+    --radius: 12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+  /* grid lines bg */
+  body::before{
+    content:'';position:fixed;inset:0;
+    background-image:linear-gradient(rgba(0,212,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.03) 1px,transparent 1px);
+    background-size:40px 40px;pointer-events:none;z-index:0;
+  }
+
+  /* ─── HEADER ─── */
+  .header{
+    position:relative;z-index:10;
+    background:rgba(8,11,16,.95);backdrop-filter:blur(20px);
+    border-bottom:1px solid var(--border);
+    padding:0 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    height:64px;
+  }
+  .header-left{display:flex;align-items:center;gap:16px;}
+  .header-logo{
+    width:36px;height:36px;border-radius:10px;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    display:flex;align-items:center;justify-content:center;font-size:18px;
+    box-shadow:0 0 20px rgba(0,212,255,.3);
+  }
+  .header-title{font-size:15px;font-weight:800;color:var(--text);letter-spacing:.3px;}
+  .header-sub{font-size:11px;color:var(--text2);margin-top:1px;font-family:var(--mono);}
+  .header-right{display:flex;align-items:center;gap:10px;}
+  .live-badge{
+    display:flex;align-items:center;gap:6px;
+    background:rgba(0,232,122,.08);border:1px solid rgba(0,232,122,.25);
+    border-radius:20px;padding:5px 12px;font-size:11px;font-weight:700;
+    color:var(--success);font-family:var(--mono);
+  }
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--success);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+
+  /* ─── MAIN LAYOUT ─── */
+  .main{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:24px 20px;}
+
+  /* ─── STAT CARDS ─── */
+  .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px;}
+  @media(min-width:640px){.stats-grid{grid-template-columns:repeat(4,1fr);}}
+  .stat-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    padding:18px;position:relative;overflow:hidden;
+  }
+  .stat-card::before{
+    content:'';position:absolute;top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+  }
+  .stat-label{font-size:11px;color:var(--text2);font-family:var(--mono);letter-spacing:.5px;margin-bottom:8px;}
+  .stat-value{font-size:28px;font-weight:900;color:var(--text);line-height:1;margin-bottom:4px;}
+  .stat-value.accent{color:var(--accent);}
+  .stat-value.warning{color:var(--warning);}
+  .stat-value.danger{color:var(--danger);}
+  .stat-value.success{color:var(--success);}
+  .stat-sub{font-size:11px;color:var(--text3);}
+
+  /* ─── CONTROLS ─── */
+  .controls{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+  .btn{
+    padding:10px 18px;border:none;border-radius:8px;font-family:inherit;
+    font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;
+    display:flex;align-items:center;gap:6px;
+  }
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;}
+  .btn-primary:hover{opacity:.9;transform:translateY(-1px);}
+  .btn-secondary{background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+  .btn-secondary:hover{border-color:var(--border2);color:var(--text);}
+  .btn-danger{background:rgba(255,77,77,.1);color:var(--danger);border:1px solid rgba(255,77,77,.25);}
+  .btn-danger:hover{background:rgba(255,77,77,.2);}
+  .search-input{
+    flex:1;min-width:180px;padding:10px 14px;
+    background:var(--surface2);border:1px solid var(--border);
+    border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;outline:none;
+    transition:border-color .2s;
+  }
+  .search-input:focus{border-color:var(--accent);}
+  .search-input::placeholder{color:var(--text3);}
+
+  /* ─── TABLE ─── */
+  .table-wrap{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);overflow:hidden;
+  }
+  .table-header{
+    padding:16px 20px;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .table-title{font-size:13px;font-weight:700;color:var(--text);}
+  .table-count{font-size:11px;color:var(--text2);font-family:var(--mono);}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{
+    padding:12px 16px;text-align:left;font-size:10px;font-weight:700;
+    color:var(--text2);letter-spacing:.8px;text-transform:uppercase;
+    background:var(--surface2);border-bottom:1px solid var(--border);
+    white-space:nowrap;
+  }
+  tbody tr{border-bottom:1px solid var(--border);transition:background .1s;cursor:pointer;}
+  tbody tr:last-child{border-bottom:none;}
+  tbody tr:hover{background:var(--surface2);}
+  td{padding:14px 16px;vertical-align:middle;}
+  td.name{font-weight:700;color:var(--text);}
+  td.mono{font-family:var(--mono);font-size:11px;color:var(--text2);}
+  td.dept{color:var(--text2);}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:4px;
+    border-radius:6px;padding:3px 9px;font-size:11px;font-weight:700;
+    white-space:nowrap;
+  }
+  .badge-pain{background:rgba(255,77,77,.12);border:1px solid rgba(255,77,77,.3);color:var(--danger);}
+  .badge-ok{background:rgba(0,232,122,.1);border:1px solid rgba(0,232,122,.25);color:var(--success);}
+  .badge-part{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);color:var(--accent);margin:2px;}
+  .badge-level-1{background:rgba(0,232,122,.1);color:var(--success);}
+  .badge-level-2{background:rgba(255,176,32,.1);color:var(--warning);}
+  .badge-level-3{background:rgba(255,77,77,.1);color:var(--danger);}
+  .badge-level-4{background:rgba(167,139,250,.1);color:var(--purple);}
+
+  /* ─── MODAL ─── */
+  .modal-overlay{
+    position:fixed;inset:0;background:rgba(8,11,16,.85);backdrop-filter:blur(8px);
+    z-index:100;display:flex;align-items:flex-start;justify-content:center;
+    padding:20px;overflow-y:auto;display:none;
+  }
+  .modal-overlay.open{display:flex;}
+  .modal{
+    background:var(--surface);border:1px solid var(--border2);
+    border-radius:16px;width:100%;max-width:640px;overflow:hidden;
+    margin:auto;
+  }
+  .modal-header{
+    padding:20px 24px;border-bottom:1px solid var(--border);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .modal-title{font-size:16px;font-weight:800;}
+  .modal-close{
+    width:32px;height:32px;border:1px solid var(--border);border-radius:8px;
+    background:var(--surface2);color:var(--text2);cursor:pointer;
+    font-size:16px;display:flex;align-items:center;justify-content:center;
+  }
+  .modal-body{padding:24px;}
+  .detail-section{margin-bottom:20px;}
+  .detail-section-title{
+    font-size:10px;font-weight:700;color:var(--accent);letter-spacing:1px;
+    text-transform:uppercase;margin-bottom:12px;padding-bottom:8px;
+    border-bottom:1px solid var(--border);
+  }
+  .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .detail-item{background:var(--surface2);border-radius:8px;padding:10px 12px;}
+  .detail-key{font-size:10px;color:var(--text2);margin-bottom:3px;}
+  .detail-val{font-size:13px;font-weight:600;}
+  .pain-part-block{
+    background:var(--surface2);border:1px solid var(--border);
+    border-radius:10px;padding:14px;margin-bottom:8px;
+  }
+  .pain-part-name{font-size:13px;font-weight:800;color:var(--accent);margin-bottom:10px;}
+  .pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+  .pain-item-key{font-size:10px;color:var(--text2);margin-bottom:2px;}
+  .pain-item-val{font-size:12px;font-weight:600;}
+
+  /* ─── EMPTY ─── */
+  .empty{padding:60px 20px;text-align:center;}
+  .empty-icon{font-size:40px;margin-bottom:16px;opacity:.5;}
+  .empty-text{font-size:14px;color:var(--text2);}
+
+  /* ─── LOADING ─── */
+  .spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;margin:40px auto;}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ─── CHART BARS ─── */
+  .mini-chart{margin-top:8px;}
+  .chart-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+  .chart-label{font-size:11px;color:var(--text2);width:80px;flex-shrink:0;text-align:right;}
+  .chart-bar-wrap{flex:1;height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+  .chart-bar{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .6s ease;}
+  .chart-val{font-size:11px;color:var(--text2);font-family:var(--mono);width:30px;}
+
+  /* mobile table scroll */
+  .table-scroll{overflow-x:auto;}
+
+  .refresh-btn{font-size:12px;padding:6px 12px;}
+
+  @media(max-width:600px){
+    .stats-grid{grid-template-columns:1fr 1fr;}
+    .header-sub{display:none;}
+    .controls{flex-direction:column;}
+    .search-input{width:100%;}
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="header-logo">🦴</div>
+    <div>
+      <div class="header-title">근골격계 증상조사 — 관리자</div>
+      <div class="header-sub">MUSCULOSKELETAL SURVEY DASHBOARD</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-label">총 제출 수</div>
+      <div class="stat-value accent" id="stat-total">—</div>
+      <div class="stat-sub">전체 응답자</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">통증 호소</div>
+      <div class="stat-value danger" id="stat-pain">—</div>
+      <div class="stat-sub" id="stat-pain-pct">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">최다 통증 부위</div>
+      <div class="stat-value warning" id="stat-top-part" style="font-size:16px;padding-top:6px;">—</div>
+      <div class="stat-sub" id="stat-top-part-cnt">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">오늘 제출</div>
+      <div class="stat-value success" id="stat-today">—</div>
+      <div class="stat-sub" id="stat-today-date">—</div>
+    </div>
+  </div>
+
+  <!-- PART CHART -->
+  <div class="table-wrap" style="margin-bottom:20px;padding:20px;" id="chart-section" style="display:none;">
+    <div style="font-size:12px;font-weight:700;color:var(--text2);letter-spacing:.5px;margin-bottom:14px;">📊 통증 부위별 현황</div>
+    <div class="mini-chart" id="part-chart"></div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <input class="search-input" type="text" id="search-input" placeholder="🔍  이름, 부서, 제출ID 검색..." oninput="renderTable()">
+    <button class="btn btn-primary" onclick="loadData()">↻ 새로고침</button>
+    <button class="btn btn-primary" onclick="downloadAllCSV()">⬇ 전체 CSV 다운로드</button>
+    <button class="btn btn-danger" onclick="clearAllData()">🗑 전체 삭제</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <div class="table-header">
+      <div class="table-title">제출 현황</div>
+      <div class="table-count" id="table-count">로딩 중...</div>
+    </div>
+    <div class="table-scroll">
+      <div id="table-area">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">상세 정보</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY_PREFIX = 'msk_survey_';
+const SHARED = true;
+const PARTS_ORDER = ['목','어깨','팔/팔꿈치','손/손목/손가락','허리','다리/발'];
+
+let allRecords = [];
+let filteredRecords = [];
+
+async function loadData() {
+  document.getElementById('table-area').innerHTML = '<div class="spinner"></div>';
+  document.getElementById('table-count').textContent = '로딩 중...';
+  try {
+    // load index
+    let indexData = [];
+    try {
+      const idx = await window.storage.get(STORAGE_KEY_PREFIX + 'index', SHARED);
+      if (idx) indexData = JSON.parse(idx.value);
+    } catch(e) {}
+
+    // load each record
+    const records = [];
+    for (const meta of indexData) {
+      try {
+        const r = await window.storage.get(STORAGE_KEY_PREFIX + meta.id, SHARED);
+        if (r) records.push(JSON.parse(r.value));
+      } catch(e) {}
+    }
+    allRecords = records.sort((a,b) => new Date(b.submittedAt) - new Date(a.submittedAt));
+    updateStats();
+    renderTable();
+    renderChart();
+  } catch(e) {
+    document.getElementById('table-area').innerHTML = `<div class="empty"><div class="empty-icon">⚠️</div><div class="empty-text">데이터 로드 실패: ${e.message}</div></div>`;
+  }
+}
+
+function updateStats() {
+  const total = allRecords.length;
+  const painCount = allRecords.filter(r => r.hasPain === '예').length;
+  const today = new Date().toLocaleDateString('ko-KR');
+  const todayCount = allRecords.filter(r => new Date(r.submittedAt).toLocaleDateString('ko-KR') === today).length;
+
+  // top pain part
+  const partCount = {};
+  allRecords.forEach(r => {
+    if (r.painParts) r.painParts.split('|').filter(Boolean).forEach(p => { partCount[p] = (partCount[p]||0)+1; });
+  });
+  const topPart = Object.entries(partCount).sort((a,b)=>b[1]-a[1])[0];
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-pain').textContent = painCount;
+  document.getElementById('stat-pain-pct').textContent = total ? `전체의 ${Math.round(painCount/total*100)}%` : '—';
+  document.getElementById('stat-top-part').textContent = topPart ? topPart[0] : '없음';
+  document.getElementById('stat-top-part-cnt').textContent = topPart ? `${topPart[1]}명 호소` : '—';
+  document.getElementById('stat-today').textContent = todayCount;
+  document.getElementById('stat-today-date').textContent = today;
+}
+
+function renderChart() {
+  const partCount = {};
+  PARTS_ORDER.forEach(p => partCount[p] = 0);
+  allRecords.forEach(r => {
+    if (r.painParts) r.painParts.split('|').filter(Boolean).forEach(p => { if(partCount[p]!==undefined) partCount[p]++; });
+  });
+  const max = Math.max(...Object.values(partCount), 1);
+  const section = document.getElementById('chart-section');
+  if (allRecords.length > 0) section.style.display = 'block';
+
+  document.getElementById('part-chart').innerHTML = PARTS_ORDER.map(p => `
+    <div class="chart-row">
+      <div class="chart-label">${p}</div>
+      <div class="chart-bar-wrap"><div class="chart-bar" style="width:${Math.round(partCount[p]/max*100)}%"></div></div>
+      <div class="chart-val">${partCount[p]}명</div>
+    </div>`).join('');
+}
+
+function renderTable() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  filteredRecords = allRecords.filter(r =>
+    !q ||
+    (r.name||'').toLowerCase().includes(q) ||
+    (r.dept||'').toLowerCase().includes(q) ||
+    (r.id||'').toLowerCase().includes(q) ||
+    (r.line||'').toLowerCase().includes(q)
+  );
+
+  document.getElementById('table-count').textContent = `${filteredRecords.length} / ${allRecords.length} 건`;
+
+  if (filteredRecords.length === 0) {
+    document.getElementById('table-area').innerHTML =
+      `<div class="empty"><div class="empty-icon">${allRecords.length===0?'📋':'🔍'}</div><div class="empty-text">${allRecords.length===0?'아직 제출된 조사표가 없습니다':'검색 결과가 없습니다'}</div></div>`;
+    return;
+  }
+
+  const levelColor = {'약한 통증':'badge-level-1','중간 통증':'badge-level-2','심한 통증':'badge-level-3','매우 심한 통증':'badge-level-4'};
+
+  document.getElementById('table-area').innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>이름</th>
+          <th>부서/라인</th>
+          <th>성별/나이</th>
+          <th>통증 여부</th>
+          <th>통증 부위</th>
+          <th>제출 일시</th>
+          <th>제출 ID</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${filteredRecords.map((r,i) => {
+          const parts = (r.painParts||'').split('|').filter(Boolean);
+          const maxLevel = getMaxLevel(r);
+          const dt = new Date(r.submittedAt);
+          const dtStr = dt.toLocaleDateString('ko-KR') + ' ' + dt.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+          return `<tr onclick="openModal(${allRecords.indexOf(r)})">
+            <td class="name">${r.name||'—'}</td>
+            <td class="dept">${[r.dept,r.line].filter(Boolean).join(' / ')||'—'}</td>
+            <td class="dept">${r.gender||'—'} / ${r.age||'—'}세</td>
+            <td>${r.hasPain==='예'
+              ? `<span class="badge badge-pain">⚠ 통증${maxLevel?' · '+maxLevel:''}</span>`
+              : `<span class="badge badge-ok">✓ 없음</span>`}</td>
+            <td>${parts.length ? parts.map(p=>`<span class="badge badge-part">${p}</span>`).join('') : '—'}</td>
+            <td class="mono">${dtStr}</td>
+            <td class="mono" style="font-size:10px;">${r.id||'—'}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>`;
+}
+
+function getMaxLevel(r) {
+  const levels = ['약한 통증','중간 통증','심한 통증','매우 심한 통증'];
+  let max = -1;
+  if (r.painData) {
+    Object.values(r.painData).forEach(d => {
+      const idx = levels.indexOf(d.level);
+      if (idx > max) max = idx;
+    });
+  }
+  return max >= 0 ? levels[max] : '';
+}
+
+function openModal(idx) {
+  const r = allRecords[idx];
+  if (!r) return;
+  document.getElementById('modal-title').textContent = `${r.name||'—'} 님의 조사 결과`;
+
+  const dt = new Date(r.submittedAt).toLocaleString('ko-KR');
+  const parts = (r.painParts||'').split('|').filter(Boolean);
+
+  let html = `
+    <div class="detail-section">
+      <div class="detail-section-title">기본 정보</div>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="detail-key">제출 ID</div><div class="detail-val" style="font-family:var(--mono);font-size:11px;">${r.id}</div></div>
+        <div class="detail-item"><div class="detail-key">제출 일시</div><div class="detail-val" style="font-size:12px;">${dt}</div></div>
+        <div class="detail-item"><div class="detail-key">성명</div><div class="detail-val">${r.name||'—'}</div></div>
+        <div class="detail-item"><div class="detail-key">나이/성별</div><div class="detail-val">${r.age||'—'}세 / ${r.gender||'—'}</div></div>
+        <div class="detail-item"><div class="detail-key">부서/라인</div><div class="detail-val">${[r.dept,r.line].filter(Boolean).join(' / ')||'—'}</div></div>
+        <div class="detail-item"><div class="detail-key">결혼 여부</div><div class="detail-val">${r.marriage||'—'}</div></div>
+        <div class="detail-item"><div class="detail-key">현 직장 경력</div><div class="detail-val">${r.careerYr||'0'}년 ${r.careerMo||'0'}개월</div></div>
+        <div class="detail-item"><div class="detail-key">1일 근무</div><div class="detail-val">${r.workHr||'—'}시간</div></div>
+        <div class="detail-item"><div class="detail-key">현재 작업</div><div class="detail-val" style="font-size:12px;">${r.jobDesc||'—'}</div></div>
+        <div class="detail-item"><div class="detail-key">육체적 부담</div><div class="detail-val" style="font-size:12px;">${r.workload||'—'}</div></div>
+        <div class="detail-item"><div class="detail-key">가사노동</div><div class="detail-val" style="font-size:12px;">${r.chores||'—'}</div></div>
+        <div class="detail-item"><div class="detail-key">취미활동</div><div class="detail-val" style="font-size:12px;">${(r.hobby||'—').replace(/\|/g,', ')}</div></div>
+        <div class="detail-item"><div class="detail-key">과거 질병</div><div class="detail-val" style="font-size:12px;">${r.diag||'—'}${r.diagStatus?' ('+r.diagStatus+')':''}</div></div>
+        <div class="detail-item"><div class="detail-key">과거 부상</div><div class="detail-val" style="font-size:12px;">${r.injury||'—'}${r.injuryParts?' ('+r.injuryParts.replace(/\|/g,', ')+')':''}</div></div>
+      </div>
+    </div>`;
+
+  if (r.hasPain === '예' && parts.length > 0) {
+    html += `<div class="detail-section"><div class="detail-section-title">통증 부위 상세</div>`;
+    parts.forEach(part => {
+      const d = (r.painData && r.painData[part]) || {};
+      html += `<div class="pain-part-block">
+        <div class="pain-part-name">📍 ${part}</div>
+        <div class="pain-grid">
+          ${d.side ? `<div><div class="pain-item-key">부위</div><div class="pain-item-val">${d.side}</div></div>` : ''}
+          <div><div class="pain-item-key">지속 기간</div><div class="pain-item-val">${d.duration||'—'}</div></div>
+          <div><div class="pain-item-key">통증 정도</div><div class="pain-item-val" style="color:var(--warning);">${d.level||'—'}</div></div>
+          <div><div class="pain-item-key">빈도</div><div class="pain-item-val">${d.freq||'—'}</div></div>
+          <div><div class="pain-item-key">지난 1주일</div><div class="pain-item-val">${d.lastWeek||'—'}</div></div>
+          <div><div class="pain-item-key">조치</div><div class="pain-item-val" style="font-size:11px;">${(d.action||'—').replace(/\|/g,', ')}</div></div>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  } else {
+    html += `<div class="detail-section"><div class="detail-section-title">통증 여부</div><div style="color:var(--success);font-weight:700;">✓ 통증 없음</div></div>`;
+  }
+
+  document.getElementById('modal-body').innerHTML = html;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal')) return;
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// ─── CSV EXPORT ───
+function downloadAllCSV() {
+  if (allRecords.length === 0) { alert('다운로드할 데이터가 없습니다.'); return; }
+
+  const cols = [
+    '제출ID','제출일시','성명','나이','성별','결혼','부서','라인',
+    '작업내용','작업기간(년)','작업기간(월)','현직장경력(년)','현직장경력(월)',
+    '1일근무시간','휴식(분)','휴식(회)','취미활동','가사노동시간',
+    '과거질병','질병상태','과거부상','부상부위','육체적부담','작업관련통증',
+    '[목]통증방향','[목]지속기간','[목]통증정도','[목]빈도','[목]지난1주일','[목]조치',
+    '[어깨]통증방향','[어깨]지속기간','[어깨]통증정도','[어깨]빈도','[어깨]지난1주일','[어깨]조치',
+    '[팔/팔꿈치]통증방향','[팔/팔꿈치]지속기간','[팔/팔꿈치]통증정도','[팔/팔꿈치]빈도','[팔/팔꿈치]지난1주일','[팔/팔꿈치]조치',
+    '[손/손목/손가락]통증방향','[손/손목/손가락]지속기간','[손/손목/손가락]통증정도','[손/손목/손가락]빈도','[손/손목/손가락]지난1주일','[손/손목/손가락]조치',
+    '[허리]통증방향','[허리]지속기간','[허리]통증정도','[허리]빈도','[허리]지난1주일','[허리]조치',
+    '[다리/발]통증방향','[다리/발]지속기간','[다리/발]통증정도','[다리/발]빈도','[다리/발]지난1주일','[다리/발]조치',
+  ];
+
+  const rows = [cols];
+  allRecords.forEach(r => {
+    const pd = r.painData || {};
+    const g = (part, field) => { const d=pd[part]; return d ? (d[field]||'').replace(/\|/g,'/') : ''; };
+    rows.push([
+      r.id, new Date(r.submittedAt).toLocaleString('ko-KR'),
+      r.name, r.age, r.gender, r.marriage, r.dept, r.line,
+      r.jobDesc, r.jobYr, r.jobMo, r.careerYr, r.careerMo,
+      r.workHr, r.restMin, r.restCnt,
+      (r.hobby||'').replace(/\|/g,'/'), r.chores,
+      r.diag, r.diagStatus, r.injury, (r.injuryParts||'').replace(/\|/g,'/'),
+      r.workload, r.hasPain,
+      ...['목','어깨','팔/팔꿈치','손/손목/손가락','허리','다리/발'].flatMap(p=>[
+        g(p,'side'), g(p,'duration'), g(p,'level'), g(p,'freq'), g(p,'lastWeek'), g(p,'action')
+      ])
+    ]);
+  });
+
+  const csv = '\uFEFF' + rows.map(r=>r.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `근골격계조사_전체_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ─── CLEAR DATA ───
+async function clearAllData() {
+  if (!confirm(`전체 ${allRecords.length}건의 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`)) return;
+  const confirmText = prompt('삭제하려면 "전체삭제"를 입력하세요:');
+  if (confirmText !== '전체삭제') { alert('취소되었습니다.'); return; }
+
+  for (const r of allRecords) {
+    try { await window.storage.delete(STORAGE_KEY_PREFIX + r.id, SHARED); } catch(e) {}
+  }
+  try { await window.storage.delete(STORAGE_KEY_PREFIX + 'index', SHARED); } catch(e) {}
+  allRecords = [];
+  updateStats();
+  renderTable();
+  renderChart();
+  alert('전체 데이터가 삭제되었습니다.');
+}
+
+// init
+loadData();
+// auto-refresh every 30s
+setInterval(loadData, 30000);
+</script>
+</body>
+</html>
