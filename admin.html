@@ -16,10 +16,10 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);}
 
-/* ── 로그인 ── */
+/* 로그인 */
 #loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a8a,#7c3aed);display:flex;align-items:center;justify-content:center;z-index:9999;}
 .login-box{background:#fff;border-radius:20px;padding:40px 36px;width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);}
-.login-logo{font-size:40px;margin-bottom:12px;}
+.login-logo{font-size:44px;margin-bottom:12px;}
 .login-title{font-size:18px;font-weight:900;margin-bottom:4px;}
 .login-sub{font-size:12px;color:var(--text2);margin-bottom:28px;}
 .login-inp{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:'Noto Sans KR',sans-serif;outline:none;margin-bottom:12px;text-align:center;letter-spacing:4px;}
@@ -27,166 +27,168 @@ body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text
 .login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 .login-err{color:var(--red);font-size:12px;margin-top:8px;display:none;}
 
-/* ── 헤더 ── */
+/* 헤더 */
 .hdr{background:linear-gradient(135deg,#1e3a8a,#7c3aed);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,.15);}
+.hdr-left{display:flex;align-items:center;gap:8px;}
 .hdr-title{font-size:16px;font-weight:900;}
-.hdr-badge{background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-left:8px;}
+.hdr-badge{background:rgba(255,255,255,.2);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
 .logout-btn{padding:7px 14px;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 
-/* ── 탭 네비 ── */
-.nav-tabs{background:#fff;border-bottom:1px solid var(--border);display:flex;padding:0 20px;overflow-x:auto;}
-.nav-tab{padding:13px 18px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.2s;}
+/* 탭 */
+.nav-tabs{background:#fff;border-bottom:1px solid var(--border);display:flex;padding:0 16px;overflow-x:auto;scrollbar-width:none;}
+.nav-tabs::-webkit-scrollbar{display:none;}
+.nav-tab{padding:12px 16px;font-size:13px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:.2s;}
 .nav-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
 
-/* ── 탭 콘텐츠 ── */
-.tab-pane{display:none;padding:18px 20px 60px;max-width:1300px;margin:0 auto;}
+/* 탭 콘텐츠 */
+.tab-pane{display:none;padding:16px 16px 80px;max-width:1300px;margin:0 auto;}
 .tab-pane.active{display:block;}
 
-/* ── 공통 카드 ── */
-.card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px;box-shadow:var(--sh);}
-.card-title{font-size:13px;font-weight:800;margin-bottom:14px;color:var(--text);display:flex;align-items:center;gap:6px;}
+/* 카드 */
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:var(--sh);}
+.card-title{font-size:13px;font-weight:800;margin-bottom:12px;color:var(--text);display:flex;align-items:center;gap:6px;}
 
-/* ── 통계 카드 ── */
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px;}
-.stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center;box-shadow:var(--sh);}
+/* 통계 */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:14px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center;box-shadow:var(--sh);}
 .stat-num{font-size:26px;font-weight:900;}
 .stat-lbl{font-size:11px;color:var(--text2);margin-top:3px;}
-.c-blue{color:var(--accent);}
-.c-red{color:var(--red);}
-.c-green{color:var(--green);}
-.c-yellow{color:var(--yellow);}
-.c-purple{color:var(--accent2);}
-.c-orange{color:var(--orange);}
+.c-blue{color:var(--accent);} .c-red{color:var(--red);} .c-green{color:var(--green);}
+.c-yellow{color:var(--yellow);} .c-purple{color:var(--accent2);} .c-orange{color:var(--orange);}
 
-/* ── 차트 그리드 ── */
-.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
+/* 차트 */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
 @media(max-width:700px){.chart-grid{grid-template-columns:1fr;}}
 
-/* ── 툴바 ── */
-.toolbar{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;box-shadow:var(--sh);}
-.tb-inp{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:'Noto Sans KR',sans-serif;outline:none;flex:1;min-width:110px;}
+/* 툴바 */
+.toolbar{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;margin-bottom:10px;display:flex;gap:7px;flex-wrap:wrap;align-items:center;box-shadow:var(--sh);}
+.tb-inp{padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:'Noto Sans KR',sans-serif;outline:none;flex:1;min-width:100px;}
 .tb-inp:focus{border-color:var(--accent);}
-.tb-sel{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:'Noto Sans KR',sans-serif;outline:none;background:#fff;cursor:pointer;}
-.tb-btn{padding:9px 14px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
-.tb-blue{background:var(--accent);color:#fff;}
-.tb-gray{background:#f1f5f9;color:var(--text2);}
-.tb-green{background:var(--green);color:#fff;}
-.tb-ghost{background:var(--alight);color:var(--accent);border:1px solid var(--accent);}
+.tb-sel{padding:8px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:12px;font-family:'Noto Sans KR',sans-serif;outline:none;background:#fff;cursor:pointer;}
+.tb-btn{padding:8px 13px;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
+.tb-blue{background:var(--accent);color:#fff;} .tb-gray{background:#f1f5f9;color:var(--text2);}
+.tb-green{background:var(--green);color:#fff;} .tb-ghost{background:var(--alight);color:var(--accent);border:1px solid rgba(37,99,235,.3);}
 
-/* ── 테이블 공통 ── */
-.tbl-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:12px;}
-.tbl-hdr{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+/* 테이블 */
+.tbl-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:10px;}
+.tbl-hdr{padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
 .tbl-count{font-size:12px;font-weight:700;color:var(--text2);}
 .tbl-scroll{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;}
 thead tr{background:linear-gradient(135deg,var(--accent),var(--accent2));}
-thead th{padding:10px 12px;font-size:11px;font-weight:700;color:#fff;text-align:left;white-space:nowrap;cursor:pointer;user-select:none;}
-tbody tr{border-bottom:1px solid var(--border);transition:.15s;cursor:pointer;}
+thead th{padding:9px 11px;font-size:11px;font-weight:700;color:#fff;text-align:left;white-space:nowrap;cursor:pointer;user-select:none;}
+tbody tr{border-bottom:1px solid var(--border);transition:.15s;}
 tbody tr:last-child{border-bottom:none;}
 tbody tr:hover{background:#f0f4ff;}
-tbody td{padding:9px 12px;font-size:12px;vertical-align:middle;}
+tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 .td-name{font-weight:800;font-size:13px;}
-.td-sm{font-size:11px;color:var(--text2);}
 
-/* ── 배지 ── */
-.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;}
+/* 배지 */
+.badge{display:inline-block;padding:2px 7px;border-radius:9px;font-size:10px;font-weight:700;white-space:nowrap;}
 .b-pain{background:rgba(239,68,68,.1);color:#dc2626;}
 .b-none{background:#f1f5f9;color:var(--text2);}
 .b-normal{background:rgba(16,185,129,.1);color:#059669;}
 .b-manage{background:rgba(245,158,11,.12);color:#d97706;}
 .b-serious{background:rgba(239,68,68,.12);color:#dc2626;}
-.b-b1{background:rgba(16,185,129,.1);color:#059669;}
-.b-b2{background:rgba(37,99,235,.1);color:var(--accent);}
-.b-b3{background:rgba(245,158,11,.1);color:#d97706;}
-.b-b4{background:rgba(239,68,68,.1);color:#dc2626;}
-.part-tag{display:inline-block;padding:2px 6px;border-radius:6px;font-size:10px;font-weight:600;background:rgba(239,68,68,.08);color:#dc2626;margin:1px;}
+.b-b1{background:rgba(16,185,129,.1);color:#059669;} .b-b2{background:rgba(37,99,235,.1);color:var(--accent);}
+.b-b3{background:rgba(245,158,11,.1);color:#d97706;} .b-b4{background:rgba(239,68,68,.1);color:#dc2626;}
+.part-tag{display:inline-block;padding:2px 5px;border-radius:5px;font-size:10px;font-weight:600;background:rgba(239,68,68,.08);color:#dc2626;margin:1px;}
 
-/* ── 분석 테이블 (NIOSH) ── */
-.analysis-table table{min-width:700px;}
-.analysis-table thead tr{background:linear-gradient(135deg,#1e3a8a,#7c3aed);}
-.at-normal{color:#059669;font-weight:700;}
-.at-manage{color:#d97706;font-weight:700;}
-.at-serious{color:#dc2626;font-weight:700;}
-.at-pct{font-size:10px;color:var(--text2);}
+/* 출석 체크 관련 */
+.check-submitted{color:var(--green);font-size:18px;font-weight:900;}
+.check-pending{color:#e2e8f0;font-size:18px;}
+.check-late{color:var(--red);}
+.dept-section{margin-bottom:20px;}
+.dept-section-title{font-size:14px;font-weight:900;padding:8px 14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:10px 10px 0 0;display:flex;align-items:center;justify-content:space-between;}
+.dept-section-body{border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;overflow:hidden;}
+.check-row{display:flex;align-items:center;padding:10px 14px;border-bottom:1px solid var(--border);transition:.15s;}
+.check-row:last-child{border-bottom:none;}
+.check-row:hover{background:#f8fafc;}
+.check-emp-name{font-size:13px;font-weight:700;min-width:80px;}
+.check-emp-rank{font-size:11px;color:var(--text2);min-width:50px;}
+.check-status{flex:1;display:flex;align-items:center;gap:8px;}
+.check-date{font-size:11px;color:var(--text2);}
+.check-judge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;}
+.prog-summary{display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(255,255,255,.9);}
+.prog-bar-mini{height:6px;background:rgba(255,255,255,.3);border-radius:3px;width:80px;overflow:hidden;}
+.prog-bar-fill{height:100%;background:#fff;border-radius:3px;transition:.5s;}
 
-/* ── 판정 요약 배너 ── */
-.judge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px;}
-.judge-card{border-radius:12px;padding:16px;text-align:center;}
+/* 부서 치환 */
+.replace-row{display:flex;gap:8px;align-items:flex-end;background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;}
+.replace-inp{flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.replace-inp:focus{border-color:var(--accent);}
+.dept-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;background:var(--alight);border:1px solid rgba(37,99,235,.2);border-radius:20px;font-size:12px;font-weight:600;color:var(--accent);margin:3px;cursor:pointer;}
+.dept-tag:hover{background:rgba(37,99,235,.15);}
+.dept-cnt{font-size:10px;color:var(--text2);}
+
+/* 편집 버튼 */
+.btn-edit-sm{padding:4px 8px;background:var(--alight);color:var(--accent);border:1px solid rgba(37,99,235,.2);border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-right:3px;}
+.btn-del-sm{padding:4px 8px;background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.2);border-radius:5px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+
+/* NIOSH */
+.judge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.judge-card{border-radius:12px;padding:14px;text-align:center;}
 .jc-normal{background:rgba(16,185,129,.08);border:1.5px solid rgba(16,185,129,.25);}
 .jc-manage{background:rgba(245,158,11,.08);border:1.5px solid rgba(245,158,11,.3);}
 .jc-serious{background:rgba(239,68,68,.08);border:1.5px solid rgba(239,68,68,.25);}
-.jc-num{font-size:28px;font-weight:900;}
-.jn{color:#059669;}.jm{color:#d97706;}.js{color:#dc2626;}
-.jc-lbl{font-size:12px;font-weight:700;margin-top:4px;}
-.jc-sub{font-size:11px;color:var(--text2);margin-top:2px;}
-
-/* ── 페이지네이션 ── */
-.pagination{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px;}
-.pg-btn{padding:6px 10px;border:1.5px solid var(--border);border-radius:7px;background:#fff;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;}
-.pg-btn.on{background:var(--accent);color:#fff;border-color:var(--accent);}
-.pg-btn:disabled{opacity:.35;cursor:default;}
-
-/* ── 드로어 ── */
-#drawer{position:fixed;top:0;right:-500px;width:500px;max-width:100vw;height:100vh;background:#fff;box-shadow:-8px 0 40px rgba(0,0,0,.15);z-index:500;transition:right .3s ease;overflow-y:auto;}
-#drawer.open{right:0;}
-#dBack{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:499;display:none;}
-#dBack.open{display:block;}
-.d-hd{padding:16px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;}
-.d-title{font-size:14px;font-weight:900;}
-.d-close{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:7px;cursor:pointer;font-size:13px;}
-.d-body{padding:16px 18px;}
-.d-sec{margin-bottom:16px;}
-.d-sec-title{font-size:11px;font-weight:800;color:var(--accent);background:var(--alight);padding:4px 9px;border-radius:5px;display:inline-block;margin-bottom:7px;}
-.d-row{display:flex;gap:8px;padding:4px 0;border-bottom:1px solid #f1f5f9;font-size:12px;}
-.d-row:last-child{border-bottom:none;}
-.dk{font-weight:700;color:var(--text);min-width:85px;flex-shrink:0;}
-.dv{color:var(--text2);word-break:break-all;}
-
-/* ── 판정 결과 표시 ── */
-.result-판정{display:inline-block;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:800;}
+.jc-num{font-size:26px;font-weight:900;}
+.jn{color:#059669;} .jm{color:#d97706;} .js{color:#dc2626;}
+.jc-lbl{font-size:12px;font-weight:700;margin-top:3px;}
+.at-normal{color:#059669;font-weight:700;} .at-manage{color:#d97706;font-weight:700;} .at-serious{color:#dc2626;font-weight:700;}
+.at-pct{font-size:10px;color:var(--text2);}
+.result-판정{display:inline-block;padding:3px 9px;border-radius:7px;font-size:11px;font-weight:800;}
 .판정-정상{background:rgba(16,185,129,.1);color:#059669;}
 .판정-관리대상자{background:rgba(245,158,11,.12);color:#d97706;}
 .판정-통증호소자{background:rgba(239,68,68,.12);color:#dc2626;}
 
-/* ── 로딩바 ── */
-#loadBar{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:9998;transition:width .3s;}
-.empty-msg{text-align:center;padding:40px;color:var(--text2);font-size:13px;}
-
-/* ── 편집 모달 ── */
-#editModal{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:20px;}
+/* 모달 */
+#editModal{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;}
 #editModal.open{display:flex;}
-#editBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:599;}
-.modal-box{background:#fff;border-radius:18px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);position:relative;z-index:601;}
-.modal-hd{padding:18px 20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:18px 18px 0 0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;}
-.modal-title{font-size:15px;font-weight:900;}
-.modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 12px;border-radius:7px;cursor:pointer;font-size:13px;}
-.modal-body{padding:18px 20px 10px;}
-.modal-foot{padding:12px 20px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#f8fafc;border-radius:0 0 18px 18px;position:sticky;bottom:0;}
-.m-group{margin-bottom:12px;}
-.m-label{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:5px;}
-.m-inp{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:-1;}
+.modal-box{background:#fff;border-radius:18px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal-hd{padding:16px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:18px 18px 0 0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;}
+.modal-title{font-size:14px;font-weight:900;}
+.modal-close{background:rgba(255,255,255,.2);border:none;color:#fff;padding:5px 11px;border-radius:7px;cursor:pointer;font-size:13px;}
+.modal-body{padding:16px 18px 8px;}
+.modal-foot{padding:10px 18px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#f8fafc;border-radius:0 0 18px 18px;position:sticky;bottom:0;}
+.m-group{margin-bottom:10px;}
+.m-label{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:4px;}
+.m-inp{width:100%;padding:9px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
 .m-inp:focus{border-color:var(--accent);}
-.m-grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.m-sec{font-size:11px;font-weight:800;color:var(--accent);background:var(--alight);padding:4px 9px;border-radius:5px;margin:14px 0 10px;display:inline-block;}
-.btn-save{padding:10px 20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Noto Sans KR',sans-serif;}
-.btn-del-modal{padding:10px 20px;background:var(--red);color:#fff;border:none;border-radius:9px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Noto Sans KR',sans-serif;}
-.btn-cancel{padding:10px 16px;background:#f1f5f9;color:var(--text2);border:none;border-radius:9px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Noto Sans KR',sans-serif;}
-/* ── 부서 치환 ── */
-.replace-row{display:flex;gap:8px;align-items:center;background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
-.replace-inp{flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:7px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;}
-.replace-inp:focus{border-color:var(--accent);}
-.replace-arrow{font-size:18px;color:var(--text2);flex-shrink:0;}
-.btn-replace{padding:9px 14px;background:var(--accent);color:#fff;border:none;border-radius:7px;font-weight:700;cursor:pointer;font-size:12px;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
-.dept-tag{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;background:var(--alight);border:1px solid rgba(37,99,235,.2);border-radius:20px;font-size:12px;font-weight:600;color:var(--accent);margin:3px;cursor:pointer;}
-.dept-tag:hover{background:rgba(37,99,235,.15);}
-.dept-cnt{font-size:10px;font-weight:400;color:var(--text2);}
-/* ── 테이블 액션 버튼 ── */
-.btn-edit-sm{padding:4px 9px;background:var(--alight);color:var(--accent);border:1px solid rgba(37,99,235,.2);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-right:4px;}
-.btn-del-sm{padding:4px 9px;background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.2);border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.m-grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.m-sec{font-size:11px;font-weight:800;color:var(--accent);background:var(--alight);padding:3px 9px;border-radius:5px;margin:12px 0 8px;display:inline-block;}
+.btn-save{padding:9px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Noto Sans KR',sans-serif;}
+.btn-del-modal{padding:9px 18px;background:var(--red);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Noto Sans KR',sans-serif;}
+.btn-cancel{padding:9px 14px;background:#f1f5f9;color:var(--text2);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Noto Sans KR',sans-serif;}
+
+/* 드로어 */
+#drawer{position:fixed;top:0;right:-500px;width:500px;max-width:100vw;height:100vh;background:#fff;box-shadow:-8px 0 40px rgba(0,0,0,.15);z-index:500;transition:right .3s ease;overflow-y:auto;}
+#drawer.open{right:0;}
+#dBack{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:499;display:none;}
+#dBack.open{display:block;}
+.d-hd{padding:14px 16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;}
+.d-title{font-size:14px;font-weight:900;}
+.d-close{background:rgba(255,255,255,.2);border:none;color:#fff;padding:5px 11px;border-radius:7px;cursor:pointer;font-size:13px;}
+.d-body{padding:14px 16px;}
+.d-sec{margin-bottom:14px;}
+.d-sec-title{font-size:11px;font-weight:800;color:var(--accent);background:var(--alight);padding:3px 9px;border-radius:5px;display:inline-block;margin-bottom:6px;}
+.d-row{display:flex;gap:7px;padding:4px 0;border-bottom:1px solid #f1f5f9;font-size:12px;}
+.d-row:last-child{border-bottom:none;}
+.dk{font-weight:700;color:var(--text);min-width:85px;flex-shrink:0;}
+.dv{color:var(--text2);word-break:break-all;}
+
+/* 페이지네이션 */
+.pagination{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px;}
+.pg-btn{padding:5px 9px;border:1.5px solid var(--border);border-radius:6px;background:#fff;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;}
+.pg-btn.on{background:var(--accent);color:#fff;border-color:var(--accent);}
+.pg-btn:disabled{opacity:.35;cursor:default;}
+
+/* 기타 */
+#loadBar{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:9998;transition:width .3s;}
+.empty-msg{text-align:center;padding:36px;color:var(--text2);font-size:13px;}
 </style>
 </head>
 <body>
-
 <div id="loadBar"></div>
 
 <!-- 로그인 -->
@@ -203,8 +205,8 @@ tbody td{padding:9px 12px;font-size:12px;vertical-align:middle;}
 
 <!-- 헤더 -->
 <div class="hdr" id="adminHdr" style="display:none">
-  <div style="display:flex;align-items:center">
-    <span style="font-size:20px;margin-right:8px">🦴</span>
+  <div class="hdr-left">
+    <span style="font-size:20px">🦴</span>
     <span class="hdr-title">근골격계 증상조사 관리자</span>
     <span class="hdr-badge" id="totalBadge">-건</span>
   </div>
@@ -214,243 +216,162 @@ tbody td{padding:9px 12px;font-size:12px;vertical-align:middle;}
 <!-- 탭 네비 -->
 <div id="navTabs" style="display:none">
   <div class="nav-tabs">
-    <div class="nav-tab active" onclick="showTab('tab-overview')">📊 현황 대시보드</div>
-    <div class="nav-tab" onclick="showTab('tab-niosh')">🔬 NIOSH 분석</div>
-    <div class="nav-tab" onclick="showTab('tab-records')">📋 전체 기록</div>
-    <div class="nav-tab" onclick="showTab('tab-manage')">✏️ 데이터 관리</div>
+    <div class="nav-tab active"  onclick="switchTab(this,'tab-overview')">📊 대시보드</div>
+    <div class="nav-tab"         onclick="switchTab(this,'tab-check')">☑️ 제출 현황</div>
+    <div class="nav-tab"         onclick="switchTab(this,'tab-niosh')">🔬 NIOSH 분석</div>
+    <div class="nav-tab"         onclick="switchTab(this,'tab-records')">📋 전체 기록</div>
+    <div class="nav-tab"         onclick="switchTab(this,'tab-manage')">✏️ 데이터 관리</div>
   </div>
 </div>
 
-<!-- ════════════ TAB 1: 대시보드 ════════════ -->
+<!-- ══ TAB1 대시보드 ══ -->
 <div class="tab-pane active" id="tab-overview">
-
-  <div class="stat-grid" id="statGrid">
-    <div class="stat-card"><div class="stat-num c-blue" id="st-total">-</div><div class="stat-lbl">전체 제출</div></div>
-    <div class="stat-card"><div class="stat-num c-red" id="st-pain">-</div><div class="stat-lbl">통증 경험자</div></div>
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-num c-blue"   id="st-total">-</div><div class="stat-lbl">전체 제출</div></div>
+    <div class="stat-card"><div class="stat-num c-green"  id="st-submitted">-</div><div class="stat-lbl">제출 완료</div></div>
+    <div class="stat-card"><div class="stat-num c-red"    id="st-pending">-</div><div class="stat-lbl">미제출</div></div>
+    <div class="stat-card"><div class="stat-num c-red"    id="st-pain">-</div><div class="stat-lbl">통증 경험자</div></div>
     <div class="stat-card"><div class="stat-num c-orange" id="st-manage">-</div><div class="stat-lbl">관리대상자</div></div>
-    <div class="stat-card"><div class="stat-num c-red" id="st-serious">-</div><div class="stat-lbl">통증호소자</div></div>
+    <div class="stat-card"><div class="stat-num c-red"    id="st-serious">-</div><div class="stat-lbl">통증호소자</div></div>
     <div class="stat-card"><div class="stat-num c-yellow" id="st-heavy">-</div><div class="stat-lbl">매우 힘듦</div></div>
     <div class="stat-card"><div class="stat-num c-purple" id="st-today">-</div><div class="stat-lbl">오늘 제출</div></div>
   </div>
-
   <div class="chart-grid">
     <div class="card"><div class="card-title">📍 통증 부위 분포</div><canvas id="chartParts" height="200"></canvas></div>
     <div class="card"><div class="card-title">💪 육체적 부담 정도</div><canvas id="chartBurden" height="200"></canvas></div>
-    <div class="card"><div class="card-title">🏥 전체 판정 결과 분포</div><canvas id="chartJudge" height="200"></canvas></div>
+    <div class="card"><div class="card-title">🏥 전체 판정 분포</div><canvas id="chartJudge" height="200"></canvas></div>
     <div class="card"><div class="card-title">📅 부서별 제출 현황</div><canvas id="chartDept" height="200"></canvas></div>
   </div>
-
 </div>
 
-<!-- ════════════ TAB 2: NIOSH 분석 ════════════ -->
+<!-- ══ TAB2 제출 현황 ══ -->
+<div class="tab-pane" id="tab-check">
+  <div class="card" style="margin-bottom:12px">
+    <div class="card-title">☑️ 전 직원 설문 제출 현황</div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-bottom:10px">
+      <span>✅ 제출 완료 <b id="ck-done" style="color:var(--green)">-</b>명</span>
+      <span>❌ 미제출 <b id="ck-todo" style="color:var(--red)">-</b>명</span>
+      <span>전체 <b id="ck-total">-</b>명</span>
+    </div>
+    <!-- 전체 진행 바 -->
+    <div style="height:10px;background:#e8edf5;border-radius:5px;overflow:hidden;margin-bottom:4px">
+      <div id="ck-progbar" style="height:100%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:5px;width:0%;transition:.5s"></div>
+    </div>
+    <div style="font-size:11px;color:var(--text2)" id="ck-pct">0%</div>
+  </div>
+  <div id="checkListArea"></div>
+</div>
+
+<!-- ══ TAB3 NIOSH 분석 ══ -->
 <div class="tab-pane" id="tab-niosh">
-
-  <div class="card" style="background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border-color:rgba(37,99,235,.2)">
+  <div class="card" style="background:linear-gradient(135deg,rgba(37,99,235,.04),rgba(124,58,237,.04));border-color:rgba(37,99,235,.15)">
     <div class="card-title">ℹ️ NIOSH Symptom Survey 판정 기준</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px">
-      <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid rgba(245,158,11,.3)">
-        <div style="font-weight:800;color:#d97706;margin-bottom:6px">⚠️ 관리대상자</div>
-        <div style="color:var(--text2);line-height:1.8">통증기간: 1주일 이상 지속되거나(OR)<br>통증빈도: 1달에 1번 이상 발생되고<br>통증강도: <b>중간 통증</b> 이상인 경우</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px">
+      <div style="background:#fff;border-radius:9px;padding:11px;border:1px solid rgba(245,158,11,.3)">
+        <div style="font-weight:800;color:#d97706;margin-bottom:5px">⚠️ 관리대상자</div>
+        <div style="color:var(--text2);line-height:1.8">통증기간: 1주일 이상(OR)<br>통증빈도: 1달 1번 이상<br>통증강도: <b>중간 통증</b> 이상</div>
       </div>
-      <div style="background:#fff;border-radius:10px;padding:12px;border:1px solid rgba(239,68,68,.3)">
-        <div style="font-weight:800;color:#dc2626;margin-bottom:6px">🚨 통증호소자</div>
-        <div style="color:var(--text2);line-height:1.8">통증기간: 1주일 이상 지속되고(AND)<br>통증빈도: 1달에 1번 이상 발생되고<br>통증강도: <b>심한 통증</b> 또는 <b>매우 심한 통증</b></div>
+      <div style="background:#fff;border-radius:9px;padding:11px;border:1px solid rgba(239,68,68,.3)">
+        <div style="font-weight:800;color:#dc2626;margin-bottom:5px">🚨 통증호소자</div>
+        <div style="color:var(--text2);line-height:1.8">통증기간: 1주일 이상(AND)<br>통증빈도: 1달 1번 이상<br>통증강도: <b>심한/매우 심한 통증</b></div>
       </div>
     </div>
   </div>
-
-  <!-- 전체 판정 요약 -->
-  <div class="judge-grid" id="judgeGrid">
-    <div class="judge-card jc-normal"><div class="jc-num jn" id="jn-normal">-</div><div class="jc-lbl">정상</div><div class="jc-sub" id="jn-normal-pct">-</div></div>
-    <div class="judge-card jc-manage"><div class="jc-num jm" id="jn-manage">-</div><div class="jc-lbl">관리대상자</div><div class="jc-sub" id="jn-manage-pct">-</div></div>
-    <div class="judge-card jc-serious"><div class="jc-num js" id="jn-serious">-</div><div class="jc-lbl">통증호소자</div><div class="jc-sub" id="jn-serious-pct">-</div></div>
+  <div class="judge-grid">
+    <div class="judge-card jc-normal"><div class="jc-num jn" id="jn-n">-</div><div class="jc-lbl">정상</div><div style="font-size:11px;color:var(--text2)" id="jn-np">-</div></div>
+    <div class="judge-card jc-manage"><div class="jc-num jm" id="jn-m">-</div><div class="jc-lbl">관리대상자</div><div style="font-size:11px;color:var(--text2)" id="jn-mp">-</div></div>
+    <div class="judge-card jc-serious"><div class="jc-num js" id="jn-s">-</div><div class="jc-lbl">통증호소자</div><div style="font-size:11px;color:var(--text2)" id="jn-sp">-</div></div>
   </div>
-
-  <!-- 부위별 NIOSH 분석 테이블 -->
-  <div class="card analysis-table">
-    <div class="card-title">📍 신체 부위별 NIOSH 판정 분포</div>
-    <div class="tbl-scroll">
-      <table id="nioshPartTable">
-        <thead>
-          <tr>
-            <th>신체 부위</th>
-            <th>응답자</th>
-            <th style="color:#86efac">정상</th>
-            <th style="color:#fde68a">관리대상자</th>
-            <th style="color:#fca5a5">통증호소자</th>
-            <th>정상율</th>
-            <th>관리대상자율</th>
-            <th>통증호소자율</th>
-          </tr>
-        </thead>
-        <tbody id="nioshPartBody"></tbody>
-      </table>
-    </div>
+  <div class="card">
+    <div class="card-title">📍 신체 부위별 NIOSH 판정</div>
+    <div class="tbl-scroll"><table style="min-width:650px" id="nioshPartTbl">
+      <thead><tr><th>부위</th><th>응답자</th><th style="color:#86efac">정상</th><th style="color:#fde68a">관리대상자</th><th style="color:#fca5a5">통증호소자</th><th>관리율</th><th>호소율</th></tr></thead>
+      <tbody id="nioshPartBody"></tbody>
+    </table></div>
   </div>
-
-  <!-- 부서별 NIOSH 분석 -->
-  <div class="card analysis-table">
-    <div class="card-title">🏢 부서별 근골격계 통증호소자 분포</div>
-    <div class="tbl-scroll">
-      <table id="nioshDeptTable">
-        <thead>
-          <tr>
-            <th>부서</th>
-            <th>응답자</th>
-            <th>정상</th>
-            <th>관리대상자</th>
-            <th>통증호소자</th>
-            <th>목</th>
-            <th>어깨</th>
-            <th>팔/팔꿈치</th>
-            <th>손/손목</th>
-            <th>허리</th>
-            <th>다리/발</th>
-          </tr>
-        </thead>
-        <tbody id="nioshDeptBody"></tbody>
-      </table>
-    </div>
+  <div class="card">
+    <div class="card-title">🏢 부서별 NIOSH 분포</div>
+    <div class="tbl-scroll"><table style="min-width:750px">
+      <thead><tr><th>부서</th><th>합계</th><th style="color:#86efac">정상</th><th style="color:#fde68a">관리대상자</th><th style="color:#fca5a5">통증호소자</th><th>목</th><th>어깨</th><th>팔/팔꿈치</th><th>손/손목</th><th>허리</th><th>다리/발</th></tr></thead>
+      <tbody id="nioshDeptBody"></tbody>
+    </table></div>
   </div>
-
-  <!-- 부서별 육체적 부담 -->
-  <div class="card analysis-table">
-    <div class="card-title">💪 부서별 육체적 부담 정도 분포</div>
-    <div class="tbl-scroll">
-      <table id="burdenDeptTable">
-        <thead>
-          <tr>
-            <th>부서</th>
-            <th>합계</th>
-            <th style="color:#86efac">전혀 힘들지 않음</th>
-            <th style="color:#93c5fd">견딜만 함</th>
-            <th style="color:#fde68a">약간 힘듦</th>
-            <th style="color:#fca5a5">매우 힘듦</th>
-          </tr>
-        </thead>
-        <tbody id="burdenDeptBody"></tbody>
-      </table>
-    </div>
+  <div class="card">
+    <div class="card-title">💪 부서별 육체적 부담 분포</div>
+    <div class="tbl-scroll"><table style="min-width:600px">
+      <thead><tr><th>부서</th><th>합계</th><th style="color:#86efac">전혀 힘들지 않음</th><th style="color:#93c5fd">견딜만 함</th><th style="color:#fde68a">약간 힘듦</th><th style="color:#fca5a5">매우 힘듦</th></tr></thead>
+      <tbody id="burdenDeptBody"></tbody>
+    </table></div>
   </div>
-
 </div>
 
-<!-- ════════════ TAB 3: 전체 기록 ════════════ -->
+<!-- ══ TAB4 전체 기록 ══ -->
 <div class="tab-pane" id="tab-records">
-
   <div class="toolbar">
     <input id="srchName" type="text" class="tb-inp" placeholder="🔍 이름">
     <input id="srchDept" type="text" class="tb-inp" placeholder="🏢 부서">
-    <select id="srchPain" class="tb-sel">
-      <option value="">통증 전체</option>
-      <option value="예">통증 있음</option>
-      <option value="아니오">없음</option>
-    </select>
-    <select id="srchJudge" class="tb-sel">
-      <option value="">판정 전체</option>
-      <option value="정상">정상</option>
-      <option value="관리대상자">관리대상자</option>
-      <option value="통증호소자">통증호소자</option>
-    </select>
-    <select id="srchBurden" class="tb-sel">
-      <option value="">부담 전체</option>
-      <option value="전혀 힘들지 않음">전혀 힘들지 않음</option>
-      <option value="견딜만 함">견딜만 함</option>
-      <option value="약간 힘듦">약간 힘듦</option>
-      <option value="매우 힘듦">매우 힘듦</option>
-    </select>
+    <select id="srchPain" class="tb-sel"><option value="">통증 전체</option><option value="예">있음</option><option value="아니오">없음</option></select>
+    <select id="srchJudge" class="tb-sel"><option value="">판정 전체</option><option>정상</option><option>관리대상자</option><option>통증호소자</option></select>
+    <select id="srchBurden" class="tb-sel"><option value="">부담 전체</option><option>전혀 힘들지 않음</option><option>견딜만 함</option><option>약간 힘듦</option><option>매우 힘듦</option></select>
     <button class="tb-btn tb-blue" onclick="applyFilter()">검색</button>
     <button class="tb-btn tb-gray" onclick="resetFilter()">초기화</button>
     <button class="tb-btn tb-green" onclick="downloadCSV()">⬇ CSV</button>
     <button class="tb-btn tb-ghost" onclick="loadData()">🔄 새로고침</button>
   </div>
-
   <div class="tbl-wrap">
-    <div class="tbl-hdr">
-      <div class="tbl-count" id="tblCount">로딩 중...</div>
-    </div>
+    <div class="tbl-hdr"><div class="tbl-count" id="tblCount">로딩 중...</div></div>
     <div class="tbl-scroll">
-      <table id="mainTable" style="min-width:1000px">
-        <thead>
-          <tr>
-            <th onclick="sortBy('name')">이름 ↕</th>
-            <th onclick="sortBy('createdAt')">제출일시 ↕</th>
-            <th>성별</th>
-            <th>연령</th>
-            <th onclick="sortBy('dept')">부서 ↕</th>
-            <th>수행작업</th>
-            <th>육체적 부담</th>
-            <th>통증 여부</th>
-            <th>전체 판정</th>
-            <th>통증 부위</th>
-          </tr>
-        </thead>
+      <table style="min-width:1000px">
+        <thead><tr>
+          <th onclick="sortBy('name')">이름 ↕</th>
+          <th onclick="sortBy('createdAt')">제출일시 ↕</th>
+          <th>성별</th><th>연령</th>
+          <th onclick="sortBy('dept')">부서 ↕</th>
+          <th>수행작업</th><th>육체적부담</th><th>통증</th><th>판정</th><th>통증부위</th>
+        </tr></thead>
         <tbody id="tblBody"><tr><td colspan="10" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
       </table>
     </div>
     <div class="pagination" id="pagination"></div>
   </div>
-
 </div>
 
-<!-- ════════════ TAB 4: 데이터 관리 ════════════ -->
+<!-- ══ TAB5 데이터 관리 ══ -->
 <div class="tab-pane" id="tab-manage">
-
-  <!-- 부서명 일괄 치환 -->
   <div class="card">
     <div class="card-title">🔄 부서명 일괄 치환</div>
-    <p style="font-size:12px;color:var(--text2);margin-bottom:14px">현재 데이터에 있는 부서명을 클릭하면 치환 폼에 자동 입력됩니다.</p>
-    <div id="deptTagArea" style="margin-bottom:16px;min-height:36px"></div>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:10px">부서 태그 클릭 시 자동 입력됩니다.</p>
+    <div id="deptTagArea" style="margin-bottom:12px;min-height:32px"></div>
     <div class="replace-row">
-      <div style="flex:1">
-        <div class="m-label">현재 부서명 (변경 전)</div>
-        <input id="replaceFrom" type="text" class="replace-inp" placeholder="예: 관리부">
-      </div>
-      <div class="replace-arrow">→</div>
-      <div style="flex:1">
-        <div class="m-label">새 부서명 (변경 후)</div>
-        <input id="replaceTo" type="text" class="replace-inp" placeholder="예: 경영지원부">
-      </div>
-      <button class="btn-replace" onclick="doBulkReplace()">일괄 치환</button>
+      <div style="flex:1"><div class="m-label">변경 전 부서명</div><input id="replaceFrom" type="text" class="replace-inp" placeholder="예: 관리부"></div>
+      <div style="font-size:20px;color:var(--text2);padding-bottom:2px">→</div>
+      <div style="flex:1"><div class="m-label">변경 후 부서명</div><input id="replaceTo" type="text" class="replace-inp" placeholder="예: 경영지원부"></div>
+      <button class="tb-btn tb-blue" onclick="doBulkReplace()" style="align-self:flex-end">일괄 치환</button>
     </div>
-    <div id="replaceResult" style="font-size:12px;color:var(--green);margin-top:6px;display:none"></div>
+    <div id="replaceResult" style="font-size:12px;color:var(--green);margin-top:5px;display:none"></div>
   </div>
-
-  <!-- 전체 기록 편집/삭제 테이블 -->
   <div class="tbl-wrap">
     <div class="tbl-hdr">
       <div class="tbl-count" id="mngCount">-</div>
-      <div style="font-size:11px;color:var(--text2)">행 클릭 → 수정/삭제</div>
+      <div style="font-size:11px;color:var(--text2)">✏️ 수정 / 🗑 삭제 버튼 클릭</div>
     </div>
     <div class="tbl-scroll">
       <table style="min-width:800px">
-        <thead>
-          <tr>
-            <th>이름</th>
-            <th>제출일시</th>
-            <th>성별</th>
-            <th>연령</th>
-            <th>부서</th>
-            <th>수행작업</th>
-            <th>통증</th>
-            <th style="width:120px">관리</th>
-          </tr>
-        </thead>
-        <tbody id="mngBody"><tr><td colspan="8" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
+        <thead><tr><th>이름</th><th>제출일</th><th>성별</th><th>연령</th><th>부서</th><th>수행작업</th><th>통증</th><th style="width:130px">관리</th></tr></thead>
+        <tbody id="mngBody"><tr><td colspan="8" class="empty-msg">-</td></tr></tbody>
       </table>
     </div>
     <div class="pagination" id="mngPagination"></div>
   </div>
-
 </div>
 
 <!-- 편집 모달 -->
 <div id="editModal">
-  <div id="editBackdrop" onclick="closeModal()"></div>
+  <div class="modal-backdrop" onclick="closeModal()"></div>
   <div class="modal-box">
     <div class="modal-hd">
       <div class="modal-title">✏️ 기록 수정</div>
-      <button class="modal-close" onclick="closeModal()">✕ 닫기</button>
+      <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="editDocId">
@@ -474,26 +395,18 @@ tbody td{padding:9px 12px;font-size:12px;vertical-align:middle;}
       </div>
       <div class="m-group"><div class="m-label">수행 작업</div><input id="e-jobDetail" type="text" class="m-inp"></div>
       <div class="m-grid2">
-        <div class="m-group"><div class="m-label">현 작업 기간 (년)</div><input id="e-jobYr" type="number" class="m-inp"></div>
-        <div class="m-group"><div class="m-label">현 작업 기간 (개월)</div><input id="e-jobMo" type="number" class="m-inp"></div>
+        <div class="m-group"><div class="m-label">현 작업기간(년)</div><input id="e-jobYr" type="number" class="m-inp"></div>
+        <div class="m-group"><div class="m-label">현 작업기간(월)</div><input id="e-jobMo" type="number" class="m-inp"></div>
       </div>
       <div class="m-grid2">
         <div class="m-group"><div class="m-label">1일 근무시간</div><input id="e-workHr" type="number" class="m-inp"></div>
         <div class="m-group"><div class="m-label">가사노동시간</div>
-          <select id="e-housework" class="m-inp">
-            <option value="">선택</option>
-            <option>거의 안함</option><option>1시간 미만</option>
-            <option>1~2시간 미만</option><option>2~3시간 미만</option><option>3시간 이상</option>
-          </select>
+          <select id="e-housework" class="m-inp"><option value="">선택</option><option>거의 안함</option><option>1시간 미만</option><option>1~2시간 미만</option><option>2~3시간 미만</option><option>3시간 이상</option></select>
         </div>
       </div>
       <div class="m-sec">💪 육체적 부담</div>
       <div class="m-group">
-        <select id="e-physicalBurden" class="m-inp">
-          <option value="">선택</option>
-          <option>전혀 힘들지 않음</option><option>견딜만 함</option>
-          <option>약간 힘듦</option><option>매우 힘듦</option>
-        </select>
+        <select id="e-physicalBurden" class="m-inp"><option value="">선택</option><option>전혀 힘들지 않음</option><option>견딜만 함</option><option>약간 힘듦</option><option>매우 힘듦</option></select>
       </div>
     </div>
     <div class="modal-foot">
@@ -507,24 +420,76 @@ tbody td{padding:9px 12px;font-size:12px;vertical-align:middle;}
 <!-- 드로어 -->
 <div id="dBack" onclick="closeDrawer()"></div>
 <div id="drawer">
-  <div class="d-hd">
-    <div class="d-title" id="dTitle">상세 정보</div>
-    <button class="d-close" onclick="closeDrawer()">✕ 닫기</button>
-  </div>
+  <div class="d-hd"><div class="d-title" id="dTitle">상세 정보</div><button class="d-close" onclick="closeDrawer()">✕ 닫기</button></div>
   <div class="d-body" id="dBody"></div>
 </div>
 
-<!-- ─────────────── 전역 스크립트 ─────────────── -->
 <script>
+/* ══ 비밀번호 ══ */
 var ADMIN_PW = 'admin1234';
+
+/* ══ 직원 명단 ══ */
+var EMPLOYEES = [
+  {dept:'영업',  name:'신창수', rank:'전무'},
+  {dept:'영업',  name:'신수철', rank:'과장'},
+  {dept:'영업',  name:'양문혁', rank:'이사'},
+  {dept:'설계',  name:'신동민', rank:'차장'},
+  {dept:'설계',  name:'신예지', rank:'사원'},
+  {dept:'설계',  name:'김금자', rank:'사원'},
+  {dept:'관리',  name:'박화자', rank:'전무'},
+  {dept:'관리',  name:'유대순', rank:'부장'},
+  {dept:'관리',  name:'이경륜', rank:'차장'},
+  {dept:'관리',  name:'박상준', rank:'차장'},
+  {dept:'구매/자재', name:'박웅',  rank:'과장'},
+  {dept:'품질',  name:'민시우', rank:'차장'},
+  {dept:'품질',  name:'임경희', rank:'과장'},
+  {dept:'품질',  name:'오현숙', rank:'주임'},
+  {dept:'품질',  name:'김영선', rank:'주임'},
+  {dept:'품질',  name:'이영화', rank:'주임'},
+  {dept:'품질',  name:'민지영', rank:'반장'},
+  {dept:'생산',  name:'이남진', rank:'부장'},
+  {dept:'생산',  name:'송범규', rank:'차장'},
+  {dept:'생산',  name:'홍희자', rank:'차장'},
+  {dept:'생산',  name:'김희옥', rank:'과장'},
+  {dept:'생산',  name:'김명란', rank:'대리'},
+  {dept:'생산',  name:'임홍순', rank:'대리'},
+  {dept:'생산',  name:'김남규', rank:'대리'},
+  {dept:'생산',  name:'박경은', rank:'주임'},
+  {dept:'생산',  name:'이영순', rank:'주임'},
+  {dept:'생산',  name:'조경숙', rank:'주임'},
+  {dept:'생산',  name:'이순덕', rank:'주임'},
+  {dept:'생산',  name:'이산옥', rank:'주임'},
+  {dept:'생산',  name:'김은순', rank:'반장'},
+  {dept:'생산',  name:'임나연', rank:'반장'},
+  {dept:'생산',  name:'황금옥', rank:'반장'},
+  {dept:'생산',  name:'손점순', rank:'반장'},
+  {dept:'생산',  name:'고민정', rank:'사원'},
+  {dept:'생산',  name:'김창순', rank:'사원'},
+  {dept:'생산',  name:'김경희', rank:'사원'},
+  {dept:'F.S.T', name:'윤준석', rank:'주임'},
+  {dept:'제어/방산', name:'이현무', rank:'상무'},
+  {dept:'제어/방산', name:'문명숙', rank:'과장'},
+  {dept:'제어/방산', name:'홍순민', rank:'과장'},
+  {dept:'제어/방산', name:'고상혁', rank:'과장'},
+  {dept:'제어/방산', name:'김영광', rank:'과장'},
+  {dept:'기구 가공', name:'이종국', rank:'이사'},
+  {dept:'기구 가공', name:'백형권', rank:'부장'},
+  {dept:'기구 가공', name:'백다현', rank:'사원'},
+  {dept:'부설연구소', name:'권민국', rank:'이사'},
+];
+
 var allData = [], filtered = [];
 var currentPage = 1, pageSize = 20;
 var sortKey = 'createdAt', sortAsc = false;
 var charts = {};
+var mngPage = 1, mngPageSize = 30;
 
-var PARTS = ['목','어깨','팔/팔꿈치','손/손목/손가락','허리','다리/발'];
-var PART_ICON = {'목':'🙆','어깨':'🤷','팔/팔꿈치':'💪','손/손목/손가락':'✋','허리':'🧍','다리/발':'🦵'};
-var BURDEN_MAP = {'전혀 힘들지 않음':'b-b1','견딜만 함':'b-b2','약간 힘듦':'b-b3','매우 힘듦':'b-b4'};
+var PARTS      = ['목','어깨','팔/팔꿈치','손/손목/손가락','허리','다리/발'];
+var PART_ICON  = {'목':'🙆','어깨':'🤷','팔/팔꿈치':'💪','손/손목/손가락':'✋','허리':'🧍','다리/발':'🦵'};
+var DUR_WEEK   = ['1주일~1달 미만','1달~6개월 미만','6개월 이상'];
+var FREQ_MONTH = ['1달에 1번','1주일에 1번','매일'];
+var LEVEL_MID  = ['중간 통증','심한 통증','매우 심한 통증'];
+var LEVEL_SEV  = ['심한 통증','매우 심한 통증'];
 
 /* ── 로그인 ── */
 function doLogin(){
@@ -532,8 +497,9 @@ function doLogin(){
     document.getElementById('loginScreen').style.display='none';
     document.getElementById('adminHdr').style.display='flex';
     document.getElementById('navTabs').style.display='block';
-    document.querySelectorAll('.tab-pane').forEach(function(p){p.style.display='none';});
+    document.querySelectorAll('.tab-pane').forEach(function(p){p.style.display='none';p.classList.remove('active');});
     document.getElementById('tab-overview').style.display='block';
+    document.getElementById('tab-overview').classList.add('active');
     loadData();
   } else {
     document.getElementById('loginErr').style.display='block';
@@ -543,210 +509,215 @@ function doLogin(){
 function doLogout(){ if(confirm('로그아웃 하시겠습니까?')) location.reload(); }
 
 /* ── 탭 전환 ── */
-function showTab(id){
-  document.querySelectorAll('.tab-pane').forEach(function(p){ p.style.display='none'; p.classList.remove('active'); });
-  document.querySelectorAll('.nav-tab').forEach(function(t){ t.classList.remove('active'); });
+function switchTab(el, id){
+  document.querySelectorAll('.tab-pane').forEach(function(p){p.style.display='none';p.classList.remove('active');});
+  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
   document.getElementById(id).style.display='block';
   document.getElementById(id).classList.add('active');
-  event.target.classList.add('active');
+  el.classList.add('active');
+  if(id==='tab-check')  renderCheckTab();
   if(id==='tab-manage') renderManageTab();
+  if(id==='tab-niosh')  renderNIOSH(allData);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ── 로딩 ── */
+/* ── 로딩바 ── */
 function setLoad(v){
-  document.getElementById('loadBar').style.width = v?'70%':'100%';
-  if(!v) setTimeout(function(){ document.getElementById('loadBar').style.width='0%'; },400);
+  document.getElementById('loadBar').style.width=v?'70%':'100%';
+  if(!v) setTimeout(function(){document.getElementById('loadBar').style.width='0%';},400);
 }
-
-/* ── 데이터 로드 ── */
 function loadData(){ setLoad(true); window._loadFn&&window._loadFn(); }
 
-/* ════════════════════════════
-   NIOSH 판정 로직
-   각 부위별로 통증기간(dur), 빈도(freq), 강도(level) 기준으로 판정
-════════════════════════════ */
-var DUR_WEEK  = ['1주일~1달 미만','1달~6개월 미만','6개월 이상']; // 1주일 이상
-var FREQ_MONTH= ['1달에 1번','1주일에 1번','매일'];              // 1달 1번 이상
-var LEVEL_MID = ['중간 통증','심한 통증','매우 심한 통증'];       // 중간 이상
-var LEVEL_SEV = ['심한 통증','매우 심한 통증'];                   // 심한 이상
-
+/* ══ NIOSH 판정 ══ */
 function judgePartNIOSH(d){
-  // d = painData[part] = { dur, freq, level, lastWeek, ... }
-  if(!d || !d.dur) return '정상';
-  var durWeek  = DUR_WEEK.indexOf(d.dur)>=0;
-  var freqMo   = FREQ_MONTH.indexOf(d.freq)>=0;
-  var levelMid = LEVEL_MID.indexOf(d.level)>=0;
-  var levelSev = LEVEL_SEV.indexOf(d.level)>=0;
-  // 통증호소자: dur 1주 이상 AND freq 1달 이상 AND level 심함
-  if(durWeek && freqMo && levelSev) return '통증호소자';
-  // 관리대상자: (dur 1주 이상 OR freq 1달 이상) AND level 중간 이상
-  if((durWeek || freqMo) && levelMid) return '관리대상자';
+  if(!d||!d.dur) return '정상';
+  var dw=DUR_WEEK.indexOf(d.dur)>=0, fm=FREQ_MONTH.indexOf(d.freq)>=0,
+      lm=LEVEL_MID.indexOf(d.level)>=0, ls=LEVEL_SEV.indexOf(d.level)>=0;
+  if(dw&&fm&&ls) return '통증호소자';
+  if((dw||fm)&&lm) return '관리대상자';
   return '정상';
 }
-
 function judgeOverall(r){
-  // 6개 부위 중 가장 높은 판정 반환
-  if(r.hasPain!=='예' || !r.painParts||!r.painParts.length) return '정상';
-  var best = '정상';
-  r.painParts.forEach(function(part){
-    var d = r.painData&&r.painData[part];
-    var j = judgePartNIOSH(d);
+  if(r.hasPain!=='예'||!r.painParts||!r.painParts.length) return '정상';
+  var best='정상';
+  r.painParts.forEach(function(p){
+    var j=judgePartNIOSH(r.painData&&r.painData[p]);
     if(j==='통증호소자') best='통증호소자';
     else if(j==='관리대상자'&&best==='정상') best='관리대상자';
   });
   return best;
 }
-
-/* ── 통계 업데이트 ── */
-function updateAll(data){
-  var total = data.length;
-  var pain  = data.filter(function(r){return r.hasPain==='예';}).length;
-  var manage=0, serious=0;
-  data.forEach(function(r){
-    var j=judgeOverall(r);
-    if(j==='관리대상자') manage++;
-    else if(j==='통증호소자') serious++;
-  });
-  var heavy = data.filter(function(r){return r.physicalBurden==='매우 힘듦';}).length;
-  var today = data.filter(function(r){
-    if(!r.createdAt) return false;
-    var d=new Date(r.createdAt.seconds*1000), n=new Date();
-    return d.toDateString()===n.toDateString();
-  }).length;
-
-  document.getElementById('st-total').textContent  = total;
-  document.getElementById('st-pain').textContent   = pain;
-  document.getElementById('st-manage').textContent = manage;
-  document.getElementById('st-serious').textContent= serious;
-  document.getElementById('st-heavy').textContent  = heavy;
-  document.getElementById('st-today').textContent  = today;
-  document.getElementById('totalBadge').textContent= total+'건';
-
-  var normalCnt = total-manage-serious;
-  document.getElementById('jn-normal').textContent  = normalCnt;
-  document.getElementById('jn-manage').textContent  = manage;
-  document.getElementById('jn-serious').textContent = serious;
-  document.getElementById('jn-normal-pct').textContent  = total?pct(normalCnt,total):'';
-  document.getElementById('jn-manage-pct').textContent  = total?pct(manage,total):'';
-  document.getElementById('jn-serious-pct').textContent = total?pct(serious,total):'';
-
-  drawCharts(data);
-  drawNIOSH(data);
-}
-
-function pct(n,t){ return t?Math.round(n/t*100)+'% ('+n+'명)':'-'; }
 function pctStr(n,t){ return t?'('+Math.round(n/t*100)+'%)':''; }
 
-/* ── 차트 ── */
-function mkChart(id, type, labels, datasets, opts){
+/* ══ 전체 통계 업데이트 ══ */
+function updateAll(data){
+  var total=data.length, pain=0, manage=0, serious=0, heavy=0, today=0;
+  data.forEach(function(r){
+    if(r.hasPain==='예') pain++;
+    var j=judgeOverall(r);
+    if(j==='관리대상자') manage++; else if(j==='통증호소자') serious++;
+    if(r.physicalBurden==='매우 힘듦') heavy++;
+    if(r.createdAt){var d=new Date(r.createdAt.seconds*1000),n=new Date();if(d.toDateString()===n.toDateString()) today++;}
+  });
+  var submittedNames = data.map(function(r){return r.name;});
+  var submitted = EMPLOYEES.filter(function(e){return submittedNames.indexOf(e.name)>=0;}).length;
+  var pending   = EMPLOYEES.length - submitted;
+
+  document.getElementById('st-total').textContent    = total;
+  document.getElementById('st-submitted').textContent= submitted;
+  document.getElementById('st-pending').textContent  = pending;
+  document.getElementById('st-pain').textContent     = pain;
+  document.getElementById('st-manage').textContent   = manage;
+  document.getElementById('st-serious').textContent  = serious;
+  document.getElementById('st-heavy').textContent    = heavy;
+  document.getElementById('st-today').textContent    = today;
+  document.getElementById('totalBadge').textContent  = total+'건';
+
+  document.getElementById('jn-n').textContent = total-manage-serious;
+  document.getElementById('jn-m').textContent = manage;
+  document.getElementById('jn-s').textContent = serious;
+  document.getElementById('jn-np').textContent= pctStr(total-manage-serious,total);
+  document.getElementById('jn-mp').textContent= pctStr(manage,total);
+  document.getElementById('jn-sp').textContent= pctStr(serious,total);
+
+  drawCharts(data);
+}
+
+/* ══ 차트 ══ */
+function mkChart(id,type,labels,datasets,opts){
   if(charts[id]) charts[id].destroy();
   charts[id]=new Chart(document.getElementById(id),{type:type,data:{labels:labels,datasets:datasets},options:opts||{}});
 }
 function drawCharts(data){
-  var total=data.length;
-  // 통증 부위
   var pCounts=PARTS.map(function(p){return data.filter(function(r){return r.painParts&&r.painParts.indexOf(p)>=0;}).length;});
   mkChart('chartParts','bar',PARTS,[{label:'인원',data:pCounts,backgroundColor:['rgba(37,99,235,.7)','rgba(124,58,237,.7)','rgba(239,68,68,.7)','rgba(245,158,11,.7)','rgba(16,185,129,.7)','rgba(99,102,241,.7)'],borderRadius:6}],{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});
-  // 육체적 부담
-  var bLabels=['전혀 힘들지 않음','견딜만 함','약간 힘듦','매우 힘듦'];
-  var bCounts=bLabels.map(function(b){return data.filter(function(r){return r.physicalBurden===b;}).length;});
-  mkChart('chartBurden','doughnut',bLabels,[{data:bCounts,backgroundColor:['rgba(16,185,129,.8)','rgba(37,99,235,.8)','rgba(245,158,11,.8)','rgba(239,68,68,.8)'],borderWidth:2}],{plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}});
-  // 판정 분포
-  var jCounts=[0,0,0];
-  data.forEach(function(r){ var j=judgeOverall(r); if(j==='정상') jCounts[0]++; else if(j==='관리대상자') jCounts[1]++; else jCounts[2]++; });
-  mkChart('chartJudge','doughnut',['정상','관리대상자','통증호소자'],[{data:jCounts,backgroundColor:['rgba(16,185,129,.8)','rgba(245,158,11,.8)','rgba(239,68,68,.8)'],borderWidth:2}],{plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}});
-  // 부서별 제출
-  var deptMap={};
-  data.forEach(function(r){ var d=r.dept||'기타'; deptMap[d]=(deptMap[d]||0)+1; });
-  var depts=Object.keys(deptMap).sort(function(a,b){return deptMap[b]-deptMap[a];}).slice(0,10);
-  mkChart('chartDept','bar',depts,[{label:'제출',data:depts.map(function(d){return deptMap[d];}),backgroundColor:'rgba(37,99,235,.7)',borderRadius:6}],{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});
+  var bL=['전혀 힘들지 않음','견딜만 함','약간 힘듦','매우 힘듦'];
+  mkChart('chartBurden','doughnut',bL,[{data:bL.map(function(b){return data.filter(function(r){return r.physicalBurden===b;}).length;}),backgroundColor:['rgba(16,185,129,.8)','rgba(37,99,235,.8)','rgba(245,158,11,.8)','rgba(239,68,68,.8)'],borderWidth:2}],{plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}});
+  var jC=[0,0,0];
+  data.forEach(function(r){var j=judgeOverall(r);if(j==='정상')jC[0]++;else if(j==='관리대상자')jC[1]++;else jC[2]++;});
+  mkChart('chartJudge','doughnut',['정상','관리대상자','통증호소자'],[{data:jC,backgroundColor:['rgba(16,185,129,.8)','rgba(245,158,11,.8)','rgba(239,68,68,.8)'],borderWidth:2}],{plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}});
+  var dm={};
+  data.forEach(function(r){var d=r.dept||'기타';dm[d]=(dm[d]||0)+1;});
+  var depts=Object.keys(dm).sort(function(a,b){return dm[b]-dm[a];}).slice(0,10);
+  mkChart('chartDept','bar',depts,[{label:'제출',data:depts.map(function(d){return dm[d];}),backgroundColor:'rgba(37,99,235,.7)',borderRadius:6}],{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}});
 }
 
-/* ── NIOSH 분석 테이블 ── */
-function drawNIOSH(data){
-  var total=data.length;
-  // 부위별
-  var partBody=document.getElementById('nioshPartBody');
-  partBody.innerHTML='';
-  PARTS.forEach(function(part){
-    var resp=data.filter(function(r){return r.painParts&&r.painParts.indexOf(part)>=0;});
-    var n=resp.length, nor=0, man=0, ser=0;
-    resp.forEach(function(r){
-      var j=judgePartNIOSH(r.painData&&r.painData[part]);
-      if(j==='정상') nor++; else if(j==='관리대상자') man++; else ser++;
-    });
-    // 통증 없는 사람은 전부 정상
-    var noResp=total-n;
-    partBody.innerHTML+='<tr>'
-      +'<td><b>'+(PART_ICON[part]||'')+' '+part+'</b></td>'
-      +'<td>'+n+'명</td>'
-      +'<td class="at-normal">'+(nor+noResp)+'</td>'
-      +'<td class="at-manage">'+man+'</td>'
-      +'<td class="at-serious">'+ser+'</td>'
-      +'<td class="at-pct">'+pctStr(nor+noResp,total)+'</td>'
-      +'<td class="at-pct">'+pctStr(man,total)+'</td>'
-      +'<td class="at-pct">'+pctStr(ser,total)+'</td>'
-      +'</tr>';
+/* ══ 제출 현황 탭 ══ */
+function renderCheckTab(){
+  var submittedMap={};
+  allData.forEach(function(r){
+    if(r.name) submittedMap[r.name]=r;
+  });
+  var doneCount=0;
+  EMPLOYEES.forEach(function(e){ if(submittedMap[e.name]) doneCount++; });
+  var total=EMPLOYEES.length, pct=total?Math.round(doneCount/total*100):0;
+
+  document.getElementById('ck-done').textContent  = doneCount;
+  document.getElementById('ck-todo').textContent  = total-doneCount;
+  document.getElementById('ck-total').textContent = total;
+  document.getElementById('ck-progbar').style.width= pct+'%';
+  document.getElementById('ck-pct').textContent   = pct+'% 완료';
+
+  // 부서별 그룹핑
+  var deptMap={};
+  EMPLOYEES.forEach(function(e){
+    if(!deptMap[e.dept]) deptMap[e.dept]=[];
+    deptMap[e.dept].push(e);
   });
 
+  var html='';
+  Object.keys(deptMap).forEach(function(dept){
+    var emps=deptMap[dept];
+    var dDone=emps.filter(function(e){return submittedMap[e.name];}).length;
+    var dPct=Math.round(dDone/emps.length*100);
+    html+='<div class="dept-section">'
+      +'<div class="dept-section-title">'
+      +'<span>🏢 '+dept+' ('+emps.length+'명)</span>'
+      +'<div class="prog-summary">'
+        +'<span>'+dDone+'/'+emps.length+'</span>'
+        +'<div class="prog-bar-mini"><div class="prog-bar-fill" style="width:'+dPct+'%"></div></div>'
+        +'<span>'+dPct+'%</span>'
+      +'</div>'
+      +'</div>'
+      +'<div class="dept-section-body">';
+    emps.forEach(function(e){
+      var r=submittedMap[e.name];
+      var judge= r ? judgeOverall(r) : '';
+      var jColor={'정상':'#059669','관리대상자':'#d97706','통증호소자':'#dc2626'};
+      var jBg={'정상':'rgba(16,185,129,.1)','관리대상자':'rgba(245,158,11,.12)','통증호소자':'rgba(239,68,68,.12)'};
+      html+='<div class="check-row">'
+        +'<span class="check-emp-name">'+e.name+'</span>'
+        +'<span class="check-emp-rank">'+e.rank+'</span>'
+        +'<div class="check-status">';
+      if(r){
+        var dt=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleDateString('ko-KR'):'';
+        html+='<span style="font-size:18px">✅</span>'
+          +'<span class="check-date">'+dt+'</span>'
+          +(judge?'<span style="padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;background:'+jBg[judge]+';color:'+jColor[judge]+'">'+judge+'</span>':'');
+      } else {
+        html+='<span style="font-size:18px;color:#e2e8f0">☐</span>'
+          +'<span style="font-size:12px;color:var(--red);font-weight:600">미제출</span>';
+      }
+      html+='</div></div>';
+    });
+    html+='</div></div>';
+  });
+  document.getElementById('checkListArea').innerHTML=html;
+}
+
+/* ══ NIOSH 분석 렌더 ══ */
+function renderNIOSH(data){
+  var total=data.length;
+  // 부위별
+  var pb=document.getElementById('nioshPartBody'); pb.innerHTML='';
+  PARTS.forEach(function(part){
+    var resp=data.filter(function(r){return r.painParts&&r.painParts.indexOf(part)>=0;});
+    var nor=0,man=0,ser=0;
+    resp.forEach(function(r){var j=judgePartNIOSH(r.painData&&r.painData[part]);if(j==='정상')nor++;else if(j==='관리대상자')man++;else ser++;});
+    var noR=total-resp.length;
+    pb.innerHTML+='<tr><td><b>'+(PART_ICON[part]||'')+' '+part+'</b></td><td>'+resp.length+'명</td>'
+      +'<td class="at-normal">'+(nor+noR)+'</td><td class="at-manage">'+man+'</td><td class="at-serious">'+ser+'</td>'
+      +'<td class="at-pct">'+pctStr(man,total)+'</td><td class="at-pct">'+pctStr(ser,total)+'</td></tr>';
+  });
   // 부서별
-  var deptMap={};
+  var dm={};
   data.forEach(function(r){
     var d=r.dept||'(미입력)';
-    if(!deptMap[d]) deptMap[d]={total:0,normal:0,manage:0,serious:0};
-    deptMap[d].total++;
+    if(!dm[d]) dm[d]={t:0,n:0,m:0,s:0};
+    dm[d].t++;
     var j=judgeOverall(r);
-    deptMap[d][j==='정상'?'normal':j==='관리대상자'?'manage':'serious']++;
+    if(j==='정상')dm[d].n++;else if(j==='관리대상자')dm[d].m++;else dm[d].s++;
     PARTS.forEach(function(p){
-      if(!deptMap[d][p]) deptMap[d][p]={man:0,ser:0};
+      if(!dm[d][p]) dm[d][p]={m:0,s:0};
       if(r.painParts&&r.painParts.indexOf(p)>=0){
         var pj=judgePartNIOSH(r.painData&&r.painData[p]);
-        if(pj==='관리대상자') deptMap[d][p].man++;
-        else if(pj==='통증호소자') deptMap[d][p].ser++;
+        if(pj==='관리대상자')dm[d][p].m++;else if(pj==='통증호소자')dm[d][p].s++;
       }
     });
   });
-  var deptBody=document.getElementById('nioshDeptBody');
-  deptBody.innerHTML='';
-  Object.keys(deptMap).forEach(function(dept){
-    var dm=deptMap[dept];
-    var row='<tr><td><b>'+dept+'</b></td><td>'+dm.total+'</td>'
-      +'<td class="at-normal">'+dm.normal+'<span class="at-pct"> '+pctStr(dm.normal,dm.total)+'</span></td>'
-      +'<td class="at-manage">'+dm.manage+'<span class="at-pct"> '+pctStr(dm.manage,dm.total)+'</span></td>'
-      +'<td class="at-serious">'+dm.serious+'<span class="at-pct"> '+pctStr(dm.serious,dm.total)+'</span></td>';
-    PARTS.forEach(function(p){
-      var pm=dm[p]||{man:0,ser:0};
-      var cnt=pm.man+pm.ser;
-      row+='<td>'+(cnt?'<span class="at-'+(pm.ser?'serious':'manage')+'">'+cnt+'</span>':'-')+'</td>';
-    });
-    deptBody.innerHTML+=row+'</tr>';
+  var db2=document.getElementById('nioshDeptBody'); db2.innerHTML='';
+  Object.keys(dm).forEach(function(dept){
+    var x=dm[dept];
+    var row='<tr><td><b>'+dept+'</b></td><td>'+x.t+'</td>'
+      +'<td class="at-normal">'+x.n+'<span class="at-pct"> '+pctStr(x.n,x.t)+'</span></td>'
+      +'<td class="at-manage">'+x.m+'<span class="at-pct"> '+pctStr(x.m,x.t)+'</span></td>'
+      +'<td class="at-serious">'+x.s+'<span class="at-pct"> '+pctStr(x.s,x.t)+'</span></td>';
+    PARTS.forEach(function(p){var pm=x[p]||{m:0,s:0};var cnt=pm.m+pm.s;row+='<td>'+(cnt?'<span class="at-'+(pm.s?'serious':'manage')+'">'+cnt+'</span>':'-')+'</td>';});
+    db2.innerHTML+=row+'</tr>';
   });
-
-  // 부서별 육체적 부담
-  var bdBody=document.getElementById('burdenDeptBody');
-  bdBody.innerHTML='';
-  var BLEVELS=['전혀 힘들지 않음','견딜만 함','약간 힘듦','매우 힘듦'];
-  var bdMap={};
-  data.forEach(function(r){
-    var d=r.dept||'(미입력)';
-    if(!bdMap[d]) bdMap[d]={total:0};
-    bdMap[d].total++;
-    BLEVELS.forEach(function(b){if(!bdMap[d][b])bdMap[d][b]=0;});
-    if(r.physicalBurden) bdMap[d][r.physicalBurden]=(bdMap[d][r.physicalBurden]||0)+1;
-  });
-  Object.keys(bdMap).forEach(function(dept){
-    var dm=bdMap[dept];
-    var row='<tr><td><b>'+dept+'</b></td><td>'+dm.total+'</td>';
-    BLEVELS.forEach(function(b,i){
-      var n=dm[b]||0;
-      var cls=['at-normal','','at-manage','at-serious'][i];
-      row+='<td class="'+cls+'">'+n+'<span class="at-pct"> '+pctStr(n,dm.total)+'</span></td>';
-    });
-    bdBody.innerHTML+=row+'</tr>';
+  // 부담
+  var bdb=document.getElementById('burdenDeptBody'); bdb.innerHTML='';
+  var BL=['전혀 힘들지 않음','견딜만 함','약간 힘듦','매우 힘듦'], bm={};
+  data.forEach(function(r){var d=r.dept||'(미입력)';if(!bm[d]){bm[d]={t:0};BL.forEach(function(b){bm[d][b]=0;});}bm[d].t++;if(r.physicalBurden)bm[d][r.physicalBurden]=(bm[d][r.physicalBurden]||0)+1;});
+  Object.keys(bm).forEach(function(dept){
+    var x=bm[dept];
+    var row='<tr><td><b>'+dept+'</b></td><td>'+x.t+'</td>';
+    BL.forEach(function(b,i){var n=x[b]||0;var cls=['at-normal','','at-manage','at-serious'][i];row+='<td class="'+cls+'">'+n+'<span class="at-pct"> '+pctStr(n,x.t)+'</span></td>';});
+    bdb.innerHTML+=row+'</tr>';
   });
 }
 
-/* ── 필터 ── */
+/* ══ 전체 기록 탭 ══ */
 function applyFilter(){
   var name=document.getElementById('srchName').value.trim().toLowerCase();
   var dept=document.getElementById('srchDept').value.trim().toLowerCase();
@@ -768,110 +739,132 @@ function resetFilter(){
   ['srchPain','srchJudge','srchBurden'].forEach(function(id){document.getElementById(id).value='';});
   filtered=allData.slice(); currentPage=1; renderTable();
 }
-
-/* ── 정렬 ── */
 function sortBy(key){
   if(sortKey===key) sortAsc=!sortAsc; else{sortKey=key;sortAsc=true;}
   filtered.sort(function(a,b){
-    var av=a[key]||'', bv=b[key]||'';
+    var av=a[key]||'',bv=b[key]||'';
     if(key==='createdAt'){av=a.createdAt?a.createdAt.seconds:0;bv=b.createdAt?b.createdAt.seconds:0;}
     return sortAsc?(av<bv?-1:av>bv?1:0):(av>bv?-1:av<bv?1:0);
   });
   renderTable();
 }
-
-/* ── 테이블 렌더 ── */
 function renderTable(){
-  var start=(currentPage-1)*pageSize;
-  var page=filtered.slice(start,start+pageSize);
+  var start=(currentPage-1)*pageSize, page=filtered.slice(start,start+pageSize);
   document.getElementById('tblCount').textContent='총 '+filtered.length+'건 (전체 '+allData.length+'건)';
-  if(!page.length){
-    document.getElementById('tblBody').innerHTML='<tr><td colspan="10" class="empty-msg">결과 없음</td></tr>';
-    document.getElementById('pagination').innerHTML='';
-    return;
-  }
-  var BCLASS={'전혀 힘들지 않음':'b-b1','견딜만 함':'b-b2','약간 힘듦':'b-b3','매우 힘듦':'b-b4'};
+  var BC={'전혀 힘들지 않음':'b-b1','견딜만 함':'b-b2','약간 힘듦':'b-b3','매우 힘듦':'b-b4'};
+  var JC={'정상':'b-normal','관리대상자':'b-manage','통증호소자':'b-serious'};
+  if(!page.length){document.getElementById('tblBody').innerHTML='<tr><td colspan="10" class="empty-msg">결과 없음</td></tr>';document.getElementById('pagination').innerHTML='';return;}
   document.getElementById('tblBody').innerHTML=page.map(function(r,i){
     var dt=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleString('ko-KR'):'-';
-    var judge=judgeOverall(r);
-    var jClass={'정상':'b-normal','관리대상자':'b-manage','통증호소자':'b-serious'};
-    var bc=BCLASS[r.physicalBurden]||'b-none';
+    var j=judgeOverall(r);
     var parts=(r.painParts&&r.painParts.length)?r.painParts.map(function(p){return'<span class="part-tag">'+(PART_ICON[p]||'')+p+'</span>';}).join(''):'-';
-    return'<tr onclick="openDrawer('+(start+i)+')">'
+    return'<tr style="cursor:pointer" onclick="openDrawer('+(start+i)+')">'
       +'<td class="td-name">'+(r.name||'-')+'</td>'
-      +'<td class="td-sm">'+dt+'</td>'
-      +'<td>'+(r.gender||'-')+'</td>'
-      +'<td>'+(r.age||'-')+'</td>'
-      +'<td>'+(r.dept||'-')+'</td>'
+      +'<td style="font-size:11px;color:var(--text2)">'+dt+'</td>'
+      +'<td>'+(r.gender||'-')+'</td><td>'+(r.age||'-')+'</td><td>'+(r.dept||'-')+'</td>'
       +'<td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.jobDetail||'-')+'</td>'
-      +'<td>'+(r.physicalBurden?'<span class="badge '+bc+'">'+r.physicalBurden+'</span>':'-')+'</td>'
+      +'<td>'+(r.physicalBurden?'<span class="badge '+(BC[r.physicalBurden]||'b-none')+'">'+r.physicalBurden+'</span>':'-')+'</td>'
       +'<td>'+(r.hasPain==='예'?'<span class="badge b-pain">있음</span>':'<span class="badge b-none">없음</span>')+'</td>'
-      +'<td><span class="badge '+(jClass[judge]||'b-none')+'">'+judge+'</span></td>'
+      +'<td><span class="badge '+(JC[j]||'b-none')+'">'+j+'</span></td>'
       +'<td>'+parts+'</td>'
       +'</tr>';
   }).join('');
-  renderPaging();
+  renderPaging('pagination', currentPage, Math.ceil(filtered.length/pageSize), function(p){currentPage=p;renderTable();});
 }
 
-/* ── 페이지네이션 ── */
-function renderPaging(){
-  var total=Math.ceil(filtered.length/pageSize);
-  if(total<=1){document.getElementById('pagination').innerHTML='';return;}
-  var h='<button class="pg-btn" onclick="changePg('+(currentPage-1)+')" '+(currentPage===1?'disabled':'')+'>◀</button>';
-  for(var i=1;i<=total;i++){
-    if(i===1||i===total||Math.abs(i-currentPage)<=2)
-      h+='<button class="pg-btn'+(i===currentPage?' on':'')+'" onclick="changePg('+i+')">'+i+'</button>';
-    else if(Math.abs(i-currentPage)===3) h+='<span style="color:var(--text2);padding:3px">…</span>';
-  }
-  h+='<button class="pg-btn" onclick="changePg('+(currentPage+1)+')" '+(currentPage===total?'disabled':'')+'>▶</button>';
-  document.getElementById('pagination').innerHTML=h;
+/* ══ 데이터 관리 탭 ══ */
+function renderManageTab(){
+  document.getElementById('mngCount').textContent='전체 '+allData.length+'건';
+  // 부서 태그
+  var dm={};
+  allData.forEach(function(r){var d=r.dept||'(미입력)';dm[d]=(dm[d]||0)+1;});
+  document.getElementById('deptTagArea').innerHTML=Object.keys(dm).sort().map(function(d){
+    return'<span class="dept-tag" onclick="document.getElementById(\'replaceFrom\').value=\''+d.replace(/'/g,"\\'")+'\'">'
+      +d+' <span class="dept-cnt">('+dm[d]+')</span></span>';
+  }).join('');
+  renderMngTable();
 }
-function changePg(p){
-  var total=Math.ceil(filtered.length/pageSize);
-  if(p<1||p>total) return;
-  currentPage=p; renderTable();
-  document.querySelector('.tbl-wrap').scrollIntoView({behavior:'smooth'});
+function renderMngTable(){
+  var start=(mngPage-1)*mngPageSize, page=allData.slice(start,start+mngPageSize);
+  document.getElementById('mngBody').innerHTML=page.map(function(r,i){
+    var dt=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleDateString('ko-KR'):'-';
+    return'<tr>'
+      +'<td class="td-name">'+(r.name||'-')+'</td>'
+      +'<td style="font-size:11px;color:var(--text2)">'+dt+'</td>'
+      +'<td>'+(r.gender||'-')+'</td><td>'+(r.age||'-')+'</td><td>'+(r.dept||'-')+'</td>'
+      +'<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.jobDetail||'-')+'</td>'
+      +'<td>'+(r.hasPain==='예'?'<span class="badge b-pain">있음</span>':'<span class="badge b-none">없음</span>')+'</td>'
+      +'<td>'
+        +'<button class="btn-edit-sm" onclick="openEditModal('+(start+i)+')">✏️ 수정</button>'
+        +'<button class="btn-del-sm"  onclick="confirmDelete('+(start+i)+')">🗑</button>'
+      +'</td></tr>';
+  }).join('');
+  renderPaging('mngPagination', mngPage, Math.ceil(allData.length/mngPageSize), function(p){mngPage=p;renderMngTable();});
+}
+function doBulkReplace(){
+  var from=document.getElementById('replaceFrom').value.trim();
+  var to=document.getElementById('replaceTo').value.trim();
+  if(!from||!to){alert('변경 전/후 부서명을 모두 입력해주세요.');return;}
+  var targets=allData.filter(function(r){return r.dept===from;});
+  if(!targets.length){alert('"'+from+'" 부서가 없습니다.');return;}
+  if(!confirm('"'+from+'" → "'+to+'" 으로 '+targets.length+'건 일괄 변경하시겠습니까?')) return;
+  window._bulkReplaceFn&&window._bulkReplaceFn(from,to,targets);
 }
 
-/* ── 드로어 ── */
+/* ══ 편집 모달 ══ */
+function openEditModal(idx){
+  var r=allData[parseInt(idx)]; if(!r) return;
+  document.getElementById('editDocId').value=r.id||'';
+  document.getElementById('e-name').value=r.name||'';
+  document.getElementById('e-age').value=r.age||'';
+  document.getElementById('e-gender').value=r.gender||'';
+  document.getElementById('e-marriage').value=r.marriage||'';
+  document.getElementById('e-dept').value=r.dept||'';
+  document.getElementById('e-line').value=r.line||'';
+  document.getElementById('e-jobDetail').value=r.jobDetail||'';
+  document.getElementById('e-jobYr').value=r.jobYr||'';
+  document.getElementById('e-jobMo').value=r.jobMo||'';
+  document.getElementById('e-workHr').value=r.workHr||'';
+  document.getElementById('e-housework').value=r.housework||'';
+  document.getElementById('e-physicalBurden').value=r.physicalBurden||'';
+  document.getElementById('editModal').classList.add('open');
+}
+function closeModal(){document.getElementById('editModal').classList.remove('open');}
+function doSave(){window._saveFn&&window._saveFn();}
+function doDelete(){window._deleteFn&&window._deleteFn();}
+function confirmDelete(idx){
+  var r=allData[parseInt(idx)]; if(!r) return;
+  if(confirm((r.name||'이 기록')+'을(를) 삭제하시겠습니까?\n되돌릴 수 없습니다.'))
+    window._deleteByIdFn&&window._deleteByIdFn(r.id);
+}
+
+/* ══ 드로어 ══ */
 function openDrawer(idx){
   var r=filtered[idx]; if(!r) return;
   var dt=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleString('ko-KR'):'-';
-  var judge=judgeOverall(r);
-  var jClass={'정상':'판정-정상','관리대상자':'판정-관리대상자','통증호소자':'판정-통증호소자'};
+  var j=judgeOverall(r);
+  var jC={'정상':'판정-정상','관리대상자':'판정-관리대상자','통증호소자':'판정-통증호소자'};
   document.getElementById('dTitle').textContent=(r.name||'-')+' 상세 정보';
   function row(k,v){return'<div class="d-row"><span class="dk">'+k+'</span><span class="dv">'+(v||'-')+'</span></div>';}
   function sec(t){return'<div class="d-sec-title">'+t+'</div>';}
-  var h='<div class="d-sec"><div style="margin-bottom:10px"><span class="result-판정 '+(jClass[judge]||'')+' " style="font-size:14px">전체 판정: '+judge+'</span></div>'
-    +sec('👤 인적사항')
-    +row('성명',r.name)+row('연령',(r.age||'-')+'세')+row('성별',r.gender)+row('결혼여부',r.marriage)
+  var h='<div class="d-sec"><div style="margin-bottom:10px"><span class="result-판정 '+(jC[j]||'')+'">전체 판정: '+j+'</span></div>'
+    +sec('👤 인적사항')+row('성명',r.name)+row('연령',(r.age||'-')+'세')+row('성별',r.gender)+row('결혼여부',r.marriage)
     +row('현직장경력',(r.careerYr||'0')+'년 '+(r.careerMo||'0')+'개월')+row('제출일시',dt)+'</div>';
-  h+='<div class="d-sec">'+sec('🔧 작업 정보')
-    +row('작업부서',(r.dept||'-')+'부 '+(r.line||'-')+'라인')
-    +row('수행작업',r.jobDetail)
-    +row('현작업기간',(r.jobYr||'0')+'년 '+(r.jobMo||'0')+'개월')
-    +row('전 작업',(r.prevJob||'-'))
-    +row('1일 근무',(r.workHr||'-')+'시간/휴식'+(r.restMin||'-')+'분'+(r.restCnt||'-')+'회')+'</div>';
-  h+='<div class="d-sec">'+sec('🏠 생활습관')
-    +row('여가활동',r.hobbies&&r.hobbies.length?r.hobbies.join(', '):'-')
+  h+='<div class="d-sec">'+sec('🔧 작업 정보')+row('작업부서',(r.dept||'-')+'부 '+(r.line||'-')+'라인')
+    +row('수행작업',r.jobDetail)+row('현작업기간',(r.jobYr||'0')+'년 '+(r.jobMo||'0')+'개월')
+    +row('전 작업',r.prevJob)+row('1일 근무',(r.workHr||'-')+'시간')+'</div>';
+  h+='<div class="d-sec">'+sec('🏠 생활습관')+row('여가활동',r.hobbies&&r.hobbies.length?r.hobbies.join(', '):'-')
     +row('가사노동',r.housework)+row('육체적부담',r.physicalBurden)+'</div>';
   h+='<div class="d-sec">'+sec('🏥 건강이력')
     +row('질병진단',r.hasDiag==='예'?'예 / '+(r.diagList||[]).join(', ')+' / '+(r.diagStatus||'-'):'아니오')
     +row('사고상해',r.hasInjury==='예'?'예 / '+(r.injuryParts||[]).join(', ')+' / '+(r.injuryStatus||'-'):'아니오')+'</div>';
   if(r.hasPain==='예'&&r.painParts&&r.painParts.length){
-    h+='<div class="d-sec">'+sec('🩺 통증 부위별 NIOSH 판정');
+    h+='<div class="d-sec">'+sec('🩺 통증 NIOSH 판정');
     r.painParts.forEach(function(part){
-      var d=r.painData&&r.painData[part];
-      var pj=judgePartNIOSH(d);
+      var d=r.painData&&r.painData[part], pj=judgePartNIOSH(d);
       var pc={'정상':'판정-정상','관리대상자':'판정-관리대상자','통증호소자':'판정-통증호소자'};
-      h+='<div style="margin:8px 0 4px;display:flex;align-items:center;gap:6px">'
-        +'<b style="font-size:12px">'+(PART_ICON[part]||'')+''+part+'</b>'
-        +'<span class="result-판정 '+(pc[pj]||'')+'">'+pj+'</span></div>';
-      if(d){
-        h+=row('부위',d.side)+row('지속기간',d.dur)+row('통증정도',d.level)
-          +row('증상빈도',d.freq)+row('지난1주일',d.lastWeek)
-          +row('조치',d.action&&d.action.length?d.action.join(', ')+(d.actionEtc?' ('+d.actionEtc+')':''):'-');
-      }
+      h+='<div style="margin:8px 0 4px;display:flex;align-items:center;gap:6px"><b style="font-size:12px">'+(PART_ICON[part]||'')+' '+part+'</b><span class="result-판정 '+(pc[pj]||'')+'">'+pj+'</span></div>';
+      if(d) h+=row('부위',d.side)+row('지속기간',d.dur)+row('통증정도',d.level)+row('빈도',d.freq)+row('지난1주일',d.lastWeek)+row('조치',d.action&&d.action.length?d.action.join(', ')+(d.actionEtc?' ('+d.actionEtc+')':''):'-');
     });
     h+='</div>';
   }
@@ -879,130 +872,33 @@ function openDrawer(idx){
   document.getElementById('drawer').classList.add('open');
   document.getElementById('dBack').classList.add('open');
 }
-function closeDrawer(){
-  document.getElementById('drawer').classList.remove('open');
-  document.getElementById('dBack').classList.remove('open');
+function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('dBack').classList.remove('open');}
+
+/* ══ 페이지네이션 공통 ══ */
+function renderPaging(elId, cur, total, cb){
+  if(total<=1){document.getElementById(elId).innerHTML='';return;}
+  var h='<button class="pg-btn" onclick="('+cb+')('+( cur-1)+')" '+(cur===1?'disabled':'')+'>◀</button>';
+  for(var i=1;i<=total;i++){
+    if(i===1||i===total||Math.abs(i-cur)<=2)
+      h+='<button class="pg-btn'+(i===cur?' on':'')+'" onclick="('+cb+')('+i+')">'+i+'</button>';
+    else if(Math.abs(i-cur)===3) h+='<span style="padding:3px;color:var(--text2)">…</span>';
+  }
+  h+='<button class="pg-btn" onclick="('+cb+')('+( cur+1)+')" '+(cur===total?'disabled':'')+'>▶</button>';
+  document.getElementById(elId).innerHTML=h;
 }
 
-/* ── CSV ── */
+/* ══ CSV ══ */
 function downloadCSV(){
-  var cols=['이름','제출일시','성별','연령','결혼여부','부서','라인','수행작업','현작업기간','1일근무','가사노동','여가활동','질병진단','사고상해','육체적부담','통증여부','전체판정','통증부위'];
-  PARTS.forEach(function(p){cols.push(p+'_판정',p+'_기간',p+'_강도',p+'_빈도');});
+  var cols=['이름','제출일시','성별','연령','부서','수행작업','육체적부담','통증여부','전체판정','통증부위'];
   var rows=[cols];
   filtered.forEach(function(r){
     var dt=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleString('ko-KR'):'';
-    var row=[r.name||'',dt,r.gender||'',r.age||'',r.marriage||'',r.dept||'',r.line||'',r.jobDetail||'',
-      (r.jobYr||'0')+'년'+(r.jobMo||'0')+'개월',
-      (r.workHr||'')+'시간/휴식'+(r.restMin||'')+'분'+(r.restCnt||'')+'회',
-      r.housework||'',r.hobbies?r.hobbies.join('/'):'' ,
-      r.hasDiag==='예'?(r.diagList||[]).join('/')+'/'+(r.diagStatus||''):'아니오',
-      r.hasInjury==='예'?(r.injuryParts||[]).join('/')+'/'+(r.injuryStatus||''):'아니오',
-      r.physicalBurden||'',r.hasPain||'',judgeOverall(r),
-      r.painParts?r.painParts.join('/'):''
-    ];
-    PARTS.forEach(function(p){
-      var d=r.painData&&r.painData[p];
-      row.push(d?judgePartNIOSH(d):'정상',d?d.dur:'',d?d.level:'',d?d.freq:'');
-    });
-    rows.push(row.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}));
+    rows.push([r.name||'',dt,r.gender||'',r.age||'',r.dept||'',r.jobDetail||'',r.physicalBurden||'',r.hasPain||'',judgeOverall(r),r.painParts?r.painParts.join('/'):''
+    ].map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}));
   });
-  var blob=new Blob(['\uFEFF'+rows.map(function(r){return r.join(',');}).join('\n')],{type:'text/csv;charset=utf-8'});
-  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
-  a.download='근골격계NIOSH분석_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
-}
-
-/* ── 데이터 관리 탭 ── */
-var mngPage = 1, mngPageSize = 30;
-
-function renderManageTab(){
-  document.getElementById('mngCount').textContent = '전체 '+allData.length+'건';
-  renderDeptTags();
-  renderMngTable();
-}
-
-function renderDeptTags(){
-  var deptMap={};
-  allData.forEach(function(r){ var d=r.dept||'(미입력)'; deptMap[d]=(deptMap[d]||0)+1; });
-  document.getElementById('deptTagArea').innerHTML =
-    Object.keys(deptMap).sort().map(function(d){
-      return '<span class="dept-tag" onclick="document.getElementById(\'replaceFrom\').value=\''+d.replace(/'/g,"\\'")+'\'">'+d+' <span class="dept-cnt">('+deptMap[d]+'명)</span></span>';
-    }).join('');
-}
-
-function renderMngTable(){
-  var start=(mngPage-1)*mngPageSize;
-  var page=allData.slice(start, start+mngPageSize);
-  document.getElementById('mngBody').innerHTML = page.map(function(r,i){
-    var dt=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleDateString('ko-KR'):'-';
-    return '<tr>'
-      +'<td><b>'+(r.name||'-')+'</b></td>'
-      +'<td style="font-size:11px;color:var(--text2)">'+dt+'</td>'
-      +'<td>'+(r.gender||'-')+'</td>'
-      +'<td>'+(r.age||'-')+'</td>'
-      +'<td>'+(r.dept||'-')+'</td>'
-      +'<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.jobDetail||'-')+'</td>'
-      +'<td>'+(r.hasPain==='예'?'<span class="badge b-pain">있음</span>':'<span class="badge b-none">없음</span>')+'</td>'
-      +'<td>'
-        +'<button class="btn-edit-sm" onclick="openEditModal(\''+(start+i)+'\')">✏️ 수정</button>'
-        +'<button class="btn-del-sm" onclick="confirmDelete(\''+(start+i)+'\')">🗑 삭제</button>'
-      +'</td>'
-      +'</tr>';
-  }).join('');
-  // 페이지네이션
-  var total=Math.ceil(allData.length/mngPageSize);
-  if(total<=1){document.getElementById('mngPagination').innerHTML='';return;}
-  var h='<button class="pg-btn" onclick="changeMngPg('+(mngPage-1)+')" '+(mngPage===1?'disabled':'')+'>◀</button>';
-  for(var i=1;i<=total;i++){
-    if(i===1||i===total||Math.abs(i-mngPage)<=2)
-      h+='<button class="pg-btn'+(i===mngPage?' on':'')+'" onclick="changeMngPg('+i+')">'+i+'</button>';
-    else if(Math.abs(i-mngPage)===3) h+='<span style="padding:3px;color:var(--text2)">…</span>';
-  }
-  h+='<button class="pg-btn" onclick="changeMngPg('+(mngPage+1)+')" '+(mngPage===total?'disabled':'')+'>▶</button>';
-  document.getElementById('mngPagination').innerHTML=h;
-}
-function changeMngPg(p){
-  var total=Math.ceil(allData.length/mngPageSize);
-  if(p<1||p>total) return;
-  mngPage=p; renderMngTable();
-}
-
-/* ── 편집 모달 ── */
-function openEditModal(idx){
-  var r=allData[parseInt(idx)]; if(!r) return;
-  document.getElementById('editDocId').value = r.id||'';
-  document.getElementById('e-name').value       = r.name||'';
-  document.getElementById('e-age').value        = r.age||'';
-  document.getElementById('e-gender').value     = r.gender||'';
-  document.getElementById('e-marriage').value   = r.marriage||'';
-  document.getElementById('e-dept').value       = r.dept||'';
-  document.getElementById('e-line').value       = r.line||'';
-  document.getElementById('e-jobDetail').value  = r.jobDetail||'';
-  document.getElementById('e-jobYr').value      = r.jobYr||'';
-  document.getElementById('e-jobMo').value      = r.jobMo||'';
-  document.getElementById('e-workHr').value     = r.workHr||'';
-  document.getElementById('e-housework').value  = r.housework||'';
-  document.getElementById('e-physicalBurden').value = r.physicalBurden||'';
-  document.getElementById('editModal').classList.add('open');
-}
-function closeModal(){ document.getElementById('editModal').classList.remove('open'); }
-
-function doSave(){ window._saveFn && window._saveFn(); }
-function doDelete(){ window._deleteFn && window._deleteFn(); }
-function confirmDelete(idx){
-  var r=allData[parseInt(idx)]; if(!r) return;
-  if(confirm((r.name||'이 기록')+'을(를) 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.'))
-    window._deleteByIdFn && window._deleteByIdFn(r.id);
-}
-
-/* ── 부서 일괄 치환 ── */
-function doBulkReplace(){
-  var from=document.getElementById('replaceFrom').value.trim();
-  var to=document.getElementById('replaceTo').value.trim();
-  if(!from||!to){ alert('변경 전/후 부서명을 모두 입력해주세요.'); return; }
-  var targets=allData.filter(function(r){ return r.dept===from; });
-  if(!targets.length){ alert('"'+from+'" 부서가 없습니다.'); return; }
-  if(!confirm('"'+from+'" → "'+to+'" 으로 '+targets.length+'건 일괄 변경하시겠습니까?')) return;
-  window._bulkReplaceFn && window._bulkReplaceFn(from, to, targets);
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+rows.map(function(r){return r.join(',');}).join('\n')],{type:'text/csv;charset=utf-8'}));
+  a.download='근골격계분석_'+new Date().toISOString().slice(0,10)+'.csv'; a.click();
 }
 
 document.getElementById('pwInp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
@@ -1022,113 +918,94 @@ const cfg = {
   messagingSenderId:"704127486318",
   appId:"1:704127486318:web:3b8c2c5562978231d3597f"
 };
-
 const app = getApps().length ? getApps()[0] : initializeApp(cfg);
-const db = getFirestore(app, '(default)');
+const db  = getFirestore(app, '(default)');
 
-/* ── 로드 ── */
+/* 로드 */
 window._loadFn = async function(){
   try{
-    const q = query(collection(db,'surveys'), orderBy('createdAt','desc'));
-    const snap = await getDocs(q);
+    const snap = await getDocs(query(collection(db,'surveys'), orderBy('createdAt','desc')));
     allData = [];
-    snap.forEach(doc => allData.push(Object.assign({id:doc.id}, doc.data())));
+    snap.forEach(d => allData.push(Object.assign({id:d.id}, d.data())));
     filtered = allData.slice();
     updateAll(allData);
     renderTable();
-    console.log('✅ Firestore 로드 완료:', allData.length,'건');
+    console.log('✅ 로드 완료:', allData.length,'건');
   } catch(e){
-    console.error('❌ Firestore 오류:', e);
-    document.getElementById('tblBody').innerHTML =
-      '<tr><td colspan="10" class="empty-msg">⚠️ 오류: '+e.message+'<br><small>Firebase 콘솔 → Firestore → 규칙에서 read를 허용해주세요</small></td></tr>';
+    console.error('❌ 오류:', e);
+    document.getElementById('tblBody').innerHTML='<tr><td colspan="10" class="empty-msg">⚠️ '+e.message+'<br><small>Firestore 규칙에서 read를 허용해주세요</small></td></tr>';
   } finally { setLoad(false); }
 };
 
-/* ── 저장 (수정) ── */
+/* 저장 */
 window._saveFn = async function(){
-  const docId = document.getElementById('editDocId').value;
-  if(!docId){ alert('문서 ID가 없습니다.'); return; }
-  const updates = {
-    name:    document.getElementById('e-name').value.trim(),
-    age:     document.getElementById('e-age').value,
-    gender:  document.getElementById('e-gender').value,
+  const id = document.getElementById('editDocId').value;
+  if(!id) return;
+  const u = {
+    name:document.getElementById('e-name').value.trim(),
+    age:document.getElementById('e-age').value,
+    gender:document.getElementById('e-gender').value,
     marriage:document.getElementById('e-marriage').value,
-    dept:    document.getElementById('e-dept').value.trim(),
-    line:    document.getElementById('e-line').value.trim(),
+    dept:document.getElementById('e-dept').value.trim(),
+    line:document.getElementById('e-line').value.trim(),
     jobDetail:document.getElementById('e-jobDetail').value.trim(),
-    jobYr:   document.getElementById('e-jobYr').value,
-    jobMo:   document.getElementById('e-jobMo').value,
-    workHr:  document.getElementById('e-workHr').value,
+    jobYr:document.getElementById('e-jobYr').value,
+    jobMo:document.getElementById('e-jobMo').value,
+    workHr:document.getElementById('e-workHr').value,
     housework:document.getElementById('e-housework').value,
     physicalBurden:document.getElementById('e-physicalBurden').value,
   };
   try{
-    await updateDoc(doc(db,'surveys',docId), updates);
-    // 로컬 데이터도 업데이트
-    var idx = allData.findIndex(r=>r.id===docId);
-    if(idx>=0) Object.assign(allData[idx], updates);
-    filtered = allData.slice();
-    closeModal();
-    updateAll(allData);
-    renderTable();
-    renderManageTab();
+    await updateDoc(doc(db,'surveys',id), u);
+    var idx=allData.findIndex(r=>r.id===id);
+    if(idx>=0) Object.assign(allData[idx], u);
+    filtered=allData.slice();
+    closeModal(); updateAll(allData); renderTable(); renderManageTab();
     alert('✅ 수정 완료!');
   } catch(e){ alert('오류: '+e.message); }
 };
 
-/* ── 삭제 (모달에서) ── */
+/* 삭제 (모달) */
 window._deleteFn = async function(){
-  const docId = document.getElementById('editDocId').value;
-  const name = document.getElementById('e-name').value || '이 기록';
-  if(!confirm(name+'을(를) 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) return;
+  const id=document.getElementById('editDocId').value;
+  const name=document.getElementById('e-name').value||'이 기록';
+  if(!confirm(name+'을(를) 삭제하시겠습니까?')) return;
   try{
-    await deleteDoc(doc(db,'surveys',docId));
-    allData = allData.filter(r=>r.id!==docId);
-    filtered = allData.slice();
-    closeModal();
-    updateAll(allData);
-    renderTable();
-    renderManageTab();
+    await deleteDoc(doc(db,'surveys',id));
+    allData=allData.filter(r=>r.id!==id); filtered=allData.slice();
+    closeModal(); updateAll(allData); renderTable(); renderManageTab();
     alert('🗑 삭제 완료!');
   } catch(e){ alert('오류: '+e.message); }
 };
 
-/* ── 삭제 (테이블 버튼에서) ── */
-window._deleteByIdFn = async function(docId){
+/* 삭제 (버튼) */
+window._deleteByIdFn = async function(id){
   try{
-    await deleteDoc(doc(db,'surveys',docId));
-    allData = allData.filter(r=>r.id!==docId);
-    filtered = allData.slice();
-    updateAll(allData);
-    renderTable();
-    renderManageTab();
+    await deleteDoc(doc(db,'surveys',id));
+    allData=allData.filter(r=>r.id!==id); filtered=allData.slice();
+    updateAll(allData); renderTable(); renderManageTab();
     alert('🗑 삭제 완료!');
   } catch(e){ alert('오류: '+e.message); }
 };
 
-/* ── 부서 일괄 치환 ── */
+/* 부서 일괄 치환 */
 window._bulkReplaceFn = async function(from, to, targets){
   setLoad(true);
   try{
-    const batch = writeBatch(db);
-    targets.forEach(function(r){
-      batch.update(doc(db,'surveys',r.id), {dept: to});
-    });
+    const batch=writeBatch(db);
+    targets.forEach(r => batch.update(doc(db,'surveys',r.id), {dept:to}));
     await batch.commit();
-    // 로컬 업데이트
-    allData.forEach(function(r){ if(r.dept===from) r.dept=to; });
-    filtered = allData.slice();
-    updateAll(allData);
-    renderTable();
-    renderManageTab();
-    var res = document.getElementById('replaceResult');
-    res.textContent = '✅ '+targets.length+'건 성공적으로 치환 완료: "'+from+'" → "'+to+'"';
+    allData.forEach(r=>{ if(r.dept===from) r.dept=to; });
+    filtered=allData.slice();
+    updateAll(allData); renderTable(); renderManageTab();
+    const res=document.getElementById('replaceResult');
+    res.textContent='✅ '+targets.length+'건 치환 완료: "'+from+'" → "'+to+'"';
     res.style.display='block';
     document.getElementById('replaceFrom').value='';
     document.getElementById('replaceTo').value='';
-    setTimeout(function(){res.style.display='none';},4000);
+    setTimeout(()=>res.style.display='none', 4000);
   } catch(e){ alert('오류: '+e.message); }
-  finally { setLoad(false); }
+  finally{ setLoad(false); }
 };
 </script>
 </body>
