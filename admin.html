@@ -4,22 +4,22 @@
     <meta charset="UTF-8">
     <title>관리자 대시보드 (2026 통합)</title>
     <style>
-        body { font-family:sans-serif; background:#f0f2f5; padding:20px; }
-        .card { background:#fff; border-radius:12px; padding:25px; box-shadow:0 2px 4px rgba(0,0,0,0.1); margin-bottom:20px; }
+        body { font-family:sans-serif; background:#f0f2f5; padding:20px; color:#1c1e21; }
+        .card { background:#fff; border-radius:12px; padding:25px; box-shadow:0 2px 10px rgba(0,0,0,0.08); margin-bottom:20px; }
         table { width:100%; border-collapse:collapse; background:#fff; font-size:13px; }
         th, td { border:1px solid #e1e4e8; padding:12px; text-align:left; }
         th { background:#f8f9fa; color:#4f8ef7; }
         tr:hover { background:#f1faff; cursor:pointer; }
-        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; }
+        .modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
         .m-box { background:#fff; padding:30px; border-radius:16px; width:95%; max-width:800px; max-height:90vh; overflow-y:auto; }
-        .pain-card { border-left:4px solid #4f8ef7; background:#f9fbff; padding:15px; border-radius:8px; margin-top:10px; font-size:13px; line-height:1.6; }
+        .pain-card { border-left:5px solid #4f8ef7; background:#f9fbff; padding:15px; border-radius:8px; margin-top:10px; font-size:13px; line-height:1.6; }
     </style>
 </head>
 <body>
 <div class="card">
     <h2>📊 2026 근골격계 조사 대시보드</h2>
     <table>
-        <thead><tr><th>제출일시</th><th>성명(연령)</th><th>부서/라인</th><th>통증여부</th><th>질병/사고</th></tr></thead>
+        <thead><tr><th>제출일시</th><th>성명(연령)</th><th>부서/라인</th><th>통증여부</th><th>사고/질병</th></tr></thead>
         <tbody id="list"></tbody>
     </table>
 </div>
@@ -28,7 +28,7 @@
     <div class="m-box">
         <h2 id="m-title" style="color:#4f8ef7; margin-bottom:20px;">상세 조사 데이터</h2>
         <div id="m-content"></div>
-        <button onclick="document.getElementById('modal').style.display='none'" style="margin-top:20px; width:100%; padding:12px; border:none; border-radius:8px; cursor:pointer;">닫기</button>
+        <button onclick="document.getElementById('modal').style.display='none'" style="margin-top:20px; width:100%; padding:12px; cursor:pointer;">닫기</button>
     </div>
 </div>
 
@@ -63,7 +63,7 @@
                 <td><b>${r.name}</b> (${r.age})</td>
                 <td>${r.dept || '-'}/${r.line || '-'}</td>
                 <td>${r.hasPain==='예' ? '통증있음' : '정상'}</td>
-                <td>질병:${r.hasDiag}/사고:${r.hasInjury}</td>
+                <td>${r.hasInjury}/${r.hasDiag}</td>
             </tr>`;
         });
     }
@@ -72,31 +72,19 @@
         const r = all[idx];
         document.getElementById('m-title').innerText = `${r.name} 님 기록`;
         let html = `
-            <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:20px;">
+            <div style="background:#f8f9fa; padding:15px; border-radius:10px; margin-bottom:15px;">
                 <p><b>경력:</b> 현직장 ${r.career} / 현작업 ${r.jobPeriod}</p>
-                <p><b>이전경력:</b> ${r.prevJob}</p>
-                <p><b>근무:</b> ${r.workTime}</p>
-                <p><b>부담도:</b> ${r.burden || '-'}</p>
-                <p><b>취미:</b> ${r.hobbies ? r.hobbies.join(', ') : ''}</p>
-            </div>
-            <div style="margin-bottom:20px;">
-                <p><b>질병:</b> ${r.hasDiag} (${r.diagList ? r.diagList.join(', ') : ''}) - ${r.diagStatus}</p>
-                <p><b>사고:</b> ${r.hasInjury} (${r.injuryParts ? r.injuryParts.join(', ') : ''}) - ${r.injuryStatus}</p>
+                <p><b>근무환경:</b> ${r.workTime} / 부담도: ${r.burden}</p>
+                <p><b>질병:</b> ${r.hasDiag} (${r.diagList ? r.diagList.join(', ') : ''}) / ${r.diagStatus}</p>
+                <p><b>사고:</b> ${r.hasInjury} (${r.injuryParts ? r.injuryParts.join(', ') : ''}) / ${r.injuryStatus}</p>
             </div>`;
-
         if(r.painData) {
             Object.entries(r.painData).forEach(([part, d]) => {
-                const sideText = (part === '목' || part === '허리') ? '' : `[위치: ${d.side}] `;
-                const actionText = d.action.includes('기타') ? `${d.action.join(', ')} (${d.actionEtc})` : d.action.join(', ');
-                html += `
-                <div class="pain-card">
-                    <b>📍 ${part}</b><br>
-                    ${sideText}지속: ${d.dur} | 정도: ${d.level} | 빈도: ${d.freq}<br>
-                    과거동일증상: ${d.pastSame} | 최근1주: ${d.lastWeek} | 조치: ${actionText}
-                </div>`;
+                const sideText = d.side ? `[위치: ${d.side}] ` : '';
+                html += `<div class="pain-card"><b>📍 ${part}</b><br>${sideText}지속: ${d.dur} | 강도: ${d.level} | 빈도: ${d.freq}<br>과거동일: ${d.pastSame} | 최근1주: ${d.lastWeek} | 조치: ${d.action.join(', ')}</div>`;
             });
         }
-        html += `<div style="text-align:right; margin-top:20px;"><button onclick="window.del('${r.id}')" style="color:#ccc; border:none; background:none; cursor:pointer;">기록 삭제</button></div>`;
+        html += `<div style="text-align:right; margin-top:20px;"><button onclick="window.del('${r.id}')" style="color:#ccc; border:none; background:none; cursor:pointer; font-size:11px;">데이터 삭제</button></div>`;
         document.getElementById('m-content').innerHTML = html;
         document.getElementById('modal').style.display = 'flex';
     };
