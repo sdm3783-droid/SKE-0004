@@ -2,515 +2,562 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>근골격계질환 증상조사표(2026)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>근골격계 증상조사 - 관리자</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
-:root{--bg:#f0f4ff;--surface:#fff;--border:#dde3f0;--accent:#2563eb;--accent2:#7c3aed;--alight:rgba(37,99,235,0.07);--green:#10b981;--text:#1e293b;--text2:#64748b;--r:16px;--sh:0 4px 20px rgba(37,99,235,0.07);}
+:root{--bg:#f0f4ff;--surface:#fff;--border:#dde3f0;--accent:#2563eb;--accent2:#7c3aed;--alight:rgba(37,99,235,0.07);--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--text:#1e293b;--text2:#64748b;--r:14px;--sh:0 4px 20px rgba(37,99,235,0.07);}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── 로그인 ── */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a8a,#7c3aed);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:#fff;border-radius:20px;padding:40px 36px;width:340px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.25);}
+.login-logo{font-size:40px;margin-bottom:12px;}
+.login-title{font-size:18px;font-weight:900;margin-bottom:4px;}
+.login-sub{font-size:12px;color:var(--text2);margin-bottom:28px;}
+.login-inp{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:'Noto Sans KR',sans-serif;outline:none;margin-bottom:12px;text-align:center;letter-spacing:4px;}
+.login-inp:focus{border-color:var(--accent);}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.login-err{color:var(--red);font-size:12px;margin-top:8px;display:none;}
 
 /* ── 헤더 ── */
-.hd{position:sticky;top:0;z-index:200;background:#fff;border-bottom:1px solid var(--border);padding:13px 16px 0;}
-.hd-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-.hd-title{font-size:16px;font-weight:900;}
-.step-tag{font-size:11px;font-weight:700;background:var(--alight);color:var(--accent);padding:4px 10px;border-radius:20px;}
+.header{background:linear-gradient(135deg,#1e3a8a,#7c3aed);color:#fff;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,0.15);}
+.header-left{display:flex;align-items:center;gap:10px;}
+.header-title{font-size:17px;font-weight:900;}
+.header-badge{background:rgba(255,255,255,0.2);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.logout-btn{padding:8px 14px;background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.3);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
 
-/* ── 스텝 탭 ── */
-.step-tabs{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;}
-.step-tabs::-webkit-scrollbar{display:none;}
-.step-tab{flex-shrink:0;padding:9px 16px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap;}
-.step-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-.step-tab.done{color:var(--green);border-bottom-color:transparent;}
-.step-tab.done::before{content:'✓ ';}
-.step-tab.locked{opacity:.35;cursor:default;pointer-events:none;}
+/* ── 메인 ── */
+#adminMain{display:none;padding:20px;}
+.max-w{max-width:1200px;margin:0 auto;}
 
-.prog-bar{height:4px;background:#e8edf5;}
-.prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s ease;}
+/* ── 통계 카드 ── */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh);text-align:center;}
+.stat-num{font-size:28px;font-weight:900;}
+.stat-label{font-size:11px;color:var(--text2);margin-top:4px;}
+.c-blue{color:var(--accent);}
+.c-red{color:var(--red);}
+.c-green{color:var(--green);}
+.c-yellow{color:var(--yellow);}
+.c-purple{color:var(--accent2);}
 
-/* ── 화면 ── */
-.screen{display:none;padding:18px 14px 110px;max-width:620px;margin:0 auto;}
-.screen.active{display:block;}
+/* ── 차트 영역 ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.chart-card{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);}
+.chart-title{font-size:13px;font-weight:800;margin-bottom:14px;color:var(--text);}
+@media(max-width:700px){.chart-grid{grid-template-columns:1fr;}}
 
-/* ── 카드 ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px 16px 14px;margin-bottom:12px;box-shadow:var(--sh);}
-.card-title{font-size:14px;font-weight:800;margin-bottom:12px;padding-bottom:9px;border-bottom:2px solid var(--alight);display:flex;align-items:center;gap:7px;}
-.ico{width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.qlabel{font-size:12px;font-weight:700;color:var(--text2);margin:9px 0 5px;}
+/* ── 툴바 ── */
+.toolbar{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:var(--sh);}
+.tb-inp{padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;min-width:140px;flex:1;}
+.tb-inp:focus{border-color:var(--accent);}
+.tb-select{padding:9px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:'Noto Sans KR',sans-serif;outline:none;background:#fff;cursor:pointer;}
+.tb-btn{padding:9px 16px;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;}
+.tb-search{background:var(--accent);color:#fff;}
+.tb-reset{background:#f1f5f9;color:var(--text2);}
+.tb-csv{background:var(--green);color:#fff;}
+.tb-refresh{background:var(--alight);color:var(--accent);border:1px solid var(--accent);}
 
-/* ── 인풋 ── */
-.inp{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:'Noto Sans KR',sans-serif;background:#f8fafc;color:var(--text);outline:none;transition:.2s;margin-bottom:7px;}
-.inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,0.1);background:#fff;}
-.row{display:flex;gap:8px;align-items:center;margin-bottom:7px;flex-wrap:wrap;}
-.row .inp{margin-bottom:0;flex:1;min-width:60px;}
-.rl{font-size:12px;color:var(--text2);white-space:nowrap;flex-shrink:0;}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+/* ── 테이블 ── */
+.tbl-wrap{background:#fff;border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:14px;}
+.tbl-header{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.tbl-count{font-size:13px;font-weight:700;color:var(--text2);}
+.tbl-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;min-width:900px;}
+thead tr{background:linear-gradient(135deg,var(--accent),var(--accent2));}
+thead th{padding:11px 13px;font-size:11px;font-weight:700;color:#fff;text-align:left;white-space:nowrap;cursor:pointer;user-select:none;}
+thead th:hover{background:rgba(255,255,255,0.1);}
+thead th .sort-icon{margin-left:4px;opacity:0.6;}
+tbody tr{border-bottom:1px solid var(--border);transition:.15s;cursor:pointer;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:#f0f4ff;}
+tbody td{padding:10px 13px;font-size:12px;color:var(--text);vertical-align:middle;}
+.td-name{font-weight:800;font-size:13px;}
+.td-date{color:var(--text2);font-size:11px;white-space:nowrap;}
 
-/* ── 옵션 버튼 ── */
-.ob{display:flex;align-items:center;justify-content:center;padding:12px 8px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;background:#f8fafc;color:var(--text);font-size:13px;font-weight:500;text-align:center;transition:.18s;user-select:none;margin-bottom:7px;}
-.ob:last-child{margin-bottom:0;}
-.ob.on{border-color:var(--accent);background:var(--alight);color:var(--accent);font-weight:700;}
-.ob:active{transform:scale(.97);}
+/* 배지 */
+.badge{display:inline-block;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;white-space:nowrap;}
+.badge-pain{background:rgba(239,68,68,0.1);color:#dc2626;}
+.badge-ok{background:rgba(16,185,129,0.1);color:#059669;}
+.badge-none{background:#f1f5f9;color:var(--text2);}
+.badge-b1{background:rgba(16,185,129,0.1);color:#059669;}
+.badge-b2{background:rgba(37,99,235,0.1);color:var(--accent);}
+.badge-b3{background:rgba(245,158,11,0.1);color:#d97706;}
+.badge-b4{background:rgba(239,68,68,0.1);color:#dc2626;}
+.part-tag{display:inline-block;padding:2px 6px;border-radius:6px;font-size:10px;font-weight:600;background:rgba(239,68,68,0.08);color:#dc2626;margin:1px;}
 
-/* ── 칩 ── */
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin:5px 0 9px;}
-.chip{padding:8px 13px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;background:#f8fafc;color:var(--text2);transition:.18s;user-select:none;}
-.chip.on{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;}
-.sub{background:#f8fafc;border:1px solid var(--border);border-radius:11px;padding:13px;margin-top:9px;}
+/* ── 상세 드로어 ── */
+#drawer{position:fixed;top:0;right:-480px;width:480px;max-width:100vw;height:100vh;background:#fff;box-shadow:-8px 0 40px rgba(0,0,0,0.15);z-index:500;transition:right .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;}
+#drawer.open{right:0;}
+#drawerBackdrop{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:499;display:none;}
+#drawerBackdrop.open{display:block;}
+.drawer-hd{padding:18px 20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;}
+.drawer-title{font-size:15px;font-weight:900;}
+.drawer-close{background:rgba(255,255,255,0.2);border:none;color:#fff;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:14px;}
+.drawer-body{padding:18px 20px;}
+.d-section{margin-bottom:18px;}
+.d-section-title{font-size:11px;font-weight:800;color:var(--accent);background:var(--alight);padding:4px 10px;border-radius:6px;display:inline-block;margin-bottom:8px;}
+.d-row{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:12px;}
+.d-row:last-child{border-bottom:none;}
+.dk{font-weight:700;color:var(--text);min-width:90px;flex-shrink:0;}
+.dv{color:var(--text2);word-break:break-all;}
 
-/* ── 통증 부위 ── */
-.part-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px;}
-.part-btn{padding:13px 6px;border:2px solid var(--border);border-radius:11px;cursor:pointer;background:#f8fafc;text-align:center;font-size:12px;font-weight:600;color:var(--text2);transition:.18s;user-select:none;}
-.part-btn .pi{font-size:20px;display:block;margin-bottom:3px;}
-.part-btn.on{border-color:var(--accent);background:var(--alight);color:var(--accent);}
-.ppanel{background:#fff;border:2px solid var(--accent);border-radius:15px;padding:18px;margin-top:12px;}
-.ppanel-title{font-size:14px;font-weight:900;color:var(--accent);margin-bottom:14px;padding-bottom:9px;border-bottom:1px solid var(--border);}
-.pq{margin-bottom:13px;}
-.pql{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:5px;display:flex;align-items:center;gap:4px;}
-.pql .n{width:19px;height:19px;border-radius:50%;background:var(--accent);color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.painref{background:#f0f4ff;border-radius:9px;padding:10px;font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.9;}
-
-/* ── 하단 내비 ── */
-.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);padding:11px 14px;border-top:1px solid var(--border);display:flex;gap:9px;z-index:300;}
-.btn{flex:1;padding:14px;border:none;border-radius:11px;font-weight:700;cursor:pointer;font-size:14px;font-family:'Noto Sans KR',sans-serif;transition:.2s;user-select:none;}
-.btn:active{transform:scale(.97);}
-.btn-n{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 4px 14px rgba(37,99,235,.3);}
-.btn-p{background:#f1f5f9;color:var(--text2);}
-.btn-s{background:linear-gradient(135deg,var(--green),#059669);color:#fff;box-shadow:0 4px 14px rgba(16,185,129,.3);}
+/* ── 페이지네이션 ── */
+.pagination{display:flex;align-items:center;justify-content:center;gap:6px;padding:12px;}
+.pg-btn{padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;background:#fff;color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;}
+.pg-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.pg-btn:disabled{opacity:.4;cursor:default;}
 
 /* ── 로딩 ── */
-#loading{position:fixed;inset:0;background:rgba(255,255,255,.93);z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;}
-.spin{width:40px;height:40px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:sp .8s linear infinite;}
-@keyframes sp{to{transform:rotate(360deg);}}
+#loadingBar{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:9998;transition:width .3s;}
 
-/* ── 완료 ── */
-#s-res{text-align:center;padding:80px 20px;}
-.res-ico{font-size:60px;margin-bottom:18px;animation:pop .5s cubic-bezier(.34,1.56,.64,1) both;}
-@keyframes pop{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
-.sum-row{display:flex;gap:8px;border-bottom:1px solid var(--border);padding:7px 0;font-size:13px;}
-.sum-k{font-weight:700;color:var(--text);min-width:110px;flex-shrink:0;}
-.sum-v{color:var(--text2);}
-
-@media(max-width:380px){.part-grid{grid-template-columns:repeat(2,1fr);}}
+/* 빈 상태 */
+.empty-row td{text-align:center;padding:40px;color:var(--text2);}
 </style>
 </head>
 <body>
 
-<div id="loading"><div class="spin"></div><div style="font-weight:700;color:var(--text2)">저장 중...</div></div>
+<div id="loadingBar"></div>
 
-<!-- ── 헤더 + 스텝 탭 ── -->
-<div class="hd">
-  <div class="hd-top">
-    <div class="hd-title">근골격계질환 증상조사표</div>
-    <div class="step-tag" id="stag">1 / 5</div>
-  </div>
-
-  <!-- 클릭 가능한 단계 탭 -->
-  <div class="step-tabs" id="stepTabs">
-    <div class="step-tab active" id="stab1" onclick="goTo(1)">1. 인적사항</div>
-    <div class="step-tab locked" id="stab2" onclick="goTo(2)">2. 작업정보</div>
-    <div class="step-tab locked" id="stab3" onclick="goTo(3)">3. 생활이력</div>
-    <div class="step-tab locked" id="stab4" onclick="goTo(4)">4. 통증조사</div>
-    <div class="step-tab locked" id="stab5" onclick="goTo(5)">5. 최종확인</div>
-  </div>
-
-  <div class="prog-bar"><div class="prog-fill" id="prog"></div></div>
-</div>
-
-<!-- S1 인적사항 -->
-<div class="screen active" id="s1">
-  <div class="card">
-    <div class="card-title"><span class="ico">👤</span>인적사항</div>
-    <div class="qlabel">성명 *</div>
-    <input id="name" type="text" class="inp" placeholder="성명을 입력하세요">
-    <div class="qlabel">만 연령 *</div>
-    <div class="row"><input id="age" type="number" class="inp" placeholder="0" min="0" max="99" style="max-width:90px"><span class="rl">세</span></div>
-    <div class="qlabel">성별 *</div>
-    <div class="g2">
-      <div class="ob" data-group="gender" data-val="남" onclick="pick(this)">남</div>
-      <div class="ob" data-group="gender" data-val="여" onclick="pick(this)">여</div>
-    </div>
-    <div class="qlabel">결혼여부 *</div>
-    <div class="g2">
-      <div class="ob" data-group="marriage" data-val="기혼" onclick="pick(this)">기혼</div>
-      <div class="ob" data-group="marriage" data-val="미혼" onclick="pick(this)">미혼</div>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span class="ico">🏢</span>현 직장 경력</div>
-    <div class="row">
-      <input id="careerYr" type="number" class="inp" placeholder="0" min="0" style="max-width:80px"><span class="rl">년</span>
-      <input id="careerMo" type="number" class="inp" placeholder="0" min="0" max="11" style="max-width:80px"><span class="rl">개월째 근무 중</span>
-    </div>
-  </div>
-  <div class="bnav">
-    <button class="btn btn-n" onclick="goTo(2)">다음 →</button>
+<!-- ── 로그인 ── -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">🔐</div>
+    <div class="login-title">관리자 로그인</div>
+    <div class="login-sub">근골격계질환 증상조사표 관리자 페이지</div>
+    <input id="pwInput" type="password" class="login-inp" placeholder="비밀번호" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">로그인</button>
+    <div class="login-err" id="loginErr">비밀번호가 올바르지 않습니다.</div>
   </div>
 </div>
 
-<!-- S2 작업정보 -->
-<div class="screen" id="s2">
-  <div class="card">
-    <div class="card-title"><span class="ico">🔧</span>현 작업 정보</div>
-    <div class="qlabel">작업 부서</div>
-    <div class="row">
-      <input id="dept" type="text" class="inp" placeholder="부서명"><span class="rl">부</span>
-      <input id="line" type="text" class="inp" placeholder="라인/공정"><span class="rl">라인</span>
+<!-- ── 헤더 ── -->
+<div class="header" id="adminHeader" style="display:none">
+  <div class="header-left">
+    <span style="font-size:22px">🦴</span>
+    <div>
+      <div class="header-title">근골격계 증상조사 관리자</div>
     </div>
-    <div class="qlabel">수행 작업 (구체적으로)</div>
-    <input id="jobDetail" type="text" class="inp" placeholder="현재 수행 중인 작업을 구체적으로">
-    <div class="qlabel">현 작업 수행 기간</div>
-    <div class="row">
-      <input id="jobYr" type="number" class="inp" placeholder="0" min="0" style="max-width:80px"><span class="rl">년</span>
-      <input id="jobMo" type="number" class="inp" placeholder="0" min="0" max="11" style="max-width:80px"><span class="rl">개월째 하고 있음</span>
-    </div>
+    <div class="header-badge" id="totalBadge">- 건</div>
   </div>
-  <div class="card">
-    <div class="card-title"><span class="ico">📋</span>이전 작업 경력</div>
-    <div class="qlabel">전 작업 내용</div>
-    <input id="prevJob" type="text" class="inp" placeholder="이전에 했던 작업 내용">
-    <div class="qlabel">작업 기간</div>
-    <div class="row">
-      <input id="prevJobYr" type="number" class="inp" placeholder="0" min="0" style="max-width:80px"><span class="rl">년</span>
-      <input id="prevJobMo" type="number" class="inp" placeholder="0" min="0" max="11" style="max-width:80px"><span class="rl">개월 동안 했음</span>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span class="ico">⏰</span>근무 및 휴식 시간</div>
-    <div class="qlabel">1일 근무시간</div>
-    <div class="row"><input id="workHr" type="number" class="inp" placeholder="0" min="0" max="24" style="max-width:80px"><span class="rl">시간</span></div>
-    <div class="qlabel">근무 중 휴식시간 (식사시간 제외)</div>
-    <div class="row">
-      <input id="restMin" type="number" class="inp" placeholder="0" min="0" style="max-width:80px"><span class="rl">분씩</span>
-      <input id="restCnt" type="number" class="inp" placeholder="0" min="0" style="max-width:80px"><span class="rl">회 휴식</span>
-    </div>
-  </div>
-  <div class="bnav">
-    <button class="btn btn-p" onclick="goTo(1)">← 이전</button>
-    <button class="btn btn-n" onclick="goTo(3)">다음 →</button>
-  </div>
+  <button class="logout-btn" onclick="doLogout()">로그아웃</button>
 </div>
 
-<!-- S3 생활/이력 -->
-<div class="screen" id="s3">
-  <div class="card">
-    <div class="card-title"><span class="ico">🎯</span>문항 1. 여가 및 취미활동</div>
-    <div class="qlabel" style="margin-bottom:8px">규칙적인 (1회 30분 이상, 주 2~3회 이상) 여가·취미활동 (중복 가능)</div>
-    <div class="ob" data-hobby="컴퓨터" onclick="toggleHobby(this)">💻 컴퓨터 관련활동</div>
-    <div class="ob" data-hobby="테니스" onclick="toggleHobby(this)">🎾 테니스 / 배드민턴 / 스쿼시</div>
-    <div class="ob" data-hobby="악기" onclick="toggleHobby(this)">🎵 악기연주 (피아노, 바이올린 등)</div>
-    <div class="ob" data-hobby="구기" onclick="toggleHobby(this)">⚽ 축구 / 족구 / 농구 / 스키</div>
-    <div class="ob" data-hobby="뜨개질" onclick="toggleHobby(this)">🪡 뜨개질 / 자수 / 붓글씨</div>
-    <div class="ob" id="hNone" onclick="hobbyNone(this)">해당사항 없음</div>
+<!-- ── 메인 ── -->
+<div id="adminMain">
+<div class="max-w">
+
+  <!-- 통계 카드 -->
+  <div class="stat-grid" id="statGrid">
+    <div class="stat-card"><div class="stat-num c-blue" id="st-total">-</div><div class="stat-label">전체 제출</div></div>
+    <div class="stat-card"><div class="stat-num c-red" id="st-pain">-</div><div class="stat-label">통증 경험자</div></div>
+    <div class="stat-card"><div class="stat-num c-green" id="st-nopain">-</div><div class="stat-label">통증 없음</div></div>
+    <div class="stat-card"><div class="stat-num c-yellow" id="st-heavy">-</div><div class="stat-label">매우 힘듦</div></div>
+    <div class="stat-card"><div class="stat-num c-purple" id="st-today">-</div><div class="stat-label">오늘 제출</div></div>
   </div>
-  <div class="card">
-    <div class="card-title"><span class="ico">🏠</span>문항 2. 하루 평균 가사노동시간</div>
-    <div class="qlabel" style="margin-bottom:8px">밥하기, 빨래, 청소, 2살 미만 아이 돌보기 등</div>
-    <div class="ob" data-group="housework" data-val="거의 안함" onclick="pick(this)">거의 하지 않는다</div>
-    <div class="ob" data-group="housework" data-val="1시간 미만" onclick="pick(this)">1시간 미만</div>
-    <div class="ob" data-group="housework" data-val="1~2시간 미만" onclick="pick(this)">1 ~ 2시간 미만</div>
-    <div class="ob" data-group="housework" data-val="2~3시간 미만" onclick="pick(this)">2 ~ 3시간 미만</div>
-    <div class="ob" data-group="housework" data-val="3시간 이상" onclick="pick(this)">3시간 이상</div>
-  </div>
-  <div class="card">
-    <div class="card-title"><span class="ico">🏥</span>문항 3. 질병 진단 이력</div>
-    <div class="qlabel" style="margin-bottom:6px">의사로부터 다음 질병에 대해 진단받은 적이 있습니까?<br><small style="color:var(--text2);font-weight:400">(류머티스 관절염, 당뇨병, 루프스병, 통풍, 알코올중독)</small></div>
-    <div class="g2">
-      <div class="ob" data-group="hasDiag" data-val="아니오" onclick="pick(this);showEl('diagArea',false)">아니오</div>
-      <div class="ob" data-group="hasDiag" data-val="예" onclick="pick(this);showEl('diagArea',true)">예</div>
+
+  <!-- 차트 -->
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="chart-title">📍 통증 부위 분포</div>
+      <canvas id="chartParts" height="200"></canvas>
     </div>
-    <div id="diagArea" style="display:none" class="sub">
-      <div class="qlabel">해당 질병 (중복 가능)</div>
-      <div class="chips">
-        <div class="chip" data-set="diagList" data-val="류머티스 관절염" onclick="toggleChip(this)">류머티스 관절염</div>
-        <div class="chip" data-set="diagList" data-val="당뇨병" onclick="toggleChip(this)">당뇨병</div>
-        <div class="chip" data-set="diagList" data-val="루프스병" onclick="toggleChip(this)">루프스병</div>
-        <div class="chip" data-set="diagList" data-val="통풍" onclick="toggleChip(this)">통풍</div>
-        <div class="chip" data-set="diagList" data-val="알코올중독" onclick="toggleChip(this)">알코올중독</div>
-      </div>
-      <div class="qlabel">현재 상태</div>
-      <div class="g2">
-        <div class="chip" style="text-align:center;padding:10px" data-group="diagStatus" data-val="완치" onclick="pickChip(this)">완치</div>
-        <div class="chip" style="text-align:center;padding:10px" data-group="diagStatus" data-val="치료나 관찰 중" onclick="pickChip(this)">치료나 관찰 중</div>
-      </div>
+    <div class="chart-card">
+      <div class="chart-title">💪 육체적 부담 정도</div>
+      <canvas id="chartBurden" height="200"></canvas>
     </div>
   </div>
-  <div class="card">
-    <div class="card-title"><span class="ico">🚑</span>문항 4. 사고 및 상해 이력</div>
-    <div class="qlabel" style="margin-bottom:6px">과거에 운동 중 혹은 사고로 신체 부위를 다친 적이 있습니까?</div>
-    <div class="g2">
-      <div class="ob" data-group="hasInjury" data-val="아니오" onclick="pick(this);showEl('injuryArea',false)">아니오</div>
-      <div class="ob" data-group="hasInjury" data-val="예" onclick="pick(this);showEl('injuryArea',true)">예</div>
+
+  <!-- 툴바 -->
+  <div class="toolbar">
+    <input id="srchName" type="text" class="tb-inp" placeholder="🔍 이름 검색">
+    <input id="srchDept" type="text" class="tb-inp" placeholder="🏢 부서 검색">
+    <select id="srchPain" class="tb-select">
+      <option value="">통증 전체</option>
+      <option value="예">통증 있음</option>
+      <option value="아니오">통증 없음</option>
+    </select>
+    <select id="srchBurden" class="tb-select">
+      <option value="">부담 전체</option>
+      <option value="전혀 힘들지 않음">전혀 힘들지 않음</option>
+      <option value="견딜만 함">견딜만 함</option>
+      <option value="약간 힘듦">약간 힘듦</option>
+      <option value="매우 힘듦">매우 힘듦</option>
+    </select>
+    <button class="tb-btn tb-search" onclick="applyFilter()">검색</button>
+    <button class="tb-btn tb-reset" onclick="resetFilter()">초기화</button>
+    <button class="tb-btn tb-csv" onclick="downloadCSV()">⬇ CSV</button>
+    <button class="tb-btn tb-refresh" onclick="loadData()">🔄 새로고침</button>
+  </div>
+
+  <!-- 테이블 -->
+  <div class="tbl-wrap">
+    <div class="tbl-header">
+      <div class="tbl-count" id="tblCount">로딩 중...</div>
     </div>
-    <div id="injuryArea" style="display:none" class="sub">
-      <div class="qlabel">상해 부위 (중복 가능)</div>
-      <div class="chips">
-        <div class="chip" data-set="injuryParts" data-val="손/손가락/손목" onclick="toggleChip(this)">손/손가락/손목</div>
-        <div class="chip" data-set="injuryParts" data-val="팔/팔꿈치" onclick="toggleChip(this)">팔/팔꿈치</div>
-        <div class="chip" data-set="injuryParts" data-val="어깨" onclick="toggleChip(this)">어깨</div>
-        <div class="chip" data-set="injuryParts" data-val="목" onclick="toggleChip(this)">목</div>
-        <div class="chip" data-set="injuryParts" data-val="허리" onclick="toggleChip(this)">허리</div>
-        <div class="chip" data-set="injuryParts" data-val="다리/발" onclick="toggleChip(this)">다리/발</div>
-      </div>
-      <div class="qlabel">현재 상태</div>
-      <div class="g2">
-        <div class="chip" style="text-align:center;padding:10px" data-group="injuryStatus" data-val="완치" onclick="pickChip(this)">완치</div>
-        <div class="chip" style="text-align:center;padding:10px" data-group="injuryStatus" data-val="치료중" onclick="pickChip(this)">치료중</div>
-      </div>
+    <div class="tbl-scroll">
+      <table id="mainTable">
+        <thead>
+          <tr>
+            <th onclick="sortBy('name')">이름 <span class="sort-icon">↕</span></th>
+            <th onclick="sortBy('createdAt')">제출일시 <span class="sort-icon">↕</span></th>
+            <th>성별</th>
+            <th>연령</th>
+            <th onclick="sortBy('dept')">부서 <span class="sort-icon">↕</span></th>
+            <th>직종/작업</th>
+            <th>육체적 부담</th>
+            <th>통증 여부</th>
+            <th>통증 부위</th>
+            <th>가사노동</th>
+          </tr>
+        </thead>
+        <tbody id="tblBody">
+          <tr class="empty-row"><td colspan="10">데이터를 불러오는 중...</td></tr>
+        </tbody>
+      </table>
     </div>
+    <div class="pagination" id="pagination"></div>
   </div>
-  <div class="card">
-    <div class="card-title"><span class="ico">💪</span>문항 5. 현재 작업의 육체적 부담 정도</div>
-    <div class="ob" data-group="physicalBurden" data-val="전혀 힘들지 않음" onclick="pick(this)">전혀 힘들지 않음</div>
-    <div class="ob" data-group="physicalBurden" data-val="견딜만 함" onclick="pick(this)">견딜만 함</div>
-    <div class="ob" data-group="physicalBurden" data-val="약간 힘듦" onclick="pick(this)">약간 힘듦</div>
-    <div class="ob" data-group="physicalBurden" data-val="매우 힘듦" onclick="pick(this)">매우 힘듦</div>
-  </div>
-  <div class="bnav">
-    <button class="btn btn-p" onclick="goTo(2)">← 이전</button>
-    <button class="btn btn-n" onclick="goTo(4)">다음 →</button>
-  </div>
+
+</div>
 </div>
 
-<!-- S4 통증 -->
-<div class="screen" id="s4">
-  <div class="card">
-    <div class="card-title"><span class="ico">🩺</span>지난 1년간 통증 경험 (II섹션)</div>
-    <p style="font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.7">지난 1년 동안 손/손가락/손목, 팔/팔꿈치, 어깨, 허리, 다리/발 중 어느 한 부위에서라도 <strong>작업과 관련하여</strong> 통증이나 불편함을 느끼신 적이 있습니까?</p>
-    <div class="g2">
-      <div class="ob" data-group="hasPain" data-val="아니오" onclick="pick(this);showEl('painSection',false)">아니오</div>
-      <div class="ob" data-group="hasPain" data-val="예" onclick="pick(this);showEl('painSection',true)">예</div>
-    </div>
+<!-- ── 상세 드로어 ── -->
+<div id="drawerBackdrop" onclick="closeDrawer()"></div>
+<div id="drawer">
+  <div class="drawer-hd">
+    <div class="drawer-title" id="drawerTitle">상세 정보</div>
+    <button class="drawer-close" onclick="closeDrawer()">✕ 닫기</button>
   </div>
-  <div id="painSection" style="display:none">
-    <div class="card">
-      <div class="card-title"><span class="ico">📍</span>통증 부위 선택</div>
-      <div class="qlabel" style="margin-bottom:9px">해당하는 부위를 모두 선택하세요</div>
-      <div class="part-grid">
-        <div class="part-btn" data-part="목" onclick="togglePart(this)"><span class="pi">🙆</span>목</div>
-        <div class="part-btn" data-part="어깨" onclick="togglePart(this)"><span class="pi">🤷</span>어깨</div>
-        <div class="part-btn" data-part="팔/팔꿈치" onclick="togglePart(this)"><span class="pi">💪</span>팔/팔꿈치</div>
-        <div class="part-btn" data-part="손/손목/손가락" onclick="togglePart(this)"><span class="pi">✋</span>손/손목/손가락</div>
-        <div class="part-btn" data-part="허리" onclick="togglePart(this)"><span class="pi">🧍</span>허리</div>
-        <div class="part-btn" data-part="다리/발" onclick="togglePart(this)"><span class="pi">🦵</span>다리/발</div>
-      </div>
-    </div>
-    <div id="painPanels"></div>
-  </div>
-  <div class="bnav">
-    <button class="btn btn-p" onclick="goTo(3)">← 이전</button>
-    <button class="btn btn-n" onclick="goTo(5)">다음 →</button>
-  </div>
+  <div class="drawer-body" id="drawerBody"></div>
 </div>
 
-<!-- S5 최종확인 -->
-<div class="screen" id="s5">
-  <div class="card">
-    <div class="card-title"><span class="ico">✅</span>최종 확인 후 제출하세요</div>
-    <div id="summaryArea"></div>
-  </div>
-  <div class="bnav">
-    <button class="btn btn-p" onclick="goTo(4)">← 이전</button>
-    <button class="btn btn-s" onclick="doSubmit()">📤 최종 제출</button>
-  </div>
-</div>
-
-<!-- 완료 -->
-<div class="screen" id="s-res">
-  <div class="res-ico">✅</div>
-  <h2 style="font-size:22px;font-weight:900;margin-bottom:10px">제출 완료!</h2>
-  <p style="color:var(--text2);margin-bottom:40px;font-size:14px">설문에 참여해 주셔서 감사합니다.</p>
-  <button class="btn btn-n" style="max-width:220px;margin:0 auto;display:block" onclick="location.reload()">새로 작성하기</button>
-</div>
-
-<!-- ── 전역 스크립트 ── -->
 <script>
-var S = {
-  gender:'', marriage:'', housework:'',
-  hasDiag:'아니오', diagList:[], diagStatus:'',
-  hasInjury:'아니오', injuryParts:[], injuryStatus:'',
-  physicalBurden:'', hobbies:[],
-  hasPain:'아니오', painParts:[], painData:{}
-};
-var PART_ORDER = ['목','어깨','팔/팔꿈치','손/손목/손가락','허리','다리/발'];
-var PART_ICON  = {'목':'🙆','어깨':'🤷','팔/팔꿈치':'💪','손/손목/손가락':'✋','허리':'🧍','다리/발':'🦵'};
-var SYMMETRIC  = ['어깨','팔/팔꿈치','손/손목/손가락','다리/발'];
-var maxReached = 1; // 최대 도달 단계 추적
+// ── 비밀번호 (원하시면 변경하세요) ──
+var ADMIN_PW = 'admin1234';
+var allData = [];
+var filtered = [];
+var currentPage = 1;
+var pageSize = 20;
+var sortKey = 'createdAt';
+var sortAsc = false;
+var chartParts, chartBurden;
 
-/* ── 화면 이동 + 탭 상태 업데이트 ── */
-function goTo(n) {
-  // 잠긴 단계는 이동 불가
-  if (typeof n === 'number' && n > maxReached + 1) return;
+var PART_ICON = {'목':'🙆','어깨':'🤷','팔/팔꿈치':'💪','손/손목/손가락':'✋','허리':'🧍','다리/발':'🦵'};
+var BURDEN_CLASS = {'전혀 힘들지 않음':'badge-b1','견딜만 함':'badge-b2','약간 힘듦':'badge-b3','매우 힘듦':'badge-b4'};
 
-  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
-  var id = (typeof n === 'number') ? 's' + n : n;
-  var el = document.getElementById(id);
-  if (el) el.classList.add('active');
-
-  if (typeof n === 'number') {
-    var pct = Math.round((n / 5) * 100);
-    document.getElementById('prog').style.width = pct + '%';
-    document.getElementById('stag').textContent = n + ' / 5';
-
-    // maxReached 갱신
-    if (n > maxReached) maxReached = n;
-
-    // 탭 상태 업데이트
-    for (var i = 1; i <= 5; i++) {
-      var tab = document.getElementById('stab' + i);
-      if (!tab) continue;
-      tab.classList.remove('active', 'done', 'locked');
-      if (i === n) {
-        tab.classList.add('active');
-      } else if (i < n) {
-        tab.classList.add('done');       // 이전 단계 = 완료 표시, 클릭 가능
-      } else if (i <= maxReached) {
-        // 앞으로 갔다가 돌아온 경우 잠금 해제
-      } else {
-        tab.classList.add('locked');     // 아직 못 간 단계 = 잠금
-      }
-    }
-
-    // 현재 탭으로 스크롤
-    var activeTab = document.getElementById('stab' + n);
-    if (activeTab) activeTab.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
-
-    if (n === 5) buildSummary();
-  }
-  window.scrollTo({top: 0, behavior: 'smooth'});
-}
-
-function pick(btn) {
-  var group = btn.dataset.group;
-  if (!group) return;
-  var scope = btn.closest('.card,.sub,.ppanel') || document.body;
-  scope.querySelectorAll('[data-group="'+group+'"]').forEach(function(b){ b.classList.remove('on'); });
-  btn.classList.add('on');
-  S[group] = btn.dataset.val;
-}
-function pickChip(btn) {
-  var group = btn.dataset.group;
-  if (!group) return;
-  var scope = btn.closest('.sub') || document.body;
-  scope.querySelectorAll('[data-group="'+group+'"]').forEach(function(b){ b.classList.remove('on'); });
-  btn.classList.add('on');
-  S[group] = btn.dataset.val;
-}
-function showEl(id, v) {
-  var el = document.getElementById(id);
-  if (el) el.style.display = v ? 'block' : 'none';
-}
-function toggleChip(btn) {
-  var key = btn.dataset.set, val = btn.dataset.val;
-  btn.classList.toggle('on');
-  if (!Array.isArray(S[key])) S[key] = [];
-  var i = S[key].indexOf(val);
-  if (btn.classList.contains('on')) { if (i<0) S[key].push(val); }
-  else { if (i>=0) S[key].splice(i,1); }
-}
-function toggleHobby(btn) {
-  document.getElementById('hNone').classList.remove('on');
-  var h = btn.dataset.hobby;
-  btn.classList.toggle('on');
-  var i = S.hobbies.indexOf(h);
-  if (btn.classList.contains('on')) { if (i<0) S.hobbies.push(h); }
-  else { if (i>=0) S.hobbies.splice(i,1); }
-  var ni = S.hobbies.indexOf('해당사항 없음');
-  if (ni>=0) S.hobbies.splice(ni,1);
-}
-function hobbyNone(btn) {
-  document.querySelectorAll('[data-hobby]').forEach(function(b){ b.classList.remove('on'); });
-  S.hobbies = ['해당사항 없음'];
-  btn.classList.add('on');
-}
-function togglePart(btn) {
-  var part = btn.dataset.part;
-  btn.classList.toggle('on');
-  if (btn.classList.contains('on')) {
-    if (S.painParts.indexOf(part)<0) S.painParts.push(part);
-    if (!S.painData[part]) S.painData[part]={side:'',dur:'',level:'',freq:'',lastWeek:'',action:[],actionEtc:''};
+/* ── 로그인 ── */
+function doLogin() {
+  var pw = document.getElementById('pwInput').value;
+  if (pw === ADMIN_PW) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('adminHeader').style.display = 'flex';
+    document.getElementById('adminMain').style.display = 'block';
+    loadData();
   } else {
-    S.painParts = S.painParts.filter(function(p){ return p!==part; });
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('pwInput').focus();
   }
-  renderPanels();
 }
-function setPD(btn, part, key) {
-  var val = btn.dataset.val;
-  btn.parentElement.querySelectorAll('[data-pkey="'+key+'"]').forEach(function(b){ b.classList.remove('on'); });
-  btn.classList.add('on');
-  if (S.painData[part]) S.painData[part][key] = val;
+function doLogout() {
+  if (confirm('로그아웃 하시겠습니까?')) location.reload();
 }
-function toggleAct(btn, part) {
-  var val = btn.dataset.val, d = S.painData[part];
-  if (!d) return;
-  if (val==='해당사항 없음') { d.action=['해당사항 없음']; }
-  else {
-    d.action = d.action.filter(function(v){ return v!=='해당사항 없음'; });
-    var i = d.action.indexOf(val);
-    if (i>=0) d.action.splice(i,1); else d.action.push(val);
-  }
-  renderPanels();
+
+/* ── 로딩바 ── */
+function setLoading(v) {
+  document.getElementById('loadingBar').style.width = v ? '70%' : '100%';
+  if (!v) setTimeout(function(){ document.getElementById('loadingBar').style.width='0%'; }, 400);
 }
-function renderPanels() {
-  var container = document.getElementById('painPanels');
-  container.innerHTML = '';
-  PART_ORDER.filter(function(p){ return S.painParts.indexOf(p)>=0; }).forEach(function(part) {
-    var d = S.painData[part], sym = SYMMETRIC.indexOf(part)>=0, q=1;
-    var h = '<div class="ppanel"><div class="ppanel-title">'+(PART_ICON[part]||'📍')+' '+part+' 통증 상세</div>';
-    if (sym) {
-      h += '<div class="pq"><div class="pql"><span class="n">'+q+'</span>통증의 구체적 부위는?</div><div class="chips">';
-      ['오른쪽','왼쪽','양쪽 모두'].forEach(function(v){ h+='<div class="chip'+(d.side===v?' on':'')+'" data-val="'+v+'" data-pkey="side" onclick="setPD(this,\''+part+'\',\'side\')">'+v+'</div>'; });
-      h += '</div></div>'; q++;
-    }
-    h += '<div class="pq"><div class="pql"><span class="n">'+q+'</span>한번 아프기 시작하면 통증 기간은?</div><div class="chips">';
-    ['1일 미만','1일~1주일 미만','1주일~1달 미만','1달~6개월 미만','6개월 이상'].forEach(function(v){ h+='<div class="chip'+(d.dur===v?' on':'')+'" data-val="'+v+'" data-pkey="dur" onclick="setPD(this,\''+part+'\',\'dur\')">'+v+'</div>'; });
-    h += '</div></div>'; q++;
-    h += '<div class="pq"><div class="pql"><span class="n">'+q+'</span>아픈 정도는?</div>'
-      +'<div class="painref"><b>약한 통증</b>: 약간 불편하나 작업 열중 시 못 느낀다<br><b>중간 통증</b>: 작업 중 통증이 있으나 귀가 후 쉬면 괜찮다<br><b>심한 통증</b>: 작업 중 비교적 심하고 귀가 후에도 계속된다<br><b>매우 심한 통증</b>: 통증 때문에 작업·일상생활이 어렵다</div>'
-      +'<div class="chips">';
-    ['약한 통증','중간 통증','심한 통증','매우 심한 통증'].forEach(function(v){ h+='<div class="chip'+(d.level===v?' on':'')+'" data-val="'+v+'" data-pkey="level" onclick="setPD(this,\''+part+'\',\'level\')">'+v+'</div>'; });
-    h += '</div></div>'; q++;
-    h += '<div class="pq"><div class="pql"><span class="n">'+q+'</span>지난 1년 동안 증상 빈도는?</div><div class="chips">';
-    ['6개월에 1번','2~3달에 1번','1달에 1번','1주일에 1번','매일'].forEach(function(v){ h+='<div class="chip'+(d.freq===v?' on':'')+'" data-val="'+v+'" data-pkey="freq" onclick="setPD(this,\''+part+'\',\'freq\')">'+v+'</div>'; });
-    h += '</div></div>'; q++;
-    h += '<div class="pq"><div class="pql"><span class="n">'+q+'</span>지난 1주일 동안에도 이러한 증상이 있었습니까?</div><div class="chips">';
-    ['아니오','예'].forEach(function(v){ h+='<div class="chip'+(d.lastWeek===v?' on':'')+'" data-val="'+v+'" data-pkey="lastWeek" onclick="setPD(this,\''+part+'\',\'lastWeek\')">'+v+'</div>'; });
-    h += '</div></div>'; q++;
-    h += '<div class="pq"><div class="pql"><span class="n">'+q+'</span>지난 1년 동안 이 통증으로 인해 어떤 일이 있었습니까? (중복 가능)</div><div class="chips">';
-    ['병원·한의원 치료','약국치료','병가, 산재','작업 전환','해당사항 없음','기타'].forEach(function(v){ h+='<div class="chip'+(d.action.indexOf(v)>=0?' on':'')+'" data-val="'+v+'" onclick="toggleAct(this,\''+part+'\')">'+v+'</div>'; });
-    h += '</div>';
-    if (d.action.indexOf('기타')>=0) h+='<input type="text" class="inp" placeholder="기타 내용 입력" value="'+d.actionEtc.replace(/"/g,'&quot;')+'" oninput="S.painData[\''+part+'\'].actionEtc=this.value">';
-    h += '</div></div>';
-    container.insertAdjacentHTML('beforeend', h);
+
+/* ── 데이터 로드 ── */
+function loadData() {
+  setLoading(true);
+  window._loadAdminFn && window._loadAdminFn();
+}
+
+/* ── 통계 업데이트 ── */
+function updateStats(data) {
+  var total = data.length;
+  var pain  = data.filter(function(r){ return r.hasPain==='예'; }).length;
+  var heavy = data.filter(function(r){ return r.physicalBurden==='매우 힘듦'; }).length;
+  var today = data.filter(function(r){
+    if (!r.createdAt) return false;
+    var d = new Date(r.createdAt.seconds*1000);
+    var now = new Date();
+    return d.toDateString() === now.toDateString();
+  }).length;
+  document.getElementById('st-total').textContent  = total;
+  document.getElementById('st-pain').textContent   = pain;
+  document.getElementById('st-nopain').textContent = total - pain;
+  document.getElementById('st-heavy').textContent  = heavy;
+  document.getElementById('st-today').textContent  = today;
+  document.getElementById('totalBadge').textContent = total + ' 건';
+  drawCharts(data);
+}
+
+/* ── 차트 ── */
+function drawCharts(data) {
+  // 통증 부위
+  var parts = ['목','어깨','팔/팔꿈치','손/손목/손가락','허리','다리/발'];
+  var partCounts = parts.map(function(p){
+    return data.filter(function(r){ return r.painParts && r.painParts.indexOf(p)>=0; }).length;
+  });
+  if (chartParts) chartParts.destroy();
+  chartParts = new Chart(document.getElementById('chartParts'), {
+    type:'bar',
+    data:{
+      labels: parts,
+      datasets:[{
+        label:'인원',
+        data: partCounts,
+        backgroundColor:['rgba(37,99,235,0.7)','rgba(124,58,237,0.7)','rgba(239,68,68,0.7)','rgba(245,158,11,0.7)','rgba(16,185,129,0.7)','rgba(99,102,241,0.7)'],
+        borderRadius:6
+      }]
+    },
+    options:{plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1}}}}
+  });
+
+  // 육체적 부담
+  var burdens = ['전혀 힘들지 않음','견딜만 함','약간 힘듦','매우 힘듦'];
+  var bCounts = burdens.map(function(b){ return data.filter(function(r){ return r.physicalBurden===b; }).length; });
+  if (chartBurden) chartBurden.destroy();
+  chartBurden = new Chart(document.getElementById('chartBurden'), {
+    type:'doughnut',
+    data:{
+      labels: burdens,
+      datasets:[{data:bCounts, backgroundColor:['rgba(16,185,129,0.8)','rgba(37,99,235,0.8)','rgba(245,158,11,0.8)','rgba(239,68,68,0.8)'], borderWidth:2}]
+    },
+    options:{plugins:{legend:{position:'bottom',labels:{font:{size:11},padding:8}}}}
   });
 }
-function buildSummary() {
-  function v(id){ var el=document.getElementById(id); return el?(el.value||'-'):'-'; }
-  var rows=[
-    ['성명',v('name')],['연령',v('age')+'세'],['성별',S.gender||'-'],['결혼여부',S.marriage||'-'],
-    ['현직장경력',v('careerYr')+'년 '+v('careerMo')+'개월'],
-    ['작업부서',v('dept')+'부 '+v('line')+'라인'],['수행작업',v('jobDetail')],
-    ['현작업기간',v('jobYr')+'년 '+v('jobMo')+'개월'],
-    ['전 작업',v('prevJob')+' ('+v('prevJobYr')+'년 '+v('prevJobMo')+'개월)'],
-    ['1일 근무',v('workHr')+'시간 / 휴식 '+v('restMin')+'분 '+v('restCnt')+'회'],
-    ['여가활동',S.hobbies.join(', ')||'-'],['가사노동',S.housework||'-'],
-    ['질병진단',S.hasDiag==='예'?'예 ('+S.diagList.join(', ')+') / '+S.diagStatus:'아니오'],
-    ['사고상해',S.hasInjury==='예'?'예 ('+S.injuryParts.join(', ')+') / '+S.injuryStatus:'아니오'],
-    ['육체적부담',S.physicalBurden||'-'],
-    ['통증경험',S.hasPain==='예'?'예 ('+S.painParts.join(', ')+')':'아니오'],
-  ];
-  document.getElementById('summaryArea').innerHTML=rows.map(function(r){
-    return '<div class="sum-row"><span class="sum-k">'+r[0]+'</span><span class="sum-v">'+r[1]+'</span></div>';
-  }).join('');
+
+/* ── 필터 ── */
+function applyFilter() {
+  var name  = document.getElementById('srchName').value.trim().toLowerCase();
+  var dept  = document.getElementById('srchDept').value.trim().toLowerCase();
+  var pain  = document.getElementById('srchPain').value;
+  var burden= document.getElementById('srchBurden').value;
+  filtered = allData.filter(function(r){
+    if (name   && (r.name||'').toLowerCase().indexOf(name)<0)   return false;
+    if (dept   && (r.dept||'').toLowerCase().indexOf(dept)<0)   return false;
+    if (pain   && r.hasPain !== pain)                           return false;
+    if (burden && r.physicalBurden !== burden)                  return false;
+    return true;
+  });
+  currentPage = 1;
+  renderTable();
 }
-function doSubmit() { window._submitFn && window._submitFn(); }
+function resetFilter() {
+  document.getElementById('srchName').value='';
+  document.getElementById('srchDept').value='';
+  document.getElementById('srchPain').value='';
+  document.getElementById('srchBurden').value='';
+  filtered = allData.slice();
+  currentPage = 1;
+  renderTable();
+}
+
+/* ── 정렬 ── */
+function sortBy(key) {
+  if (sortKey===key) sortAsc=!sortAsc; else { sortKey=key; sortAsc=true; }
+  filtered.sort(function(a,b){
+    var av = a[key]||'', bv = b[key]||'';
+    if (key==='createdAt') {
+      av = a.createdAt ? a.createdAt.seconds : 0;
+      bv = b.createdAt ? b.createdAt.seconds : 0;
+    }
+    if (av<bv) return sortAsc?-1:1;
+    if (av>bv) return sortAsc?1:-1;
+    return 0;
+  });
+  renderTable();
+}
+
+/* ── 테이블 렌더 ── */
+function renderTable() {
+  var start = (currentPage-1)*pageSize;
+  var page  = filtered.slice(start, start+pageSize);
+  var tbody = document.getElementById('tblBody');
+  document.getElementById('tblCount').textContent = '총 '+filtered.length+'건 (전체 '+allData.length+'건)';
+
+  if (!page.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="10">검색 결과가 없습니다.</td></tr>';
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  tbody.innerHTML = page.map(function(r, i){
+    var dt = r.createdAt ? new Date(r.createdAt.seconds*1000).toLocaleString('ko-KR') : '-';
+    var painBadge = r.hasPain==='예'
+      ? '<span class="badge badge-pain">통증 있음</span>'
+      : '<span class="badge badge-none">없음</span>';
+    var burdClass = BURDEN_CLASS[r.physicalBurden] || 'badge-none';
+    var burdBadge = r.physicalBurden
+      ? '<span class="badge '+burdClass+'">'+r.physicalBurden+'</span>'
+      : '-';
+    var partTags = (r.painParts&&r.painParts.length)
+      ? r.painParts.map(function(p){ return '<span class="part-tag">'+(PART_ICON[p]||'')+p+'</span>'; }).join('')
+      : '-';
+    return '<tr onclick="openDrawer('+JSON.stringify(start+i)+')">'
+      +'<td class="td-name">'+(r.name||'-')+'</td>'
+      +'<td class="td-date">'+dt+'</td>'
+      +'<td>'+(r.gender||'-')+'</td>'
+      +'<td>'+(r.age||'-')+'</td>'
+      +'<td>'+(r.dept||'-')+'</td>'
+      +'<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="'+(r.jobDetail||'')+'">'+(r.jobDetail||'-')+'</td>'
+      +'<td>'+burdBadge+'</td>'
+      +'<td>'+painBadge+'</td>'
+      +'<td>'+partTags+'</td>'
+      +'<td>'+(r.housework||'-')+'</td>'
+      +'</tr>';
+  }).join('');
+
+  renderPagination();
+}
+
+/* ── 페이지네이션 ── */
+function renderPagination() {
+  var total = Math.ceil(filtered.length/pageSize);
+  if (total<=1) { document.getElementById('pagination').innerHTML=''; return; }
+  var html = '<button class="pg-btn" onclick="changePage('+(currentPage-1)+')" '+(currentPage===1?'disabled':'')+'>◀</button>';
+  for (var i=1;i<=total;i++) {
+    if (i===1||i===total||Math.abs(i-currentPage)<=2) {
+      html += '<button class="pg-btn'+(i===currentPage?' active':'')+'" onclick="changePage('+i+')">'+i+'</button>';
+    } else if (Math.abs(i-currentPage)===3) {
+      html += '<span style="color:var(--text2);padding:4px">...</span>';
+    }
+  }
+  html += '<button class="pg-btn" onclick="changePage('+(currentPage+1)+')" '+(currentPage===total?'disabled':'')+'>▶</button>';
+  document.getElementById('pagination').innerHTML = html;
+}
+function changePage(p) {
+  var total = Math.ceil(filtered.length/pageSize);
+  if (p<1||p>total) return;
+  currentPage = p;
+  renderTable();
+  document.querySelector('.tbl-wrap').scrollIntoView({behavior:'smooth'});
+}
+
+/* ── 상세 드로어 ── */
+function openDrawer(idx) {
+  var r = filtered[idx];
+  if (!r) return;
+  document.getElementById('drawerTitle').textContent = (r.name||'-') + ' 상세 정보';
+  var dt = r.createdAt ? new Date(r.createdAt.seconds*1000).toLocaleString('ko-KR') : '-';
+  function row(k,v){ return '<div class="d-row"><span class="dk">'+k+'</span><span class="dv">'+(v||'-')+'</span></div>'; }
+  function sec(t){ return '<div class="d-section-title">'+t+'</div>'; }
+
+  var h = '<div class="d-section">'+sec('👤 인적사항')
+    +row('성명',r.name)+row('연령',(r.age||'-')+'세')
+    +row('성별',r.gender)+row('결혼여부',r.marriage)
+    +row('현직장경력',(r.careerYr||'0')+'년 '+(r.careerMo||'0')+'개월')
+    +row('제출일시',dt)+'</div>';
+
+  h += '<div class="d-section">'+sec('🔧 작업 정보')
+    +row('작업부서',(r.dept||'-')+'부 '+(r.line||'-')+'라인')
+    +row('수행작업',r.jobDetail)
+    +row('현작업기간',(r.jobYr||'0')+'년 '+(r.jobMo||'0')+'개월')
+    +row('전 작업',(r.prevJob||'-')+' ('+(r.prevJobYr||'0')+'년 '+(r.prevJobMo||'0')+'개월)')
+    +row('1일 근무',(r.workHr||'-')+'시간 / 휴식 '+(r.restMin||'-')+'분 '+(r.restCnt||'-')+'회')+'</div>';
+
+  h += '<div class="d-section">'+sec('🏠 생활습관')
+    +row('여가활동',r.hobbies&&r.hobbies.length?r.hobbies.join(', '):'-')
+    +row('가사노동시간',r.housework)
+    +row('육체적부담',r.physicalBurden)+'</div>';
+
+  h += '<div class="d-section">'+sec('🏥 건강이력')
+    +row('질병진단',r.hasDiag==='예'?'예 / '+(r.diagList&&r.diagList.length?r.diagList.join(', '):'-')+' / '+(r.diagStatus||'-'):'아니오')
+    +row('사고상해',r.hasInjury==='예'?'예 / '+(r.injuryParts&&r.injuryParts.length?r.injuryParts.join(', '):'-')+' / '+(r.injuryStatus||'-'):'아니오')
+    +'</div>';
+
+  if (r.hasPain==='예' && r.painParts && r.painParts.length) {
+    h += '<div class="d-section">'+sec('🩺 통증 상세');
+    r.painParts.forEach(function(part){
+      var d = r.painData && r.painData[part];
+      h += '<div style="font-size:12px;font-weight:800;color:var(--accent);margin:10px 0 4px">'+(PART_ICON[part]||'📍')+' '+part+'</div>';
+      if (d) {
+        if (d.side) h += row('부위',d.side);
+        h += row('지속기간',d.dur);
+        h += row('통증정도',d.level);
+        h += row('증상빈도',d.freq);
+        h += row('지난 1주일',d.lastWeek);
+        h += row('조치사항',d.action&&d.action.length?d.action.join(', ')+(d.actionEtc?' ('+d.actionEtc+')':''):'-');
+      }
+    });
+    h += '</div>';
+  }
+
+  document.getElementById('drawerBody').innerHTML = h;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawerBackdrop').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawerBackdrop').classList.remove('open');
+}
+
+/* ── CSV 다운로드 ── */
+function downloadCSV() {
+  var cols = ['이름','제출일시','성별','연령','결혼여부','부서','라인','수행작업','현작업기간','전작업','1일근무시간','가사노동','여가활동','질병진단','사고상해','육체적부담','통증여부','통증부위','통증기간','통증정도','증상빈도','지난1주일증상','조치사항'];
+  var rows = [cols];
+  filtered.forEach(function(r){
+    var dt = r.createdAt ? new Date(r.createdAt.seconds*1000).toLocaleString('ko-KR') : '';
+    var parts='', dur='', level='', freq='', lastW='', action='';
+    if (r.painParts && r.painParts.length) {
+      parts = r.painParts.join('/');
+      var allDur=[], allLevel=[], allFreq=[], allLastW=[], allAction=[];
+      r.painParts.forEach(function(p){
+        var d = r.painData && r.painData[p];
+        if (d){
+          allDur.push(p+':'+d.dur);
+          allLevel.push(p+':'+d.level);
+          allFreq.push(p+':'+d.freq);
+          allLastW.push(p+':'+d.lastWeek);
+          allAction.push(p+':'+(d.action?d.action.join('·'):'')+( d.actionEtc?'('+d.actionEtc+')':''));
+        }
+      });
+      dur=allDur.join(' | '); level=allLevel.join(' | '); freq=allFreq.join(' | ');
+      lastW=allLastW.join(' | '); action=allAction.join(' | ');
+    }
+    rows.push([
+      r.name||'', dt,
+      r.gender||'', r.age||'', r.marriage||'',
+      r.dept||'', r.line||'', r.jobDetail||'',
+      (r.jobYr||'0')+'년'+(r.jobMo||'0')+'개월',
+      (r.prevJob||'')+'('+(r.prevJobYr||'0')+'년'+(r.prevJobMo||'0')+'개월)',
+      (r.workHr||'')+'시간/휴식'+(r.restMin||'')+'분'+(r.restCnt||'')+'회',
+      r.housework||'',
+      r.hobbies?r.hobbies.join('/'):'' ,
+      r.hasDiag==='예'?((r.diagList||[]).join('/')+'/'+r.diagStatus):'아니오',
+      r.hasInjury==='예'?((r.injuryParts||[]).join('/')+'/'+r.injuryStatus):'아니오',
+      r.physicalBurden||'', r.hasPain||'',
+      parts, dur, level, freq, lastW, action
+    ].map(function(v){ return '"'+String(v).replace(/"/g,'""')+'"'; }));
+  });
+  var bom = '\uFEFF';
+  var csv = bom + rows.map(function(r){ return r.join(','); }).join('\n');
+  var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '근골격계증상조사_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+}
+
+document.getElementById('pwInput').addEventListener('keydown', function(e){
+  if(e.key==='Enter') doLogin();
+});
 </script>
 
-<!-- Firebase module -->
+<!-- Firebase -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, serverTimestamp }
+import { getFirestore, collection, getDocs, orderBy, query }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
 const app = initializeApp({
   apiKey:"AIzaSyC93mYiLYMrF-5IsIzfYnlGQdnK0sdPEfE",
   authDomain:"ske-0004.firebaseapp.com",
@@ -520,33 +567,22 @@ const app = initializeApp({
   appId:"1:704127486318:web:3b8c2c5562978231d3597f"
 });
 const db = getFirestore(app);
-window._submitFn = async function() {
-  const nameEl = document.getElementById('name');
-  if (!nameEl||!nameEl.value.trim()) { alert('성명을 입력해 주세요.'); goTo(1); return; }
-  document.getElementById('loading').style.display='flex';
-  function v(id){ const el=document.getElementById(id); return el?(el.value||''):''; }
+
+window._loadAdminFn = async function() {
   try {
-    await addDoc(collection(db,'surveys'), {
-      name:nameEl.value.trim(), age:v('age'), gender:S.gender, marriage:S.marriage,
-      careerYr:v('careerYr'), careerMo:v('careerMo'),
-      dept:v('dept'), line:v('line'), jobDetail:v('jobDetail'),
-      jobYr:v('jobYr'), jobMo:v('jobMo'),
-      prevJob:v('prevJob'), prevJobYr:v('prevJobYr'), prevJobMo:v('prevJobMo'),
-      workHr:v('workHr'), restMin:v('restMin'), restCnt:v('restCnt'),
-      hobbies:S.hobbies, housework:S.housework,
-      hasDiag:S.hasDiag, diagList:S.diagList, diagStatus:S.diagStatus,
-      hasInjury:S.hasInjury, injuryParts:S.injuryParts, injuryStatus:S.injuryStatus,
-      physicalBurden:S.physicalBurden,
-      hasPain:S.hasPain, painParts:S.painParts, painData:S.painData,
-      createdAt:serverTimestamp()
-    });
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById('s-res').classList.add('active');
-    document.getElementById('prog').style.width='100%';
+    const q = query(collection(db,'surveys'), orderBy('createdAt','desc'));
+    const snap = await getDocs(q);
+    allData = [];
+    snap.forEach(doc => allData.push(Object.assign({id:doc.id}, doc.data())));
+    filtered = allData.slice();
+    updateStats(allData);
+    currentPage = 1;
+    renderTable();
   } catch(e) {
-    alert('저장 오류: '+e.message);
+    document.getElementById('tblBody').innerHTML =
+      '<tr class="empty-row"><td colspan="10">⚠️ 오류: '+e.message+'</td></tr>';
   } finally {
-    document.getElementById('loading').style.display='none';
+    setLoading(false);
   }
 };
 </script>
