@@ -1748,6 +1748,35 @@ var apvCtx = [null,null,null], apvDrawing = [false,false,false];
 
 function openEduFormModal(){
   document.getElementById('eduFormModal').style.display = 'flex';
+
+  /* ── 성별 자동 집계 ── */
+  var TOTAL = EMPLOYEES ? EMPLOYEES.length : 46;
+  /* 활성 회차 서명만 필터 */
+  var activeSess = eduSessions.find(function(s){ return s.active; });
+  var filtered = activeSess
+    ? eduSigs.filter(function(g){ return g.sessionId === activeSess.id; })
+    : eduSigs;
+
+  var aM = filtered.filter(function(g){ return g.gender === '남'; }).length;
+  var aF = filtered.filter(function(g){ return g.gender === '여'; }).length;
+  var aT = filtered.length;
+
+  /* 전체 직원 남/여 구분은 데이터 없으면 총계만 표시 */
+  var allM = eduSigs.filter(function(g){ return g.gender==='남'; });
+  var allF = eduSigs.filter(function(g){ return g.gender==='여'; });
+  /* 대상인원: 전체직원 수 (성별 미상시 계만) */
+  document.getElementById('ef-tm').value = '';
+  document.getElementById('ef-tf').value = '';
+  document.getElementById('ef-tt').value = TOTAL;
+  /* 참석인원 */
+  document.getElementById('ef-am').value = aM || '';
+  document.getElementById('ef-af').value = aF || '';
+  document.getElementById('ef-at').value = aT;
+  /* 미참석 */
+  document.getElementById('ef-nm').value = aM ? (TOTAL - aT < 0 ? 0 : '') : '';
+  document.getElementById('ef-nf').value = aF ? '' : '';
+  document.getElementById('ef-nt').value = Math.max(0, TOTAL - aT);
+
   setTimeout(function(){
     [0,1,2].forEach(function(i){
       var c = document.getElementById('apvCanvas'+i);
