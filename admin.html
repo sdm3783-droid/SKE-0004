@@ -485,13 +485,14 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
       <div class="m-grid2">
         <div class="m-group"><div class="m-label">근로자명 *</div><input id="hz-worker" type="text" class="m-inp" placeholder="이름"></div>
         <div class="m-group"><div class="m-label">부서명 *</div>
-          <select id="hz-dept" class="m-inp">
-            <option value="">선택</option>
-            <option>FST조립</option><option>검사</option><option>가공</option><option>기구</option>
-            <option>납땜</option><option>넘버링</option><option>라벨</option><option>몰딩</option>
-            <option>압착</option><option>연접</option><option>전장</option><option>조립</option>
-            <option>절단</option><option>케이블아세이</option><option>하우징</option><option>관리부</option>
-          </select>
+          <input id="hz-dept" type="text" class="m-inp" list="hz-dept-list" placeholder="직접 입력하거나 목록에서 선택">
+          <datalist id="hz-dept-list">
+            <option value="생산부"></option>
+            <option value="품질부"></option>
+            <option value="관리부"></option>
+            <option value="영업부"></option>
+            <option value="연구소"></option>
+          </datalist>
         </div>
       </div>
       <div class="m-grid2">
