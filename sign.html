@@ -140,6 +140,17 @@ body{font-family:'Noto Sans KR',sans-serif;background:#f0f4ff;color:#1e293b;min-
         <label class="form-label">부서 *</label>
         <input type="text" id="inpDept" class="form-inp" placeholder="부서명을 입력해 주세요" maxlength="30">
       </div>
+      <div class="form-group">
+        <label class="form-label">성별 *</label>
+        <div style="display:flex;gap:16px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;cursor:pointer;padding:10px 20px;border:2px solid #dde3f0;border-radius:10px;flex:1;justify-content:center;transition:.2s;" id="genderLabelM">
+            <input type="radio" name="inpGender" value="남" id="genderM" style="accent-color:#2563eb;width:18px;height:18px;" onchange="highlightGender()"> 남
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;cursor:pointer;padding:10px 20px;border:2px solid #dde3f0;border-radius:10px;flex:1;justify-content:center;transition:.2s;" id="genderLabelF">
+            <input type="radio" name="inpGender" value="여" id="genderF" style="accent-color:#db2777;width:18px;height:18px;" onchange="highlightGender()"> 여
+          </label>
+        </div>
+      </div>
     </div>
 
     <!-- STEP 3: 전자서명 -->
@@ -230,6 +241,14 @@ function clearCanvas(){
   document.getElementById('canvasHint').classList.remove('hide');
 }
 
+function highlightGender(){
+  var m = document.querySelector('input[name="inpGender"][value="남"]').checked;
+  document.getElementById('genderLabelM').style.borderColor = m ? '#2563eb' : '#dde3f0';
+  document.getElementById('genderLabelM').style.background  = m ? '#eff6ff' : '';
+  document.getElementById('genderLabelF').style.borderColor = !m ? '#db2777' : '#dde3f0';
+  document.getElementById('genderLabelF').style.background  = !m ? '#fdf2f8' : '';
+}
+
 /* 확인 체크박스 */
 function onConfirmChange(){
   var checked = document.getElementById('confirmChk').checked;
@@ -302,9 +321,12 @@ async function loadSession(){
 /* 제출 */
 window.submitSign = async function(){
   var name = document.getElementById('inpName').value.trim();
-  var dept = document.getElementById('inpDept').value;
+  var dept = document.getElementById('inpDept').value.trim();
+  var genderEl = document.querySelector('input[name="inpGender"]:checked');
+  var gender = genderEl ? genderEl.value : '';
   if(!name){ alert('성명을 입력해 주세요.'); return; }
   if(!dept){ alert('부서를 입력해 주세요.'); return; }
+  if(!gender){ alert('성별을 선택해 주세요.'); return; }
   if(!hasSig){ alert('서명란에 서명을 해주세요.'); return; }
 
   /* 서명 이미지 */
@@ -320,6 +342,7 @@ window.submitSign = async function(){
       sessionTitle: activeSession.title,
       worker: name,
       dept: dept,
+      gender: gender,
       signatureData: sigData,
       signedAt: Timestamp.now()
     });
