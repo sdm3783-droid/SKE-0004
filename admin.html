@@ -207,6 +207,32 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 .empty-msg{text-align:center;padding:36px;color:var(--text2);font-size:13px;}
 .btn-detail{padding:5px 12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;transition:.2s;}
 .btn-detail:hover{opacity:.85;transform:scale(1.03);}
+.btn-print{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;gap:4px;transition:.2s;}
+.btn-print:hover{background:rgba(255,255,255,.35);}
+
+/* 인쇄 전용 스타일 */
+@media print{
+  body>*{display:none!important;}
+  #detailModal{display:flex!important;position:static!important;padding:0!important;z-index:auto!important;}
+  #detailBackdrop{display:none!important;}
+  .detail-box{max-width:100%!important;max-height:none!important;box-shadow:none!important;border-radius:0!important;animation:none!important;overflow:visible!important;}
+  .detail-hd{background:none!important;color:#000!important;border-bottom:3px solid #2563eb;border-radius:0!important;padding:12px 0!important;}
+  .detail-title{color:#1e293b!important;font-size:18px!important;}
+  .detail-close,.btn-print{display:none!important;}
+  .detail-body{padding:10px 0!important;}
+  .detail-judge-bar{padding:8px 0!important;}
+  .detail-judge-label{color:#000!important;}
+  .detail-sec-title{background:#eef2ff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .detail-row{padding:5px 2px!important;font-size:12px!important;}
+  .detail-key{font-size:11px!important;min-width:90px!important;}
+  .detail-val{font-size:12px!important;color:#333!important;}
+  .detail-part-header{background:#f8fafc!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .detail-judge-badge,.detail-part-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .djb-normal,.dpb-normal{background:rgba(16,185,129,.12)!important;color:#059669!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .djb-manage,.dpb-manage{background:rgba(245,158,11,.15)!important;color:#d97706!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .djb-serious,.dpb-serious{background:rgba(239,68,68,.12)!important;color:#dc2626!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  @page{margin:15mm;size:A4;}
+}
 </style>
 </head>
 <body>
@@ -444,7 +470,10 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   <div class="detail-box">
     <div class="detail-hd">
       <div class="detail-title" id="detailTitle">상세 정보</div>
-      <button class="detail-close" onclick="closeDetail()">✕ 닫기</button>
+      <div style="display:flex;gap:6px;">
+        <button class="btn-print" onclick="printDetail()">🖨 인쇄</button>
+        <button class="detail-close" onclick="closeDetail()">✕ 닫기</button>
+      </div>
     </div>
     <div class="detail-body" id="detailBody"></div>
   </div>
@@ -935,6 +964,7 @@ function closeDetail(){
   document.body.style.overflow='';
 }
 function closeDrawer(){ closeDetail(); }
+function printDetail(){ window.print(); }
 
 /* ══ 페이지네이션 공통 ══ */
 function renderPaging(elId, cur, total, cb){
