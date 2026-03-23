@@ -161,21 +161,40 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 .btn-del-modal{padding:9px 18px;background:var(--red);color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Noto Sans KR',sans-serif;}
 .btn-cancel{padding:9px 14px;background:#f1f5f9;color:var(--text2);border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px;font-family:'Noto Sans KR',sans-serif;}
 
-/* 드로어 */
-#drawer{position:fixed;top:0;right:-500px;width:500px;max-width:100vw;height:100vh;background:#fff;box-shadow:-8px 0 40px rgba(0,0,0,.15);z-index:500;transition:right .3s ease;overflow-y:auto;}
-#drawer.open{right:0;}
-#dBack{position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:499;display:none;}
-#dBack.open{display:block;}
-.d-hd{padding:14px 16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;}
-.d-title{font-size:14px;font-weight:900;}
-.d-close{background:rgba(255,255,255,.2);border:none;color:#fff;padding:5px 11px;border-radius:7px;cursor:pointer;font-size:13px;}
-.d-body{padding:14px 16px;}
-.d-sec{margin-bottom:14px;}
-.d-sec-title{font-size:11px;font-weight:800;color:var(--accent);background:var(--alight);padding:3px 9px;border-radius:5px;display:inline-block;margin-bottom:6px;}
-.d-row{display:flex;gap:7px;padding:4px 0;border-bottom:1px solid #f1f5f9;font-size:12px;}
-.d-row:last-child{border-bottom:none;}
-.dk{font-weight:700;color:var(--text);min-width:85px;flex-shrink:0;}
-.dv{color:var(--text2);word-break:break-all;}
+/* 상세정보 모달 */
+#detailModal{position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;padding:16px;}
+#detailModal.open{display:flex;}
+#detailBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:-1;backdrop-filter:blur(2px);}
+.detail-box{background:#fff;border-radius:20px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.25);animation:detailIn .3s ease;}
+@keyframes detailIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.detail-hd{padding:16px 20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:20px 20px 0 0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;}
+.detail-title{font-size:15px;font-weight:900;display:flex;align-items:center;gap:6px;}
+.detail-close{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;gap:4px;transition:.2s;}
+.detail-close:hover{background:rgba(255,255,255,.35);}
+.detail-body{padding:16px 20px 20px;}
+.detail-judge-bar{padding:10px 16px;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.detail-judge-label{font-size:13px;font-weight:800;color:var(--text);}
+.detail-judge-badge{padding:4px 14px;border-radius:20px;font-size:13px;font-weight:800;}
+.djb-normal{background:rgba(16,185,129,.12);color:#059669;}
+.djb-manage{background:rgba(245,158,11,.15);color:#d97706;}
+.djb-serious{background:rgba(239,68,68,.12);color:#dc2626;}
+.detail-sec{margin-bottom:16px;}
+.detail-sec-title{font-size:12px;font-weight:800;color:var(--accent);background:var(--alight);padding:5px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:5px;margin-bottom:8px;}
+.detail-row{display:flex;gap:8px;padding:7px 4px;border-bottom:1px solid #f1f5f9;font-size:13px;align-items:center;}
+.detail-row:last-child{border-bottom:none;}
+.detail-key{font-weight:700;color:var(--text);min-width:95px;flex-shrink:0;font-size:12px;}
+.detail-val{color:var(--text2);word-break:break-all;font-size:13px;}
+.detail-part-header{display:flex;align-items:center;gap:8px;margin:12px 0 6px;padding:6px 10px;background:#f8fafc;border-radius:10px;border:1px solid var(--border);}
+.detail-part-icon{font-size:16px;}
+.detail-part-name{font-size:13px;font-weight:800;color:var(--text);}
+.detail-part-badge{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:800;}
+.dpb-normal{background:rgba(16,185,129,.12);color:#059669;}
+.dpb-manage{background:rgba(245,158,11,.15);color:#d97706;}
+.dpb-serious{background:rgba(239,68,68,.12);color:#dc2626;}
+
+/* 레거시 드로어 (호환용) */
+#drawer{display:none;}
+#dBack{display:none;}
 
 /* 페이지네이션 */
 .pagination{display:flex;align-items:center;justify-content:center;gap:5px;padding:10px;}
@@ -186,6 +205,8 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 /* 기타 */
 #loadBar{position:fixed;top:0;left:0;width:0%;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));z-index:9998;transition:width .3s;}
 .empty-msg{text-align:center;padding:36px;color:var(--text2);font-size:13px;}
+.btn-detail{padding:5px 12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;transition:.2s;}
+.btn-detail:hover{opacity:.85;transform:scale(1.03);}
 </style>
 </head>
 <body>
@@ -327,9 +348,9 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
           <th onclick="sortBy('createdAt')">제출일시 ↕</th>
           <th>성별</th><th>연령</th>
           <th onclick="sortBy('dept')">부서 ↕</th>
-          <th>수행작업</th><th>육체적부담</th><th>통증</th><th>판정</th><th>통증부위</th>
+          <th>수행작업</th><th>육체적부담</th><th>통증</th><th>판정</th><th>통증부위</th><th>상세</th>
         </tr></thead>
-        <tbody id="tblBody"><tr><td colspan="10" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
+        <tbody id="tblBody"><tr><td colspan="11" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
       </table>
     </div>
     <div class="pagination" id="pagination"></div>
@@ -417,12 +438,21 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- 드로어 -->
-<div id="dBack" onclick="closeDrawer()"></div>
-<div id="drawer">
-  <div class="d-hd"><div class="d-title" id="dTitle">상세 정보</div><button class="d-close" onclick="closeDrawer()">✕ 닫기</button></div>
-  <div class="d-body" id="dBody"></div>
+<!-- 상세정보 모달 -->
+<div id="detailModal">
+  <div id="detailBackdrop" onclick="closeDetail()"></div>
+  <div class="detail-box">
+    <div class="detail-hd">
+      <div class="detail-title" id="detailTitle">상세 정보</div>
+      <button class="detail-close" onclick="closeDetail()">✕ 닫기</button>
+    </div>
+    <div class="detail-body" id="detailBody"></div>
+  </div>
 </div>
+
+<!-- 레거시 드로어 (숨김) -->
+<div id="dBack"></div>
+<div id="drawer"></div>
 
 <script>
 /* ══ 비밀번호 ══ */
@@ -753,12 +783,12 @@ function renderTable(){
   document.getElementById('tblCount').textContent='총 '+filtered.length+'건 (전체 '+allData.length+'건)';
   var BC={'전혀 힘들지 않음':'b-b1','견딜만 함':'b-b2','약간 힘듦':'b-b3','매우 힘듦':'b-b4'};
   var JC={'정상':'b-normal','관리대상자':'b-manage','통증호소자':'b-serious'};
-  if(!page.length){document.getElementById('tblBody').innerHTML='<tr><td colspan="10" class="empty-msg">결과 없음</td></tr>';document.getElementById('pagination').innerHTML='';return;}
+  if(!page.length){document.getElementById('tblBody').innerHTML='<tr><td colspan="11" class="empty-msg">결과 없음</td></tr>';document.getElementById('pagination').innerHTML='';return;}
   document.getElementById('tblBody').innerHTML=page.map(function(r,i){
     var dt=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleString('ko-KR'):'-';
     var j=judgeOverall(r);
     var parts=(r.painParts&&r.painParts.length)?r.painParts.map(function(p){return'<span class="part-tag">'+(PART_ICON[p]||'')+p+'</span>';}).join(''):'-';
-    return'<tr style="cursor:pointer" onclick="openDrawer('+(start+i)+')">'
+    return'<tr>'
       +'<td class="td-name">'+(r.name||'-')+'</td>'
       +'<td style="font-size:11px;color:var(--text2)">'+dt+'</td>'
       +'<td>'+(r.gender||'-')+'</td><td>'+(r.age||'-')+'</td><td>'+(r.dept||'-')+'</td>'
@@ -767,6 +797,7 @@ function renderTable(){
       +'<td>'+(r.hasPain==='예'?'<span class="badge b-pain">있음</span>':'<span class="badge b-none">없음</span>')+'</td>'
       +'<td><span class="badge '+(JC[j]||'b-none')+'">'+j+'</span></td>'
       +'<td>'+parts+'</td>'
+      +'<td><button class="btn-detail" onclick="openDrawer('+(start+i)+')">상세보기</button></td>'
       +'</tr>';
   }).join('');
   renderPaging('pagination', currentPage, Math.ceil(filtered.length/pageSize), function(p){currentPage=p;renderTable();});
@@ -838,41 +869,72 @@ function confirmDelete(idx){
     window._deleteByIdFn&&window._deleteByIdFn(r.id);
 }
 
-/* ══ 드로어 ══ */
+/* ══ 상세정보 모달 ══ */
 function openDrawer(idx){
   var r=filtered[idx]; if(!r) return;
   var dt=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleString('ko-KR'):'-';
   var j=judgeOverall(r);
-  var jC={'정상':'판정-정상','관리대상자':'판정-관리대상자','통증호소자':'판정-통증호소자'};
-  document.getElementById('dTitle').textContent=(r.name||'-')+' 상세 정보';
-  function row(k,v){return'<div class="d-row"><span class="dk">'+k+'</span><span class="dv">'+(v||'-')+'</span></div>';}
-  function sec(t){return'<div class="d-sec-title">'+t+'</div>';}
-  var h='<div class="d-sec"><div style="margin-bottom:10px"><span class="result-판정 '+(jC[j]||'')+'">전체 판정: '+j+'</span></div>'
-    +sec('👤 인적사항')+row('성명',r.name)+row('연령',(r.age||'-')+'세')+row('성별',r.gender)+row('결혼여부',r.marriage)
+  var jBadge={'정상':'djb-normal','관리대상자':'djb-manage','통증호소자':'djb-serious'};
+  var pBadge={'정상':'dpb-normal','관리대상자':'dpb-manage','통증호소자':'dpb-serious'};
+
+  document.getElementById('detailTitle').textContent=(r.name||'-')+' 상세 정보';
+
+  function row(k,v){return'<div class="detail-row"><span class="detail-key">'+k+'</span><span class="detail-val">'+(v||'-')+'</span></div>';}
+  function sec(icon,t){return'<div class="detail-sec-title">'+icon+' '+t+'</div>';}
+
+  var h='';
+  /* 전체 판정 */
+  h+='<div class="detail-judge-bar"><span class="detail-judge-label">전체 판정:</span><span class="detail-judge-badge '+(jBadge[j]||'')+'">'+j+'</span></div>';
+
+  /* 인적사항 */
+  h+='<div class="detail-sec">'+sec('👤','인적사항')
+    +row('성명',r.name)+row('연령',(r.age||'-')+'세')+row('성별',r.gender)+row('결혼여부',r.marriage)
     +row('현직장경력',(r.careerYr||'0')+'년 '+(r.careerMo||'0')+'개월')+row('제출일시',dt)+'</div>';
-  h+='<div class="d-sec">'+sec('🔧 작업 정보')+row('작업부서',(r.dept||'-')+'부 '+(r.line||'-')+'라인')
+
+  /* 작업 정보 */
+  h+='<div class="detail-sec">'+sec('🔧','작업 정보')
+    +row('작업부서',(r.dept||'-')+'부 '+(r.line||'-')+'라인')
     +row('수행작업',r.jobDetail)+row('현작업기간',(r.jobYr||'0')+'년 '+(r.jobMo||'0')+'개월')
     +row('전 작업',r.prevJob)+row('1일 근무',(r.workHr||'-')+'시간')+'</div>';
-  h+='<div class="d-sec">'+sec('🏠 생활습관')+row('여가활동',r.hobbies&&r.hobbies.length?r.hobbies.join(', '):'-')
+
+  /* 생활습관 */
+  h+='<div class="detail-sec">'+sec('🏠','생활습관')
+    +row('여가활동',r.hobbies&&r.hobbies.length?r.hobbies.join(', '):'-')
     +row('가사노동',r.housework)+row('육체적부담',r.physicalBurden)+'</div>';
-  h+='<div class="d-sec">'+sec('🏥 건강이력')
+
+  /* 건강이력 */
+  h+='<div class="detail-sec">'+sec('🏥','건강이력')
     +row('질병진단',r.hasDiag==='예'?'예 / '+(r.diagList||[]).join(', ')+' / '+(r.diagStatus||'-'):'아니오')
     +row('사고상해',r.hasInjury==='예'?'예 / '+(r.injuryParts||[]).join(', ')+' / '+(r.injuryStatus||'-'):'아니오')+'</div>';
+
+  /* 통증 NIOSH 판정 */
   if(r.hasPain==='예'&&r.painParts&&r.painParts.length){
-    h+='<div class="d-sec">'+sec('🩺 통증 NIOSH 판정');
+    h+='<div class="detail-sec">'+sec('🩺','통증 NIOSH 판정');
     r.painParts.forEach(function(part){
       var d=r.painData&&r.painData[part], pj=judgePartNIOSH(d);
-      var pc={'정상':'판정-정상','관리대상자':'판정-관리대상자','통증호소자':'판정-통증호소자'};
-      h+='<div style="margin:8px 0 4px;display:flex;align-items:center;gap:6px"><b style="font-size:12px">'+(PART_ICON[part]||'')+' '+part+'</b><span class="result-판정 '+(pc[pj]||'')+'">'+pj+'</span></div>';
-      if(d) h+=row('부위',d.side)+row('지속기간',d.dur)+row('통증정도',d.level)+row('빈도',d.freq)+row('지난1주일',d.lastWeek)+row('조치',d.action&&d.action.length?d.action.join(', ')+(d.actionEtc?' ('+d.actionEtc+')':''):'-');
+      h+='<div class="detail-part-header">'
+        +'<span class="detail-part-icon">'+(PART_ICON[part]||'')+'</span>'
+        +'<span class="detail-part-name">'+part+'</span>'
+        +'<span class="detail-part-badge '+(pBadge[pj]||'')+'">'+pj+'</span>'
+        +'</div>';
+      if(d){
+        h+=row('부위',d.side)+row('지속기간',d.dur)+row('통증정도',d.level)
+          +row('빈도',d.freq)+row('지난1주일',d.lastWeek)
+          +row('조치',d.action&&d.action.length?d.action.join(', ')+(d.actionEtc?' ('+d.actionEtc+')':''):'해당사항 없음');
+      }
     });
     h+='</div>';
   }
-  document.getElementById('dBody').innerHTML=h;
-  document.getElementById('drawer').classList.add('open');
-  document.getElementById('dBack').classList.add('open');
+
+  document.getElementById('detailBody').innerHTML=h;
+  document.getElementById('detailModal').classList.add('open');
+  document.body.style.overflow='hidden';
 }
-function closeDrawer(){document.getElementById('drawer').classList.remove('open');document.getElementById('dBack').classList.remove('open');}
+function closeDetail(){
+  document.getElementById('detailModal').classList.remove('open');
+  document.body.style.overflow='';
+}
+function closeDrawer(){ closeDetail(); }
 
 /* ══ 페이지네이션 공통 ══ */
 function renderPaging(elId, cur, total, cb){
