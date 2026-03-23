@@ -144,6 +144,8 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 /* 모달 */
 #editModal{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;}
 #editModal.open{display:flex;}
+#reportModal{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;}
+#reportModal.open{display:flex;}
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:-1;}
 .modal-box{background:#fff;border-radius:18px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
 .modal-hd{padding:16px 18px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:18px 18px 0 0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:2;}
@@ -268,6 +270,9 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <div class="nav-tab"         onclick="switchTab(this,'tab-niosh')">🔬 NIOSH 분석</div>
     <div class="nav-tab"         onclick="switchTab(this,'tab-records')">📋 전체 기록</div>
     <div class="nav-tab"         onclick="switchTab(this,'tab-manage')">✏️ 데이터 관리</div>
+    <div class="nav-tab" onclick="switchTab(this,'tab-checklist')">📋 유해요인 체크리스트</div>
+    <div class="nav-tab" onclick="switchTab(this,'tab-report')">📝 예방보고서</div>
+    <div class="nav-tab" onclick="switchTab(this,'tab-docs')">📂 유해요인조사표</div>
   </div>
 </div>
 
@@ -412,6 +417,53 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
+<!-- ══ TAB6 유해요인 체크리스트 ══ -->
+<div class="tab-pane" id="tab-checklist">
+  <div class="card" style="background:linear-gradient(135deg,rgba(37,99,235,.04),rgba(124,58,237,.04));border-color:rgba(37,99,235,.15)">
+    <div class="card-title">📋 2026년 근골격계 유해요인 체크리스트</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">조사일자: 2026년 4월 28일 | 조사자: 유대순 | 사업장: 신광전자</div>
+    <div class="stat-grid" id="clStatGrid"></div>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-hdr"><div class="tbl-count" id="clTblCount">-</div></div>
+    <div class="tbl-scroll">
+      <table style="min-width:800px">
+        <thead><tr><th>공정명</th><th>공정내용</th><th>단위작업</th><th>작업인원</th><th>위험요인 수</th><th>위험 수준</th><th>상세</th></tr></thead>
+        <tbody id="clTblBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB7 예방보고서 ══ -->
+<div class="tab-pane" id="tab-report">
+  <div class="card">
+    <div class="card-title">📝 근골격계질환 예방보고서 관리</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button class="tb-btn tb-blue" onclick="openReportForm()">+ 새 보고서 작성</button>
+      <button class="tb-btn tb-ghost" onclick="loadReports()">🔄 새로고침</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-hdr"><div class="tbl-count" id="rptCount">-</div></div>
+    <div class="tbl-scroll">
+      <table style="min-width:700px">
+        <thead><tr><th>근로자명</th><th>작성일자</th><th>면담장소</th><th>육체적부담</th><th>조치일자</th><th>상세</th><th>관리</th></tr></thead>
+        <tbody id="rptTblBody"><tr><td colspan="7" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB8 유해요인조사표 ══ -->
+<div class="tab-pane" id="tab-docs">
+  <div class="card">
+    <div class="card-title">📂 2026년 유해요인조사표 (파트별)</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">각 파트별 유해요인조사표를 PDF로 열람할 수 있습니다.</div>
+  </div>
+  <div id="docsListArea"></div>
+</div>
+
 <!-- 편집 모달 -->
 <div id="editModal">
   <div class="modal-backdrop" onclick="closeModal()"></div>
@@ -476,6 +528,49 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
     <div class="detail-body" id="detailBody"></div>
+  </div>
+</div>
+
+<!-- 예방보고서 모달 -->
+<div id="reportModal">
+  <div class="modal-backdrop" onclick="closeReportModal()"></div>
+  <div class="modal-box">
+    <div class="modal-hd">
+      <div class="modal-title">📝 예방보고서 작성</div>
+      <button class="modal-close" onclick="closeReportModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="rptDocId">
+      <div class="m-sec">👤 기본 정보</div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">근로자명</div><input id="rpt-worker" type="text" class="m-inp"></div>
+        <div class="m-group"><div class="m-label">근로자 연령</div><input id="rpt-age" type="number" class="m-inp"></div>
+      </div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">작성일자</div><input id="rpt-date" type="date" class="m-inp"></div>
+        <div class="m-group"><div class="m-label">면담장소</div><input id="rpt-place" type="text" class="m-inp" value="회의실"></div>
+      </div>
+      <div class="m-group"><div class="m-label">조사자</div><input id="rpt-surveyor" type="text" class="m-inp" value="유대순"></div>
+      <div class="m-sec">💪 육체적 부담</div>
+      <div class="m-group">
+        <div class="m-label">육체적 부담 정도</div>
+        <select id="rpt-burden" class="m-inp"><option value="">선택</option><option>전혀 힘들지 않음</option><option>견딜만 함</option><option>약간 힘듦</option><option>힘듦</option><option>매우 힘듦</option></select>
+      </div>
+      <div class="m-group"><div class="m-label">육체적으로 어떻게 부담되는지 구체적으로</div><textarea id="rpt-q1" class="m-inp" rows="4" style="resize:vertical"></textarea></div>
+      <div class="m-sec">🩺 통증 상태</div>
+      <div class="m-group"><div class="m-label">어떻게 아프신지 구체적으로</div><textarea id="rpt-q2" class="m-inp" rows="4" style="resize:vertical"></textarea></div>
+      <div class="m-sec">💬 추가 의견</div>
+      <div class="m-group"><div class="m-label">추가로 하고 싶은 말</div><textarea id="rpt-q3" class="m-inp" rows="3" style="resize:vertical"></textarea></div>
+      <div class="m-sec">🏭 사업주 조치</div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">조치일자</div><input id="rpt-actionDate" type="date" class="m-inp"></div>
+        <div class="m-group"><div class="m-label">조치내용</div><textarea id="rpt-actionContent" class="m-inp" rows="3" style="resize:vertical"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeReportModal()">취소</button>
+      <button class="btn-save" onclick="saveReport()">💾 저장</button>
+    </div>
   </div>
 </div>
 
@@ -577,6 +672,9 @@ function switchTab(el, id){
   if(id==='tab-check')  renderCheckTab();
   if(id==='tab-manage') renderManageTab();
   if(id==='tab-niosh')  renderNIOSH(allData);
+  if(id==='tab-checklist') renderChecklist();
+  if(id==='tab-report') loadReports();
+  if(id==='tab-docs') renderDocs();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -994,12 +1092,278 @@ function downloadCSV(){
 }
 
 document.getElementById('pwInp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+
+/* ══ 유해요인 체크리스트 데이터 ══ */
+var CHECKLIST_DATA = {
+  surveyDate: '2026년 4월 28일',
+  surveyor: '유대순',
+  company: '신광전자',
+  criteria: [
+    '집중적 자료입력(마우스/키보드) 4시간 이상/일',
+    '같은 동작 반복작업 2시간 이상/일',
+    '머리 위 팔 들기/팔꿈치 몸 밖 2시간 이상/일',
+    '목/허리 구부리기/비틀기 2시간 이상/일',
+    '쪼그리기/무릎꿇기 2시간 이상/일',
+    '한 손가락 집기/조작 2시간 이상/일',
+    '한손 들기/쥐기 2시간 이상/일',
+    '25kg 이상 물건 들기 10회 이상/일',
+    '10kg 이상 어깨 위 들기 25회 이상/일',
+    '4.5kg 이상 물건 들기 분당 2회 이상',
+    '반복 충격 10회 이상/시간'
+  ],
+  bodyParts: [
+    '손,손가락,목,어깨','목,어깨,손목,손,팔꿈치','어깨,팔',
+    '목,허리','다리,무릎,허리','손가락','손',
+    '허리','팔,어깨,허리','허리','손,무릎'
+  ],
+  processes: [
+    {sheet:'FST',process:'FST',desc:'FST제품에 하네스 조립 작업',tasks:[{name:'FST 조립작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'검사',process:'검사',desc:'납땜 및 조립검사제품 기능검사',tasks:[{name:'검사 작업(4명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'가공',process:'가공',desc:'케이블 탈피 또는 탈피후 결합하는 작업',tasks:[{name:'가공 작업(3명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'기구',process:'기계가공',desc:'선반 및 MCT가공기를 이용한 단품가공',tasks:[{name:'기계가공작업(2명)',risks:[true,true,false,false,false,false,false,false,false,false,false]}]},
+    {sheet:'납땜',process:'납땜',desc:'가공된 케이블에 커넥터 연결 납땜 작업',tasks:[{name:'납땜작업(3명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'넘버링',process:'넘버링',desc:'케이블 튜브에 넘버링 작업',tasks:[{name:'넘버링 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'라벨',process:'라벨',desc:'조립된 제품에 라벨 부착 작업',tasks:[{name:'라벨 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'몰딩',process:'몰딩',desc:'케이블에 몰딩 작업',tasks:[{name:'몰딩 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'압착',process:'압착',desc:'가공된 케이블을 한 개씩 단자에 투입하여 압착',tasks:[{name:'압착 작업(3명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'연접',process:'연접',desc:'가공된 케이블에 여러선을 필름 부착작업',tasks:[{name:'연접 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'전장',process:'전장',desc:'장비에 하네스 조립 작업',tasks:[{name:'전장 작업(2명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'조립',process:'조립',desc:'케이블에 케이스 조립 작업',tasks:[{name:'조립 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'절단',process:'절단',desc:'케이블 커팅 작업(절단)',tasks:[{name:'절단 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'케이블아세이',process:'케이블 아세이',desc:'케이블 커팅 및 아세이 작업',tasks:[{name:'케이블아세이 작업(2명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'하우징',process:'삽입',desc:'하우징에 터미널 삽입 작업',tasks:[{name:'삽입 작업(2명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
+    {sheet:'관리부',process:'관리부',desc:'사무직전원',tasks:[
+      {name:'회계(1명)',risks:[true,true,false,false,false,false,false,false,false,false,false]},
+      {name:'영업 및 사무지원(2명)',risks:[true,true,false,false,false,false,false,false,false,false,false]},
+      {name:'구매.자재관리(1명)',risks:[true,true,false,false,false,false,false,false,false,false,false]},
+      {name:'관리책임(1명)',risks:[true,true,false,false,false,false,false,false,false,false,false]},
+      {name:'설계(1명)',risks:[true,true,false,false,false,false,false,false,false,false,false]},
+      {name:'영업지원(2명)',risks:[true,true,false,false,false,false,false,false,false,false,false]}
+    ]}
+  ]
+};
+
+/* ══ 체크리스트 렌더 ══ */
+function renderChecklist(){
+  var procs = CHECKLIST_DATA.processes;
+  var totalProc = procs.length;
+  var totalWorkers = 0;
+  var totalRisks = 0;
+
+  procs.forEach(function(p){
+    p.tasks.forEach(function(t){
+      var m = t.name.match(/(\d+)명/);
+      if(m) totalWorkers += parseInt(m[1]);
+      t.risks.forEach(function(r){ if(r) totalRisks++; });
+    });
+  });
+
+  document.getElementById('clStatGrid').innerHTML =
+    '<div class="stat-card"><div class="stat-num c-blue">'+totalProc+'</div><div class="stat-lbl">전체 공정</div></div>'
+    +'<div class="stat-card"><div class="stat-num c-green">'+totalWorkers+'</div><div class="stat-lbl">전체 작업인원</div></div>'
+    +'<div class="stat-card"><div class="stat-num c-red">'+totalRisks+'</div><div class="stat-lbl">위험요인 발견</div></div>';
+
+  document.getElementById('clTblCount').textContent = '전체 '+totalProc+'개 공정';
+
+  var html = '';
+  procs.forEach(function(p, idx){
+    var workers = 0;
+    var riskCount = 0;
+    p.tasks.forEach(function(t){
+      var m = t.name.match(/(\d+)명/);
+      if(m) workers += parseInt(m[1]);
+      t.risks.forEach(function(r){ if(r) riskCount++; });
+    });
+    var taskNames = p.tasks.map(function(t){ return t.name; }).join(', ');
+    var levelClass = riskCount >= 4 ? 'b-serious' : riskCount >= 2 ? 'b-manage' : riskCount > 0 ? 'b-normal' : 'b-none';
+    var levelText = riskCount >= 4 ? '높음' : riskCount >= 2 ? '보통' : riskCount > 0 ? '낮음' : '없음';
+    html += '<tr>'
+      +'<td class="td-name">'+p.process+'</td>'
+      +'<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p.desc+'</td>'
+      +'<td style="font-size:11px">'+taskNames+'</td>'
+      +'<td>'+workers+'명</td>'
+      +'<td><b>'+riskCount+'</b>개</td>'
+      +'<td><span class="badge '+levelClass+'">'+levelText+'</span></td>'
+      +'<td><button class="btn-detail" onclick="openChecklistDetail('+idx+')">상세보기</button></td>'
+      +'</tr>';
+  });
+  document.getElementById('clTblBody').innerHTML = html;
+}
+
+function openChecklistDetail(idx){
+  var p = CHECKLIST_DATA.processes[idx];
+  if(!p) return;
+  document.getElementById('detailTitle').textContent = p.process + ' 유해요인 체크리스트';
+
+  var h = '';
+  h += '<div class="detail-sec"><div class="detail-sec-title">📋 공정 정보</div>';
+  h += '<div class="detail-row"><span class="detail-key">공정명</span><span class="detail-val">'+p.process+'</span></div>';
+  h += '<div class="detail-row"><span class="detail-key">공정내용</span><span class="detail-val">'+p.desc+'</span></div>';
+  h += '</div>';
+
+  p.tasks.forEach(function(t){
+    h += '<div class="detail-sec">';
+    h += '<div class="detail-sec-title">👷 '+t.name+'</div>';
+    CHECKLIST_DATA.criteria.forEach(function(c, ci){
+      var flagged = t.risks[ci];
+      var icon = flagged ? '<span style="color:#dc2626;font-weight:900">✅ 해당</span>' : '<span style="color:#94a3b8">✕ 해당없음</span>';
+      var bodyPart = flagged ? ' <span style="font-size:10px;color:var(--accent);background:var(--alight);padding:1px 6px;border-radius:4px">부위: '+CHECKLIST_DATA.bodyParts[ci]+'</span>' : '';
+      h += '<div class="detail-row"><span class="detail-key" style="min-width:auto;flex:1;font-size:11px">'+c+'</span><span class="detail-val" style="min-width:120px;text-align:right">'+icon+bodyPart+'</span></div>';
+    });
+    h += '</div>';
+  });
+
+  document.getElementById('detailBody').innerHTML = h;
+  document.getElementById('detailModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+/* ══ 유해요인조사표 데이터 ══ */
+var DOC_FILES = [
+  {dept:'FST조립', files:['유해요인조사표_윤준석.pdf']},
+  {dept:'가공', files:['유해요인조사표_박경은.pdf','유해요인조사표_이순덕.pdf','유해요인조사표_황금옥.pdf']},
+  {dept:'검사', files:['유해요인조사표_김영선.pdf','유해요인조사표_민지영.pdf','유해요인조사표_이영화.pdf','유해요인조사표_임경희.pdf']},
+  {dept:'관리부', files:['유해요인조사표_민시우.pdf','유해요인조사표_박상준.pdf','유해요인조사표_박웅.pdf','유해요인조사표_박화자.pdf','유해요인조사표_신동민.pdf','유해요인조사표_신수철.pdf','유해요인조사표_유대순.pdf','유해요인조사표_이경륜.pdf']},
+  {dept:'기구', files:['유해요인조사표_백형권.pdf','유해요인조사표_이종국.pdf']},
+  {dept:'납땜', files:['유해요인조사표_김경선.pdf','유해요인조사표_조경숙.pdf','유해요인조사표_홍희자.pdf']},
+  {dept:'넘버링', files:['유해요인조사표_이영순.pdf']},
+  {dept:'라벨', files:['유해요인조사표_오현숙.pdf']},
+  {dept:'몰딩', files:['유해요인조사표_송범규.pdf']},
+  {dept:'압착', files:['유해요인조사표_김은순.pdf','유해요인조사표_손점순.pdf','유해요인조사표_신창수.pdf']},
+  {dept:'연접', files:['유해요인조사표_김명란.pdf']},
+  {dept:'전장', files:['유해요인조사표_문명숙.pdf','유해요인조사표_이산옥.pdf','유해요인조사표_이현무.pdf']},
+  {dept:'절단', files:['유해요인조사표_홍순민.pdf']},
+  {dept:'조립', files:['유해요인조사표_김남규.pdf']},
+  {dept:'케이블 아세이', files:['유해요인조사표_이산옥.pdf','유해요인조사표_임홍순.pdf']},
+  {dept:'하우징', files:['유해요인조사표_김희옥.pdf','유해요인조사표_임나연.pdf']}
+];
+
+/* ══ 유해요인조사표 렌더 ══ */
+function renderDocs(){
+  var html = '';
+  DOC_FILES.forEach(function(d){
+    html += '<div class="dept-section">';
+    html += '<div class="dept-section-title"><span>🏢 '+d.dept+' ('+d.files.length+'명)</span></div>';
+    html += '<div class="dept-section-body">';
+    d.files.forEach(function(f){
+      var personName = f.replace('유해요인조사표_','').replace('.pdf','');
+      var url = 'docs/2026/'+d.dept+'/'+f;
+      html += '<div class="check-row">'
+        +'<span class="check-emp-name">'+personName+'</span>'
+        +'<span style="flex:1;font-size:12px;color:var(--text2)">'+f+'</span>'
+        +'<a href="'+url+'" target="_blank" style="text-decoration:none"><button class="btn-detail">📄 열기</button></a>'
+        +'</div>';
+    });
+    html += '</div></div>';
+  });
+  document.getElementById('docsListArea').innerHTML = html;
+}
+
+/* ══ 예방보고서 함수 ══ */
+var reportData = [];
+
+function openReportForm(docId){
+  document.getElementById('rptDocId').value = docId || '';
+  document.getElementById('rpt-worker').value = '';
+  document.getElementById('rpt-age').value = '';
+  document.getElementById('rpt-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('rpt-place').value = '회의실';
+  document.getElementById('rpt-surveyor').value = '유대순';
+  document.getElementById('rpt-burden').value = '';
+  document.getElementById('rpt-q1').value = '';
+  document.getElementById('rpt-q2').value = '';
+  document.getElementById('rpt-q3').value = '';
+  document.getElementById('rpt-actionDate').value = '';
+  document.getElementById('rpt-actionContent').value = '';
+
+  if(docId){
+    var r = reportData.find(function(x){ return x.id === docId; });
+    if(r){
+      document.getElementById('rpt-worker').value = r.worker || '';
+      document.getElementById('rpt-age').value = r.age || '';
+      document.getElementById('rpt-date').value = r.date || '';
+      document.getElementById('rpt-place').value = r.place || '회의실';
+      document.getElementById('rpt-surveyor').value = r.surveyor || '유대순';
+      document.getElementById('rpt-burden').value = r.burden || '';
+      document.getElementById('rpt-q1').value = r.q1 || '';
+      document.getElementById('rpt-q2').value = r.q2 || '';
+      document.getElementById('rpt-q3').value = r.q3 || '';
+      document.getElementById('rpt-actionDate').value = r.actionDate || '';
+      document.getElementById('rpt-actionContent').value = r.actionContent || '';
+    }
+  }
+  document.getElementById('reportModal').classList.add('open');
+}
+
+function closeReportModal(){
+  document.getElementById('reportModal').classList.remove('open');
+}
+
+function saveReport(){
+  window._saveReportFn && window._saveReportFn();
+}
+
+function loadReports(){
+  window._loadReportsFn && window._loadReportsFn();
+}
+
+function deleteReport(id){
+  if(!confirm('이 보고서를 삭제하시겠습니까?')) return;
+  window._deleteReportFn && window._deleteReportFn(id);
+}
+
+function renderReports(){
+  document.getElementById('rptCount').textContent = '전체 '+reportData.length+'건';
+  if(!reportData.length){
+    document.getElementById('rptTblBody').innerHTML = '<tr><td colspan="7" class="empty-msg">등록된 보고서가 없습니다.</td></tr>';
+    return;
+  }
+  document.getElementById('rptTblBody').innerHTML = reportData.map(function(r, i){
+    return '<tr>'
+      +'<td class="td-name">'+(r.worker||'-')+'</td>'
+      +'<td>'+(r.date||'-')+'</td>'
+      +'<td>'+(r.place||'-')+'</td>'
+      +'<td>'+(r.burden||'-')+'</td>'
+      +'<td>'+(r.actionDate||'-')+'</td>'
+      +'<td><button class="btn-detail" onclick="openReportDetail('+i+')">상세보기</button></td>'
+      +'<td>'
+        +'<button class="btn-edit-sm" onclick="openReportForm(\''+r.id+'\')">✏️ 수정</button>'
+        +'<button class="btn-del-sm" onclick="deleteReport(\''+r.id+'\')">🗑</button>'
+      +'</td></tr>';
+  }).join('');
+}
+
+function openReportDetail(idx){
+  var r = reportData[idx];
+  if(!r) return;
+  document.getElementById('detailTitle').textContent = (r.worker||'-') + ' 예방보고서';
+
+  function row(k,v){return '<div class="detail-row"><span class="detail-key">'+k+'</span><span class="detail-val">'+(v||'-')+'</span></div>';}
+  function sec(icon,t){return '<div class="detail-sec-title">'+icon+' '+t+'</div>';}
+
+  var h = '';
+  h += '<div class="detail-sec">'+sec('👤','기본 정보')
+    +row('근로자명',r.worker)+row('연령',(r.age||'-')+'세')
+    +row('작성일자',r.date)+row('면담장소',r.place)+row('조사자',r.surveyor)+'</div>';
+  h += '<div class="detail-sec">'+sec('💪','육체적 부담')
+    +row('부담 정도',r.burden)+row('구체적 부담 내용',r.q1)+'</div>';
+  h += '<div class="detail-sec">'+sec('🩺','통증 상태')
+    +row('통증 내용',r.q2)+'</div>';
+  h += '<div class="detail-sec">'+sec('💬','추가 의견')
+    +row('추가 의견',r.q3)+'</div>';
+  h += '<div class="detail-sec">'+sec('🏭','사업주 조치')
+    +row('조치일자',r.actionDate)+row('조치내용',r.actionContent)+'</div>';
+
+  document.getElementById('detailBody').innerHTML = h;
+  document.getElementById('detailModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 </script>
 
 <!-- Firebase Module -->
 <script type="module">
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, deleteDoc, writeBatch }
+import { getFirestore, collection, getDocs, orderBy, query, doc, updateDoc, deleteDoc, writeBatch, addDoc, Timestamp }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const cfg = {
@@ -1098,6 +1462,62 @@ window._bulkReplaceFn = async function(from, to, targets){
     setTimeout(()=>res.style.display='none', 4000);
   } catch(e){ alert('오류: '+e.message); }
   finally{ setLoad(false); }
+};
+
+/* ══ 예방보고서 Firebase ══ */
+window._loadReportsFn = async function(){
+  try{
+    const snap = await getDocs(query(collection(db,'reports'), orderBy('createdAt','desc')));
+    reportData = [];
+    snap.forEach(d => reportData.push(Object.assign({id:d.id}, d.data())));
+    renderReports();
+    console.log('✅ 보고서 로드:', reportData.length,'건');
+  } catch(e){
+    console.error('❌ 보고서 로드 오류:', e);
+    document.getElementById('rptTblBody').innerHTML='<tr><td colspan="7" class="empty-msg">⚠️ '+e.message+'</td></tr>';
+  }
+};
+
+window._saveReportFn = async function(){
+  const docId = document.getElementById('rptDocId').value;
+  const data = {
+    worker: document.getElementById('rpt-worker').value.trim(),
+    age: document.getElementById('rpt-age').value,
+    date: document.getElementById('rpt-date').value,
+    place: document.getElementById('rpt-place').value.trim(),
+    surveyor: document.getElementById('rpt-surveyor').value.trim(),
+    burden: document.getElementById('rpt-burden').value,
+    q1: document.getElementById('rpt-q1').value.trim(),
+    q2: document.getElementById('rpt-q2').value.trim(),
+    q3: document.getElementById('rpt-q3').value.trim(),
+    actionDate: document.getElementById('rpt-actionDate').value,
+    actionContent: document.getElementById('rpt-actionContent').value.trim(),
+  };
+  if(!data.worker){ alert('근로자명을 입력해주세요.'); return; }
+  try{
+    if(docId){
+      await updateDoc(doc(db,'reports',docId), data);
+      var idx = reportData.findIndex(r=>r.id===docId);
+      if(idx>=0) Object.assign(reportData[idx], data);
+      alert('✅ 수정 완료!');
+    } else {
+      data.createdAt = Timestamp.now();
+      const ref = await addDoc(collection(db,'reports'), data);
+      reportData.unshift(Object.assign({id:ref.id}, data));
+      alert('✅ 저장 완료!');
+    }
+    closeReportModal();
+    renderReports();
+  } catch(e){ alert('오류: '+e.message); }
+};
+
+window._deleteReportFn = async function(id){
+  try{
+    await deleteDoc(doc(db,'reports',id));
+    reportData = reportData.filter(r=>r.id!==id);
+    renderReports();
+    alert('🗑 삭제 완료!');
+  } catch(e){ alert('오류: '+e.message); }
 };
 </script>
 </body>
