@@ -284,15 +284,21 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 
 <!-- 헤더 -->
 <div class="hdr" id="adminHdr" style="display:none">
-  <div class="hdr-left">
-    <span style="font-size:20px">🦴</span>
-    <span class="hdr-title">근골격계 증상조사 관리자</span>
-    <span class="hdr-badge" id="totalBadge">-건</span>
+  <div class="hdr-left" style="gap:0;flex:1;">
+    <div id="hdrMusculo" onclick="switchSection('musculo')" style="display:flex;align-items:center;gap:8px;padding:6px 16px 6px 0;cursor:pointer;border-right:1px solid rgba(255,255,255,.25);margin-right:16px;opacity:1;">
+      <span style="font-size:20px">🦴</span>
+      <span class="hdr-title">근골격계 증상조사 관리자</span>
+      <span class="hdr-badge" id="totalBadge">-건</span>
+    </div>
+    <div id="hdrEdu" onclick="switchSection('edu')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;">
+      <span style="font-size:18px">📚</span>
+      <span class="hdr-title">정기안전보건교육</span>
+    </div>
   </div>
   <button class="logout-btn" onclick="doLogout()">로그아웃</button>
 </div>
 
-<!-- 탭 네비 -->
+<!-- 탭 네비 (근골격계) -->
 <div id="navTabs" style="display:none">
   <div class="nav-tabs">
     <div class="nav-tab active"  onclick="switchTab(this,'tab-overview')">📊 대시보드</div>
@@ -303,7 +309,6 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <div class="nav-tab" onclick="switchTab(this,'tab-checklist')">📋 유해요인조사표</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-report')">📝 예방보고서</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-improvement')">📈 개선계획서</div>
-    <div class="nav-tab" onclick="switchTab(this,'tab-edu')">📚 정기안전보건교육</div>
   </div>
 </div>
 
@@ -1007,6 +1012,31 @@ function doLogin(){
 function doLogout(){ if(confirm('로그아웃 하시겠습니까?')) location.reload(); }
 
 /* ── 탭 전환 ── */
+function switchSection(sec){
+  var isMusculo = sec === 'musculo';
+  /* 헤더 강조 */
+  document.getElementById('hdrMusculo').style.opacity = isMusculo ? '1' : '.55';
+  document.getElementById('hdrEdu').style.opacity     = isMusculo ? '.55' : '1';
+  document.getElementById('hdrEdu').style.background  = isMusculo ? '' : 'rgba(255,255,255,.15)';
+  /* 탭바 */
+  document.getElementById('navTabs').style.display = isMusculo ? 'block' : 'none';
+  /* 탭 콘텐츠 */
+  document.querySelectorAll('.tab-pane').forEach(function(p){
+    p.style.display = 'none'; p.classList.remove('active');
+  });
+  if(isMusculo){
+    var activeTab = document.querySelector('#navTabs .nav-tab.active');
+    var activeId = activeTab ? activeTab.getAttribute('onclick').match(/'([^']+)'\s*\)/)[1] : 'tab-overview';
+    document.getElementById(activeId).style.display = 'block';
+    document.getElementById(activeId).classList.add('active');
+  } else {
+    document.getElementById('tab-edu').style.display = 'block';
+    document.getElementById('tab-edu').classList.add('active');
+    loadEduData();
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
 function switchTab(el, id){
   document.querySelectorAll('.tab-pane').forEach(function(p){p.style.display='none';p.classList.remove('active');});
   document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
@@ -1019,7 +1049,6 @@ function switchTab(el, id){
   if(id==='tab-checklist') loadHazardSurveys();
   if(id==='tab-report') loadReports();
   if(id==='tab-improvement') loadImprovements();
-  if(id==='tab-edu') loadEduData();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
