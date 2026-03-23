@@ -303,7 +303,6 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <div class="nav-tab" onclick="switchTab(this,'tab-checklist')">📋 유해요인조사표</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-report')">📝 예방보고서</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-improvement')">📈 개선계획서</div>
-    <div class="nav-tab" onclick="switchTab(this,'tab-edu')">📚 정기안전보건교육</div>
   </div>
 </div>
 
@@ -780,104 +779,6 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- ══ TAB9 정기안전보건교육 ══ -->
-<div class="tab-pane" id="tab-edu">
-
-  <!-- 상단 링크 배너 -->
-  <div style="background:linear-gradient(135deg,#1e3a8a,#7c3aed);border-radius:14px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-    <div style="color:#fff;">
-      <div style="font-size:14px;font-weight:900;">📱 직원 전자서명 페이지</div>
-      <div style="font-size:11px;opacity:.8;margin-top:2px;">아래 링크를 직원에게 공유하거나 QR코드로 만들어 배포하세요</div>
-    </div>
-    <a href="sign.html" target="_blank" style="background:rgba(255,255,255,.2);color:#fff;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,.4);">🔗 서명 페이지 열기</a>
-  </div>
-
-  <!-- 교육 회차 관리 -->
-  <div class="card">
-    <div class="card-title">📚 교육 회차 관리</div>
-    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
-      <button class="tb-btn tb-blue" onclick="openEduSessionModal()">+ 새 교육 회차 등록</button>
-      <button class="tb-btn tb-ghost" onclick="loadEduData()">🔄 새로고침</button>
-    </div>
-    <div class="tbl-wrap">
-      <div class="tbl-hdr"><div class="tbl-count" id="eduSessionCount">-</div></div>
-      <div class="tbl-scroll">
-        <table style="min-width:680px">
-          <thead><tr><th>월</th><th>교육 제목</th><th>교육일</th><th>강사</th><th>서명수</th><th>상태</th><th>관리</th></tr></thead>
-          <tbody id="eduSessionTbody"><tr><td colspan="7" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <!-- 서명 현황 -->
-  <div class="card">
-    <div class="card-title">✍️ 전자서명 제출 현황</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-      <select id="eduSigFilter" class="tb-sel" onchange="filterEduSigs()" style="min-width:180px;">
-        <option value="">전체 회차</option>
-      </select>
-      <input type="text" id="eduSigSearch" class="tb-inp" placeholder="이름 검색" oninput="filterEduSigs()" style="max-width:160px;">
-    </div>
-    <div id="eduSigStats" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"></div>
-    <div class="tbl-wrap">
-      <div class="tbl-hdr"><div class="tbl-count" id="eduSigCount">-</div></div>
-      <div class="tbl-scroll">
-        <table style="min-width:660px">
-          <thead><tr><th>이름</th><th>부서</th><th>교육 회차</th><th>서명일시</th><th>서명 확인</th><th>관리</th></tr></thead>
-          <tbody id="eduSigTbody"><tr><td colspan="6" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- 교육 회차 등록 모달 -->
-<div id="eduSessionModal" style="position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;">
-  <div class="modal-backdrop" onclick="closeEduSessionModal()"></div>
-  <div class="modal-box" style="max-width:560px;position:relative;z-index:1;">
-    <div class="modal-hd">
-      <div class="modal-title" id="eduSessionModalTitle">📚 새 교육 회차 등록</div>
-      <button class="modal-close" onclick="closeEduSessionModal()">✕</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="eduSessionDocId">
-      <div class="m-grid2">
-        <div class="m-group"><div class="m-label">교육 월 *</div><input id="edu-month" type="month" class="m-inp"></div>
-        <div class="m-group"><div class="m-label">교육일</div><input id="edu-eduDate" type="date" class="m-inp"></div>
-      </div>
-      <div class="m-group"><div class="m-label">교육 제목 *</div><input id="edu-title" type="text" class="m-inp" placeholder="예: 정기 안전보건교육 (3월)"></div>
-      <div class="m-group"><div class="m-label">강사명</div><input id="edu-instructor" type="text" class="m-inp" placeholder="예: 신동민"></div>
-      <div class="m-group">
-        <div class="m-label">교육자료 PDF 링크 (Google Drive)</div>
-        <input id="edu-pdfUrl" type="url" class="m-inp" placeholder="https://drive.google.com/file/d/.../preview">
-        <div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:8px 10px;margin-top:6px;font-size:11px;color:#92400e;line-height:1.6;">
-          📌 Google Drive에 PDF 업로드 → 공유 → "링크가 있는 모든 사용자" → 링크 복사<br>
-          복사한 링크에서 <b>/view</b> 를 <b>/preview</b> 로 바꿔서 붙여넣으세요
-        </div>
-      </div>
-      <div class="m-group" style="display:flex;align-items:center;gap:10px;">
-        <input type="checkbox" id="edu-active" style="width:18px;height:18px;accent-color:#10b981;">
-        <label for="edu-active" style="font-size:13px;font-weight:700;color:#065f46;cursor:pointer;">✅ 이 회차를 활성화 (직원 서명 페이지에 표시)</label>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn-cancel" onclick="closeEduSessionModal()">취소</button>
-      <button class="btn-save" id="eduSaveBtn" onclick="saveEduSession()">💾 저장</button>
-    </div>
-  </div>
-</div>
-
-<!-- 서명 이미지 확인 모달 -->
-<div id="eduSigModal" style="position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.6);">
-  <div style="background:#fff;border-radius:14px;padding:20px;max-width:400px;width:100%;position:relative;">
-    <div style="font-size:14px;font-weight:800;margin-bottom:12px;" id="eduSigModalTitle">서명 확인</div>
-    <img id="eduSigImg" src="" alt="서명" style="width:100%;border:1px solid #dde3f0;border-radius:8px;background:#fafbff;">
-    <div id="eduSigModalInfo" style="font-size:12px;color:#64748b;margin-top:8px;"></div>
-    <button onclick="closeEduSigModal()" style="margin-top:12px;width:100%;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">닫기</button>
-  </div>
-</div>
-
 <!-- 개선계획서 모달 -->
 <div id="improvementModal">
   <div class="modal-backdrop" onclick="closeImproveModal()"></div>
@@ -1017,7 +918,6 @@ function switchTab(el, id){
   if(id==='tab-checklist') loadHazardSurveys();
   if(id==='tab-report') loadReports();
   if(id==='tab-improvement') loadImprovements();
-  if(id==='tab-edu') loadEduData();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
