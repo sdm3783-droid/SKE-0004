@@ -303,6 +303,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <div class="nav-tab" onclick="switchTab(this,'tab-checklist')">📋 유해요인조사표</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-report')">📝 예방보고서</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-improvement')">📈 개선계획서</div>
+    <div class="nav-tab" onclick="switchTab(this,'tab-edu')">📚 정기안전보건교육</div>
   </div>
 </div>
 
@@ -779,6 +780,104 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
+<!-- ══ TAB9 정기안전보건교육 ══ -->
+<div class="tab-pane" id="tab-edu">
+
+  <!-- 상단 링크 배너 -->
+  <div style="background:linear-gradient(135deg,#1e3a8a,#7c3aed);border-radius:14px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+    <div style="color:#fff;">
+      <div style="font-size:14px;font-weight:900;">📱 직원 전자서명 페이지</div>
+      <div style="font-size:11px;opacity:.8;margin-top:2px;">아래 링크를 직원에게 공유하거나 QR코드로 만들어 배포하세요</div>
+    </div>
+    <a href="sign.html" target="_blank" style="background:rgba(255,255,255,.2);color:#fff;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,.4);">🔗 서명 페이지 열기</a>
+  </div>
+
+  <!-- 교육 회차 관리 -->
+  <div class="card">
+    <div class="card-title">📚 교육 회차 관리</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <button class="tb-btn tb-blue" onclick="openEduSessionModal()">+ 새 교육 회차 등록</button>
+      <button class="tb-btn tb-ghost" onclick="loadEduData()">🔄 새로고침</button>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-hdr"><div class="tbl-count" id="eduSessionCount">-</div></div>
+      <div class="tbl-scroll">
+        <table style="min-width:680px">
+          <thead><tr><th>월</th><th>교육 제목</th><th>교육일</th><th>강사</th><th>서명수</th><th>상태</th><th>관리</th></tr></thead>
+          <tbody id="eduSessionTbody"><tr><td colspan="7" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- 서명 현황 -->
+  <div class="card">
+    <div class="card-title">✍️ 전자서명 제출 현황</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+      <select id="eduSigFilter" class="tb-sel" onchange="filterEduSigs()" style="min-width:180px;">
+        <option value="">전체 회차</option>
+      </select>
+      <input type="text" id="eduSigSearch" class="tb-inp" placeholder="이름 검색" oninput="filterEduSigs()" style="max-width:160px;">
+    </div>
+    <div id="eduSigStats" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;"></div>
+    <div class="tbl-wrap">
+      <div class="tbl-hdr"><div class="tbl-count" id="eduSigCount">-</div></div>
+      <div class="tbl-scroll">
+        <table style="min-width:660px">
+          <thead><tr><th>이름</th><th>부서</th><th>교육 회차</th><th>서명일시</th><th>서명 확인</th><th>관리</th></tr></thead>
+          <tbody id="eduSigTbody"><tr><td colspan="6" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 교육 회차 등록 모달 -->
+<div id="eduSessionModal" style="position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;">
+  <div class="modal-backdrop" onclick="closeEduSessionModal()"></div>
+  <div class="modal-box" style="max-width:560px;position:relative;z-index:1;">
+    <div class="modal-hd">
+      <div class="modal-title" id="eduSessionModalTitle">📚 새 교육 회차 등록</div>
+      <button class="modal-close" onclick="closeEduSessionModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="eduSessionDocId">
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">교육 월 *</div><input id="edu-month" type="month" class="m-inp"></div>
+        <div class="m-group"><div class="m-label">교육일</div><input id="edu-eduDate" type="date" class="m-inp"></div>
+      </div>
+      <div class="m-group"><div class="m-label">교육 제목 *</div><input id="edu-title" type="text" class="m-inp" placeholder="예: 정기 안전보건교육 (3월)"></div>
+      <div class="m-group"><div class="m-label">강사명</div><input id="edu-instructor" type="text" class="m-inp" placeholder="예: 신동민"></div>
+      <div class="m-group">
+        <div class="m-label">교육자료 PDF 링크 (Google Drive)</div>
+        <input id="edu-pdfUrl" type="url" class="m-inp" placeholder="https://drive.google.com/file/d/.../preview">
+        <div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:8px 10px;margin-top:6px;font-size:11px;color:#92400e;line-height:1.6;">
+          📌 Google Drive에 PDF 업로드 → 공유 → "링크가 있는 모든 사용자" → 링크 복사<br>
+          복사한 링크에서 <b>/view</b> 를 <b>/preview</b> 로 바꿔서 붙여넣으세요
+        </div>
+      </div>
+      <div class="m-group" style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="edu-active" style="width:18px;height:18px;accent-color:#10b981;">
+        <label for="edu-active" style="font-size:13px;font-weight:700;color:#065f46;cursor:pointer;">✅ 이 회차를 활성화 (직원 서명 페이지에 표시)</label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeEduSessionModal()">취소</button>
+      <button class="btn-save" id="eduSaveBtn" onclick="saveEduSession()">💾 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 서명 이미지 확인 모달 -->
+<div id="eduSigModal" style="position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.6);">
+  <div style="background:#fff;border-radius:14px;padding:20px;max-width:400px;width:100%;position:relative;">
+    <div style="font-size:14px;font-weight:800;margin-bottom:12px;" id="eduSigModalTitle">서명 확인</div>
+    <img id="eduSigImg" src="" alt="서명" style="width:100%;border:1px solid #dde3f0;border-radius:8px;background:#fafbff;">
+    <div id="eduSigModalInfo" style="font-size:12px;color:#64748b;margin-top:8px;"></div>
+    <button onclick="closeEduSigModal()" style="margin-top:12px;width:100%;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">닫기</button>
+  </div>
+</div>
+
 <!-- 개선계획서 모달 -->
 <div id="improvementModal">
   <div class="modal-backdrop" onclick="closeImproveModal()"></div>
@@ -918,6 +1017,7 @@ function switchTab(el, id){
   if(id==='tab-checklist') loadHazardSurveys();
   if(id==='tab-report') loadReports();
   if(id==='tab-improvement') loadImprovements();
+  if(id==='tab-edu') loadEduData();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1335,6 +1435,127 @@ function downloadCSV(){
 }
 
 document.getElementById('pwInp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+
+/* ══ 정기안전보건교육 ══ */
+var eduSessions = [], eduSigs = [], eduSigsFiltered = [];
+
+function loadEduData(){ window._loadEduFn && window._loadEduFn(); }
+
+function renderEduSessions(){
+  document.getElementById('eduSessionCount').textContent = '전체 '+eduSessions.length+'건';
+  if(!eduSessions.length){
+    document.getElementById('eduSessionTbody').innerHTML = '<tr><td colspan="7" class="empty-msg">등록된 교육 회차가 없습니다.</td></tr>';
+    return;
+  }
+  var sel = document.getElementById('eduSigFilter');
+  var curVal = sel.value;
+  sel.innerHTML = '<option value="">전체 회차</option>';
+  eduSessions.forEach(function(s){
+    var parts = (s.month||'').split('-');
+    var label = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : s.month;
+    sel.innerHTML += '<option value="'+s.id+'"'+(s.id===curVal?' selected':'')+'>'+label+' '+s.title+'</option>';
+  });
+  document.getElementById('eduSessionTbody').innerHTML = eduSessions.map(function(s){
+    var parts = (s.month||'').split('-');
+    var label = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : s.month;
+    var sigCount = eduSigs.filter(function(g){ return g.sessionId===s.id; }).length;
+    var badge = s.active
+      ? '<span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">✅ 활성</span>'
+      : '<span style="background:#f1f5f9;color:#94a3b8;padding:2px 8px;border-radius:10px;font-size:11px;">비활성</span>';
+    return '<tr>'
+      +'<td style="font-weight:700;">'+label+'</td>'
+      +'<td>'+(s.title||'-')+'</td>'
+      +'<td>'+(s.eduDate||'-')+'</td>'
+      +'<td>'+(s.instructor||'-')+'</td>'
+      +'<td style="text-align:center;font-weight:700;color:#2563eb;">'+sigCount+'명</td>'
+      +'<td>'+badge+'</td>'
+      +'<td>'
+        +(s.pdfUrl?'<a href="'+s.pdfUrl+'" target="_blank" style="font-size:11px;color:#2563eb;margin-right:6px;">📄PDF</a>':'')
+        +'<button class="btn-edit-sm" onclick="openEduSessionModal(\''+s.id+'\')">✏️</button> '
+        +'<button class="btn-del-sm" onclick="deleteEduSession(\''+s.id+'\')">🗑</button>'
+      +'</td></tr>';
+  }).join('');
+}
+
+function filterEduSigs(){
+  var sessionId = document.getElementById('eduSigFilter').value;
+  var name = document.getElementById('eduSigSearch').value.trim().toLowerCase();
+  eduSigsFiltered = eduSigs.filter(function(g){
+    if(sessionId && g.sessionId !== sessionId) return false;
+    if(name && (g.worker||'').toLowerCase().indexOf(name)<0) return false;
+    return true;
+  });
+  renderEduSigTable();
+}
+
+function renderEduSigTable(){
+  document.getElementById('eduSigCount').textContent = '전체 '+eduSigsFiltered.length+'건';
+  var total = EMPLOYEES.length;
+  var signed = eduSigsFiltered.length;
+  document.getElementById('eduSigStats').innerHTML =
+    '<div class="stat-card" style="min-width:100px;"><div class="stat-num c-blue">'+signed+'</div><div class="stat-lbl">서명 완료</div></div>'
+    +'<div class="stat-card" style="min-width:100px;"><div class="stat-num c-red">'+(total-signed<0?0:total-signed)+'</div><div class="stat-lbl">미서명 (전직원 기준)</div></div>'
+    +'<div class="stat-card" style="min-width:100px;"><div class="stat-num c-green">'+total+'</div><div class="stat-lbl">전체 직원</div></div>';
+  if(!eduSigsFiltered.length){
+    document.getElementById('eduSigTbody').innerHTML = '<tr><td colspan="6" class="empty-msg">제출된 서명이 없습니다.</td></tr>';
+    return;
+  }
+  document.getElementById('eduSigTbody').innerHTML = eduSigsFiltered.map(function(g, i){
+    var dt = g.signedAt && g.signedAt.toDate ? g.signedAt.toDate().toLocaleString('ko-KR') : (g.signedAt||'-');
+    var parts = (g.sessionMonth||'').split('-');
+    var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : g.sessionMonth||'-';
+    return '<tr>'
+      +'<td class="td-name">'+(g.worker||'-')+'</td>'
+      +'<td>'+(g.dept||'-')+'</td>'
+      +'<td style="font-size:11px;">'+monthLabel+' '+(g.sessionTitle||'')+'</td>'
+      +'<td style="font-size:11px;">'+dt+'</td>'
+      +'<td style="text-align:center;"><button class="btn-detail" onclick="viewEduSig('+i+')">서명보기</button></td>'
+      +'<td><button class="btn-del-sm" onclick="deleteEduSig(\''+g.id+'\')">🗑</button></td>'
+      +'</tr>';
+  }).join('');
+}
+
+function viewEduSig(idx){
+  var g = eduSigsFiltered[idx]; if(!g) return;
+  document.getElementById('eduSigModalTitle').textContent = g.worker+' ('+g.dept+') 서명';
+  document.getElementById('eduSigImg').src = g.signatureData || '';
+  var dt = g.signedAt && g.signedAt.toDate ? g.signedAt.toDate().toLocaleString('ko-KR') : '';
+  document.getElementById('eduSigModalInfo').textContent = '서명일시: '+dt;
+  document.getElementById('eduSigModal').style.display = 'flex';
+}
+function closeEduSigModal(){ document.getElementById('eduSigModal').style.display = 'none'; }
+
+function openEduSessionModal(docId){
+  document.getElementById('eduSessionDocId').value = docId||'';
+  document.getElementById('edu-month').value = '';
+  document.getElementById('edu-eduDate').value = '';
+  document.getElementById('edu-title').value = '';
+  document.getElementById('edu-instructor').value = '';
+  document.getElementById('edu-active').checked = false;
+  document.getElementById('edu-pdfUrl').value = '';
+  if(docId){
+    var s = eduSessions.find(function(x){ return x.id===docId; });
+    if(s){
+      document.getElementById('edu-month').value = s.month||'';
+      document.getElementById('edu-eduDate').value = s.eduDate||'';
+      document.getElementById('edu-title').value = s.title||'';
+      document.getElementById('edu-instructor').value = s.instructor||'';
+      document.getElementById('edu-active').checked = !!s.active;
+      document.getElementById('edu-pdfUrl').value = s.pdfUrl||'';
+    }
+    document.getElementById('eduSessionModalTitle').textContent = '📚 교육 회차 수정';
+  } else {
+    document.getElementById('eduSessionModalTitle').textContent = '📚 새 교육 회차 등록';
+    var now = new Date();
+    document.getElementById('edu-month').value = now.getFullYear()+'-'+(now.getMonth()+1<10?'0':'')+(now.getMonth()+1);
+  }
+  document.getElementById('eduSessionModal').style.display = 'flex';
+}
+function closeEduSessionModal(){ document.getElementById('eduSessionModal').style.display = 'none'; }
+
+function saveEduSession(){ window._saveEduSessionFn && window._saveEduSessionFn(); }
+function deleteEduSession(id){ if(!confirm('이 교육 회차를 삭제하시겠습니까?')) return; window._deleteEduSessionFn && window._deleteEduSessionFn(id); }
+function deleteEduSig(id){ if(!confirm('이 서명을 삭제하시겠습니까?')) return; window._deleteEduSigFn && window._deleteEduSigFn(id); }
 
 /* ══ 유해요인조사표 (인원별 관리) ══ */
 var hazardData = [];
@@ -2062,6 +2283,87 @@ window._deleteImproveFn = async function(id){
     renderImprovements();
     alert('🗑 삭제 완료!');
   } catch(e){ alert('오류: '+e.message); }
+};
+
+/* ══ 정기안전보건교육 Firebase ══ */
+window._loadEduFn = async function(){
+  try{
+    const [sessSnap, sigSnap] = await Promise.all([
+      getDocs(query(collection(db,'edu_sessions'), orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'edu_signatures'), orderBy('signedAt','desc')))
+    ]);
+    eduSessions = []; sessSnap.forEach(d => eduSessions.push(Object.assign({id:d.id}, d.data())));
+    eduSigs = [];     sigSnap.forEach(d => eduSigs.push(Object.assign({id:d.id}, d.data())));
+    eduSigsFiltered = eduSigs.slice();
+    renderEduSessions();
+    renderEduSigTable();
+  } catch(e){ alert('교육 데이터 로드 오류: '+e.message); }
+};
+
+window._saveEduSessionFn = async function(){
+  var docId = document.getElementById('eduSessionDocId').value;
+  var month = document.getElementById('edu-month').value;
+  var title = document.getElementById('edu-title').value.trim();
+  if(!month){ alert('교육 월을 선택해주세요.'); return; }
+  if(!title){ alert('교육 제목을 입력해주세요.'); return; }
+
+  var data = {
+    month: month,
+    title: title,
+    eduDate: document.getElementById('edu-eduDate').value,
+    instructor: document.getElementById('edu-instructor').value.trim(),
+    active: document.getElementById('edu-active').checked
+  };
+
+  /* 활성화 시 다른 회차 비활성화 */
+  if(data.active){
+    const batch = writeBatch(db);
+    eduSessions.forEach(function(s){
+      if(s.id !== docId && s.active){
+        batch.update(doc(db,'edu_sessions',s.id), {active:false});
+        s.active = false;
+      }
+    });
+    await batch.commit();
+  }
+
+  var pdfUrl = document.getElementById('edu-pdfUrl').value.trim();
+  if(pdfUrl) data.pdfUrl = pdfUrl;
+
+  try{
+    if(docId){
+      await updateDoc(doc(db,'edu_sessions',docId), data);
+      var idx = eduSessions.findIndex(function(s){ return s.id===docId; });
+      if(idx>=0) Object.assign(eduSessions[idx], data);
+      alert('✅ 수정 완료!');
+    } else {
+      data.createdAt = Timestamp.now();
+      const ref = await addDoc(collection(db,'edu_sessions'), data);
+      eduSessions.unshift(Object.assign({id:ref.id}, data));
+      alert('✅ 등록 완료!');
+    }
+    closeEduSessionModal();
+    renderEduSessions();
+    filterEduSigs();
+  } catch(e){ alert('저장 오류: '+e.message); }
+};
+
+window._deleteEduSessionFn = async function(id){
+  try{
+    await deleteDoc(doc(db,'edu_sessions',id));
+    eduSessions = eduSessions.filter(function(s){ return s.id!==id; });
+    renderEduSessions();
+    alert('🗑 삭제 완료!');
+  } catch(e){ alert('삭제 오류: '+e.message); }
+};
+
+window._deleteEduSigFn = async function(id){
+  try{
+    await deleteDoc(doc(db,'edu_signatures',id));
+    eduSigs = eduSigs.filter(function(g){ return g.id!==id; });
+    filterEduSigs();
+    alert('🗑 서명 삭제 완료!');
+  } catch(e){ alert('삭제 오류: '+e.message); }
 };
 
 /* ══ 유해요인조사표 Firebase ══ */

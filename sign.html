@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>정기 안전보건교육 - 전자서명</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:#f0f4ff;color:#1e293b;min-height:100vh;}
+
+/* 로딩 */
+#loadingScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1e3a8a,#7c3aed);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;color:#fff;}
+#loadingScreen.hide{display:none;}
+.spin{width:48px;height:48px;border:4px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* 없음 화면 */
+#noSession{display:none;position:fixed;inset:0;background:#f0f4ff;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;text-align:center;}
+#noSession.show{display:flex;}
+
+/* 헤더 */
+.hdr{background:linear-gradient(135deg,#1e3a8a,#7c3aed);color:#fff;padding:14px 16px;position:sticky;top:0;z-index:100;box-shadow:0 4px 16px rgba(0,0,0,.2);}
+.hdr-title{font-size:15px;font-weight:900;}
+.hdr-sub{font-size:11px;opacity:.8;margin-top:2px;}
+
+/* 컨테이너 */
+.container{max-width:700px;margin:0 auto;padding:16px;}
+
+/* 카드 */
+.card{background:#fff;border:1px solid #dde3f0;border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 4px 20px rgba(37,99,235,.07);}
+.card-title{font-size:13px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;color:#1e293b;}
+
+/* 단계 뱃지 */
+.step-badge{display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;margin-bottom:10px;}
+
+/* 세션 정보 */
+.session-info{background:linear-gradient(135deg,rgba(37,99,235,.05),rgba(124,58,237,.05));border:1px solid rgba(37,99,235,.15);border-radius:10px;padding:14px;margin-bottom:14px;}
+.session-month{font-size:22px;font-weight:900;color:#2563eb;}
+.session-title{font-size:14px;font-weight:700;margin-top:4px;}
+.session-meta{font-size:11px;color:#64748b;margin-top:4px;}
+
+/* PDF 뷰어 */
+#pdfFrame{width:100%;height:70vh;border:none;border-radius:10px;background:#f8fafc;}
+.pdf-notice{background:#fef3c7;border:1px solid #f59e0b;border-radius:8px;padding:10px 12px;font-size:12px;color:#92400e;margin-bottom:10px;display:flex;gap:8px;align-items:flex-start;}
+
+/* 확인 체크박스 */
+.confirm-box{background:#f0fdf4;border:1.5px solid #10b981;border-radius:10px;padding:14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:4px;}
+.confirm-box input[type=checkbox]{width:20px;height:20px;accent-color:#10b981;cursor:pointer;flex-shrink:0;}
+.confirm-text{font-size:13px;font-weight:700;color:#065f46;}
+
+/* 입력 폼 */
+.form-group{margin-bottom:12px;}
+.form-label{font-size:12px;font-weight:700;color:#374151;margin-bottom:6px;display:block;}
+.form-inp{width:100%;padding:12px 14px;border:1.5px solid #dde3f0;border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;transition:.2s;}
+.form-inp:focus{border-color:#2563eb;}
+.form-sel{width:100%;padding:12px 14px;border:1.5px solid #dde3f0;border-radius:10px;font-size:14px;font-family:'Noto Sans KR',sans-serif;outline:none;background:#fff;cursor:pointer;}
+.form-sel:focus{border-color:#2563eb;}
+
+/* 서명 캔버스 */
+.canvas-wrap{border:2px dashed #2563eb;border-radius:10px;overflow:hidden;background:#fafbff;position:relative;}
+#signCanvas{width:100%;height:200px;display:block;touch-action:none;cursor:crosshair;}
+.canvas-hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;color:#94a3b8;font-size:12px;transition:.3s;}
+#canvasHint.hide{opacity:0;}
+.canvas-actions{display:flex;gap:8px;margin-top:8px;}
+
+/* 버튼 */
+.btn{padding:12px 20px;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:.2s;width:100%;}
+.btn-primary{background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;}
+.btn-primary:hover{opacity:.9;}
+.btn-primary:disabled{background:#94a3b8;cursor:not-allowed;}
+.btn-clear{background:#f1f5f9;color:#64748b;font-size:12px;padding:8px 14px;width:auto;}
+.btn-clear:hover{background:#e2e8f0;}
+
+/* 잠금 오버레이 */
+.locked{opacity:.4;pointer-events:none;}
+
+/* 성공 화면 */
+#successScreen{display:none;position:fixed;inset:0;background:linear-gradient(135deg,#1e3a8a,#7c3aed);align-items:center;justify-content:center;flex-direction:column;color:#fff;text-align:center;padding:24px;z-index:500;}
+#successScreen.show{display:flex;}
+.success-icon{font-size:72px;margin-bottom:20px;animation:pop .4s ease;}
+@keyframes pop{from{transform:scale(0);}to{transform:scale(1);}}
+.success-title{font-size:24px;font-weight:900;margin-bottom:8px;}
+.success-sub{font-size:14px;opacity:.85;line-height:1.6;}
+.success-info{background:rgba(255,255,255,.15);border-radius:12px;padding:14px 20px;margin-top:20px;font-size:13px;line-height:1.8;}
+</style>
+</head>
+<body>
+
+<!-- 로딩 -->
+<div id="loadingScreen">
+  <div class="spin"></div>
+  <div style="font-size:14px;font-weight:700;">교육 정보를 불러오는 중...</div>
+</div>
+
+<!-- 세션 없음 -->
+<div id="noSession">
+  <div style="font-size:48px;">📭</div>
+  <div style="font-size:18px;font-weight:900;color:#1e293b;">현재 진행 중인 교육이 없습니다</div>
+  <div style="font-size:13px;color:#64748b;">관리자가 교육 회차를 활성화하면 이용할 수 있습니다.</div>
+</div>
+
+<!-- 메인 콘텐츠 -->
+<div id="mainContent" style="display:none;">
+  <div class="hdr">
+    <div class="hdr-title">📚 정기 안전보건교육 전자서명</div>
+    <div class="hdr-sub" id="hdrSub">교육자료를 확인하고 서명해 주세요</div>
+  </div>
+
+  <div class="container">
+
+    <!-- 세션 정보 -->
+    <div class="session-info">
+      <div class="session-month" id="sessionMonth">2026년 3월</div>
+      <div class="session-title" id="sessionTitle">정기 안전보건교육</div>
+      <div class="session-meta" id="sessionMeta"></div>
+    </div>
+
+    <!-- STEP 1: 교육자료 확인 -->
+    <div class="card" id="step1Card">
+      <div class="step-badge">📄 STEP 1 교육자료 확인</div>
+      <div class="pdf-notice">⚠️ 아래 교육자료를 끝까지 읽어보신 후 하단 체크박스를 체크해 주세요.</div>
+      <div style="margin-bottom:10px;">
+        <iframe id="pdfFrame" src="" title="교육자료"></iframe>
+      </div>
+      <label class="confirm-box" id="confirmBox">
+        <input type="checkbox" id="confirmChk" onchange="onConfirmChange()">
+        <span class="confirm-text">✅ 위 교육자료를 모두 확인하였습니다.</span>
+      </label>
+    </div>
+
+    <!-- STEP 2: 개인정보 입력 (잠금 해제됨) -->
+    <div class="card locked" id="step2Card">
+      <div class="step-badge">👤 STEP 2 본인 정보 입력</div>
+      <div class="form-group">
+        <label class="form-label">성명 *</label>
+        <input type="text" id="inpName" class="form-inp" placeholder="이름을 입력해 주세요" maxlength="20">
+      </div>
+      <div class="form-group">
+        <label class="form-label">부서 *</label>
+        <select id="inpDept" class="form-sel">
+          <option value="">부서 선택</option>
+          <option>FST조립</option>
+          <option>검사</option>
+          <option>가공</option>
+          <option>기구</option>
+          <option>납땜</option>
+          <option>넘버링</option>
+          <option>라벨</option>
+          <option>몰딩</option>
+          <option>압착</option>
+          <option>연접</option>
+          <option>전장</option>
+          <option>조립</option>
+          <option>절단</option>
+          <option>케이블아세이</option>
+          <option>하우징</option>
+          <option>관리부</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- STEP 3: 전자서명 -->
+    <div class="card locked" id="step3Card">
+      <div class="step-badge">✍️ STEP 3 전자서명</div>
+      <p style="font-size:12px;color:#64748b;margin-bottom:10px;">손가락 또는 마우스로 아래 서명란에 서명해 주세요.</p>
+      <div class="canvas-wrap">
+        <canvas id="signCanvas" width="700" height="200"></canvas>
+        <div class="canvas-hint" id="canvasHint">여기에 서명하세요</div>
+      </div>
+      <div class="canvas-actions">
+        <button class="btn btn-clear" onclick="clearCanvas()">🗑 서명 지우기</button>
+        <span style="font-size:11px;color:#94a3b8;line-height:1.4;padding-top:4px;">서명 후 아래 제출 버튼을 눌러주세요</span>
+      </div>
+    </div>
+
+    <!-- 제출 -->
+    <div id="submitWrap" class="locked" style="margin-bottom:40px;">
+      <button class="btn btn-primary" onclick="submitSign()">📩 서명 제출하기</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- 성공 화면 -->
+<div id="successScreen">
+  <div class="success-icon">✅</div>
+  <div class="success-title">서명 완료!</div>
+  <div class="success-sub">정기 안전보건교육 전자서명이<br>정상적으로 제출되었습니다.</div>
+  <div class="success-info" id="successInfo"></div>
+</div>
+
+<script>
+/* 캔버스 서명 */
+var canvas, ctx, drawing = false, hasSig = false;
+
+function initCanvas(){
+  canvas = document.getElementById('signCanvas');
+  ctx = canvas.getContext('2d');
+
+  /* 해상도 대응 */
+  var rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * window.devicePixelRatio;
+  canvas.height = rect.height * window.devicePixelRatio;
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  ctx.strokeStyle = '#1e293b';
+  ctx.lineWidth = 2.5;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  /* 마우스 */
+  canvas.addEventListener('mousedown', function(e){ startDraw(getPos(e)); });
+  canvas.addEventListener('mousemove', function(e){ if(drawing) draw(getPos(e)); });
+  canvas.addEventListener('mouseup', stopDraw);
+  canvas.addEventListener('mouseleave', stopDraw);
+
+  /* 터치 */
+  canvas.addEventListener('touchstart', function(e){ e.preventDefault(); startDraw(getTouchPos(e)); },{passive:false});
+  canvas.addEventListener('touchmove',  function(e){ e.preventDefault(); if(drawing) draw(getTouchPos(e)); },{passive:false});
+  canvas.addEventListener('touchend',   function(e){ e.preventDefault(); stopDraw(); },{passive:false});
+}
+
+function getPos(e){
+  var r = canvas.getBoundingClientRect();
+  return {x: e.clientX - r.left, y: e.clientY - r.top};
+}
+function getTouchPos(e){
+  var r = canvas.getBoundingClientRect();
+  var t = e.touches[0];
+  return {x: t.clientX - r.left, y: t.clientY - r.top};
+}
+function startDraw(pos){
+  drawing = true;
+  ctx.beginPath();
+  ctx.moveTo(pos.x, pos.y);
+  document.getElementById('canvasHint').classList.add('hide');
+}
+function draw(pos){
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+  hasSig = true;
+}
+function stopDraw(){ drawing = false; }
+function clearCanvas(){
+  var r = canvas.getBoundingClientRect();
+  ctx.clearRect(0, 0, r.width, r.height);
+  hasSig = false;
+  document.getElementById('canvasHint').classList.remove('hide');
+}
+
+/* 확인 체크박스 */
+function onConfirmChange(){
+  var checked = document.getElementById('confirmChk').checked;
+  document.getElementById('step2Card').classList.toggle('locked', !checked);
+  document.getElementById('step3Card').classList.toggle('locked', !checked);
+  document.getElementById('submitWrap').classList.toggle('locked', !checked);
+  if(checked && !canvas) initCanvas();
+}
+</script>
+
+<!-- Firebase Module -->
+<script type="module">
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc, query, where, orderBy, Timestamp }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const cfg = {
+  apiKey:"AIzaSyC93mYiLYMrF-5IsIzfYnlGQdnK0sdPEfE",
+  authDomain:"ske-0004.firebaseapp.com",
+  projectId:"ske-0004",
+  storageBucket:"ske-0004.firebasestorage.app",
+  messagingSenderId:"704127486318",
+  appId:"1:704127486318:web:3b8c2c5562978231d3597f"
+};
+const app = getApps().length ? getApps()[0] : initializeApp(cfg);
+const db  = getFirestore(app, '(default)');
+
+var activeSession = null;
+
+/* 활성 교육 회차 로드 */
+async function loadSession(){
+  try{
+    const snap = await getDocs(query(
+      collection(db,'edu_sessions'),
+      where('active','==',true),
+      orderBy('createdAt','desc')
+    ));
+    if(snap.empty){
+      document.getElementById('loadingScreen').classList.add('hide');
+      document.getElementById('noSession').classList.add('show');
+      return;
+    }
+    var d = snap.docs[0];
+    activeSession = Object.assign({id: d.id}, d.data());
+
+    /* 화면 세팅 */
+    var monthStr = activeSession.month || '';
+    var parts = monthStr.split('-');
+    var label = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : monthStr;
+    document.getElementById('sessionMonth').textContent = label;
+    document.getElementById('sessionTitle').textContent = activeSession.title || '정기 안전보건교육';
+    document.getElementById('sessionMeta').textContent = '교육일: ' + (activeSession.eduDate || '') + (activeSession.instructor ? '  |  강사: '+activeSession.instructor : '');
+    document.getElementById('hdrSub').textContent = label + ' ' + (activeSession.title||'정기 안전보건교육');
+
+    /* PDF */
+    if(activeSession.pdfUrl){
+      document.getElementById('pdfFrame').src = activeSession.pdfUrl;
+    } else {
+      document.querySelector('.pdf-notice').textContent = '⚠️ 교육자료 PDF가 등록되지 않았습니다. 관리자에게 문의하세요.';
+    }
+
+    document.getElementById('loadingScreen').classList.add('hide');
+    document.getElementById('mainContent').style.display = 'block';
+  } catch(e){
+    document.getElementById('loadingScreen').classList.add('hide');
+    document.getElementById('noSession').classList.add('show');
+    console.error(e);
+  }
+}
+
+/* 제출 */
+window.submitSign = async function(){
+  var name = document.getElementById('inpName').value.trim();
+  var dept = document.getElementById('inpDept').value;
+  if(!name){ alert('성명을 입력해 주세요.'); return; }
+  if(!dept){ alert('부서를 선택해 주세요.'); return; }
+  if(!hasSig){ alert('서명란에 서명을 해주세요.'); return; }
+
+  /* 서명 이미지 */
+  var sigData = canvas.toDataURL('image/png');
+
+  try{
+    document.querySelector('.btn-primary').textContent = '제출 중...';
+    document.querySelector('.btn-primary').disabled = true;
+
+    await addDoc(collection(db,'edu_signatures'),{
+      sessionId: activeSession.id,
+      sessionMonth: activeSession.month,
+      sessionTitle: activeSession.title,
+      worker: name,
+      dept: dept,
+      signatureData: sigData,
+      signedAt: Timestamp.now()
+    });
+
+    /* 성공 */
+    var monthStr = activeSession.month || '';
+    var parts = monthStr.split('-');
+    var label = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : monthStr;
+    document.getElementById('successInfo').innerHTML =
+      '<b>' + name + '</b> (' + dept + ')<br>' + label + ' ' + (activeSession.title||'정기 안전보건교육') + '<br>' +
+      new Date().toLocaleString('ko-KR');
+    document.getElementById('successScreen').classList.add('show');
+
+  } catch(e){
+    alert('제출 오류: ' + e.message);
+    document.querySelector('.btn-primary').textContent = '📩 서명 제출하기';
+    document.querySelector('.btn-primary').disabled = false;
+  }
+};
+
+loadSession();
+</script>
+</body>
+</html>
