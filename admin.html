@@ -802,6 +802,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
       <button class="tb-btn tb-blue" onclick="openEduSessionModal()">+ 새 교육 회차 등록</button>
       <button class="tb-btn tb-ghost" onclick="loadEduData()">🔄 새로고침</button>
+      <button class="tb-btn" style="background:#7c3aed;color:#fff;" onclick="openEduFormModal()">📄 교육일지 양식 작성</button>
     </div>
     <div class="tbl-wrap">
       <div class="tbl-hdr"><div class="tbl-count" id="eduSessionCount">-</div></div>
@@ -872,6 +873,164 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
       <button class="btn-cancel" onclick="closeEduSessionModal()">취소</button>
       <button class="btn-save" onclick="saveEduSession()">💾 저장</button>
     </div>
+  </div>
+</div>
+
+<!-- ══ 교육일지 양식 모달 ══ -->
+<div id="eduFormModal" style="position:fixed;inset:0;z-index:800;display:none;align-items:flex-start;justify-content:center;padding:20px;background:rgba(0,0,0,.6);overflow-y:auto;">
+  <div style="background:#fff;border-radius:12px;width:100%;max-width:780px;box-shadow:0 20px 60px rgba(0,0,0,.3);margin:auto;">
+    <!-- 모달 헤더 -->
+    <div style="padding:14px 18px;border-bottom:1px solid #dde3f0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2;border-radius:12px 12px 0 0;">
+      <div style="font-size:14px;font-weight:800;">📄 정기 안전·보건 교육 일지</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="printEduForm()" style="padding:7px 16px;background:#2563eb;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🖨️ 인쇄</button>
+        <button onclick="closeEduFormModal()" style="padding:7px 12px;background:#f1f5f9;color:#64748b;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✕ 닫기</button>
+      </div>
+    </div>
+
+    <!-- 인쇄 영역 -->
+    <div id="eduFormPrint" style="padding:24px;font-family:'Noto Sans KR',sans-serif;">
+
+      <!-- 상단: 제목 + 결재라인 -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0;border:1.5px solid #333;border-bottom:none;">
+        <!-- 로고+제목 -->
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 20px;flex:1;">
+          <div style="width:48px;height:48px;background:linear-gradient(135deg,#dbeafe,#c7d2fe);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🔵</div>
+          <div style="font-size:22px;font-weight:900;letter-spacing:2px;border:2px solid #555;padding:8px 24px;">정기 안전 · 보건 교육</div>
+        </div>
+        <!-- 결재라인 -->
+        <div style="border-left:1.5px solid #333;display:flex;flex-direction:column;min-width:200px;">
+          <div style="text-align:center;font-size:11px;font-weight:700;padding:4px 0;border-bottom:1px solid #333;background:#f8faff;">결 &nbsp; 재</div>
+          <div style="display:flex;">
+            <div style="flex:1;border-right:1px solid #333;text-align:center;">
+              <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f8faff;">담당</div>
+              <canvas id="apvCanvas0" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
+              <button onclick="clearApv(0)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+            </div>
+            <div style="flex:1;border-right:1px solid #333;text-align:center;">
+              <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f8faff;">검토</div>
+              <canvas id="apvCanvas1" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
+              <button onclick="clearApv(1)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+            </div>
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f8faff;">결재</div>
+              <canvas id="apvCanvas2" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
+              <button onclick="clearApv(2)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 본문 테이블 -->
+      <table id="eduFormTable" style="width:100%;border-collapse:collapse;border:1.5px solid #333;border-top:none;font-size:12px;">
+
+        <!-- 사업장명 -->
+        <tr>
+          <td style="background:#f0f4ff;font-weight:700;padding:7px 10px;border:1px solid #aaa;width:100px;text-align:center;">사업장명</td>
+          <td colspan="5" style="padding:7px 10px;border:1px solid #aaa;">
+            <input type="text" id="ef-company" value="에스케이이" style="border:none;outline:none;width:100%;font-size:12px;font-family:'Noto Sans KR',sans-serif;">
+          </td>
+        </tr>
+
+        <!-- 일시 헤더 -->
+        <tr>
+          <td rowspan="4" style="background:#f0f4ff;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:middle;">일시<br><span style="font-size:10px;font-weight:400;">(2026년도)</span></td>
+          <td colspan="5" style="padding:4px 8px;border:1px solid #aaa;background:#f8faff;font-size:10px;font-weight:700;">3월</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">3월 &nbsp;<input type="text" id="ef-d1" style="width:28px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 일 &nbsp; <span style="background:#e0e7ff;padding:1px 5px;border-radius:3px;font-size:10px;">1차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="ef-t1s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="ef-t1e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
+          <td colspan="3" style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="ef-h1" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">3월 &nbsp;<input type="text" id="ef-d2" style="width:28px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 일 &nbsp; <span style="background:#e0e7ff;padding:1px 5px;border-radius:3px;font-size:10px;">2차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="ef-t2s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="ef-t2e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
+          <td colspan="3" style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="ef-h2" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">3월 &nbsp;<input type="text" id="ef-d3" style="width:28px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 일 &nbsp; <span style="background:#e0e7ff;padding:1px 5px;border-radius:3px;font-size:10px;">3차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="ef-t3s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="ef-t3e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
+          <td colspan="3" style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="ef-h3" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
+        </tr>
+
+        <!-- 교육인원 -->
+        <tr>
+          <td rowspan="4" style="background:#f0f4ff;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:middle;">교육 인원</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">구 분</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">남</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">여</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">계</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">비고</td>
+        </tr>
+        <tr>
+          <td style="font-size:11px;padding:5px 8px;border:1px solid #aaa;text-align:center;background:#fafbff;">대상 인원</td>
+          <td style="border:1px solid #aaa;"><input type="text" id="ef-tm" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="ef-tf" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="ef-tt" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td rowspan="3" style="border:1px solid #aaa;vertical-align:middle;"><textarea id="ef-note" rows="3" style="width:100%;border:none;outline:none;font-size:11px;font-family:'Noto Sans KR',sans-serif;resize:none;padding:4px;"></textarea></td>
+        </tr>
+        <tr>
+          <td style="font-size:11px;padding:5px 8px;border:1px solid #aaa;text-align:center;background:#fafbff;">참석인원</td>
+          <td style="border:1px solid #aaa;"><input type="text" id="ef-am" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="ef-af" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="ef-at" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+        </tr>
+        <tr>
+          <td style="font-size:11px;padding:5px 8px;border:1px solid #aaa;text-align:center;background:#fafbff;">미참석 인원</td>
+          <td style="border:1px solid #aaa;"><input type="text" id="ef-nm" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="ef-nf" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="ef-nt" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+        </tr>
+
+        <!-- 교육주제 -->
+        <tr>
+          <td style="background:#f0f4ff;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;">교육주제</td>
+          <td colspan="5" style="padding:7px 10px;border:1px solid #aaa;">
+            <input type="text" id="ef-subject" value="산업안전보건법령 및 산업재해보상보험 제도에 관한 사항" style="border:none;outline:none;width:100%;font-size:12px;font-family:'Noto Sans KR',sans-serif;">
+          </td>
+        </tr>
+
+        <!-- 교육내용 -->
+        <tr>
+          <td style="background:#f0f4ff;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:top;">교육내용</td>
+          <td colspan="5" style="padding:10px 16px;border:1px solid #aaa;line-height:2.2;">
+            <div style="color:#2563eb;margin-bottom:4px;">Ⅰ. &nbsp;<input type="text" id="ef-c1" value="산업안전보건법령 핵심 이해" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+            <div style="color:#2563eb;margin-bottom:4px;">Ⅱ. &nbsp;<input type="text" id="ef-c2" value="산업재해자 및 조치사항" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+            <div style="color:#2563eb;margin-bottom:4px;">Ⅲ. &nbsp;<input type="text" id="ef-c3" value="산업재해보상보험 이해" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+            <div style="color:#2563eb;">Ⅳ. &nbsp;<input type="text" id="ef-c4" value="2025년 산업재해 발생 현황" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+          </td>
+        </tr>
+
+        <!-- 교육실시자 / 교육장소 -->
+        <tr>
+          <td style="background:#f0f4ff;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;font-size:11px;">교육실시자/<br>교육 장소</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">성 &nbsp; 명</td>
+          <td colspan="2" style="border:1px solid #aaa;">
+            <input type="text" id="ef-instructor" style="width:100%;border:none;outline:none;text-align:center;font-size:12px;padding:6px;font-family:'Noto Sans KR',sans-serif;">
+          </td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">직 &nbsp; 위</td>
+          <td style="border:1px solid #aaa;">
+            <input type="text" id="ef-position" style="width:100%;border:none;outline:none;text-align:center;font-size:12px;padding:6px;font-family:'Noto Sans KR',sans-serif;">
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f0f4ff;border:1px solid #aaa;"></td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">교육장소</td>
+          <td colspan="4" style="border:1px solid #aaa;">
+            <input type="text" id="ef-place" style="width:100%;border:none;outline:none;font-size:12px;padding:6px;font-family:'Noto Sans KR',sans-serif;">
+          </td>
+        </tr>
+
+        <!-- 특이사항 -->
+        <tr>
+          <td style="background:#f0f4ff;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:top;">특이사항</td>
+          <td colspan="5" style="padding:6px;border:1px solid #aaa;">
+            <textarea id="ef-special" rows="3" style="width:100%;border:none;outline:none;font-size:12px;font-family:'Noto Sans KR',sans-serif;resize:vertical;padding:4px;"></textarea>
+          </td>
+        </tr>
+
+      </table>
+    </div><!-- /eduFormPrint -->
   </div>
 </div>
 
@@ -1583,6 +1742,56 @@ function openEduSessionModal(docId){
   document.getElementById('eduSessionModal').style.display = 'flex';
 }
 function closeEduSessionModal(){ document.getElementById('eduSessionModal').style.display = 'none'; }
+
+/* ══ 교육일지 양식 ══ */
+var apvCtx = [null,null,null], apvDrawing = [false,false,false];
+
+function openEduFormModal(){
+  document.getElementById('eduFormModal').style.display = 'flex';
+  setTimeout(function(){
+    [0,1,2].forEach(function(i){
+      var c = document.getElementById('apvCanvas'+i);
+      apvCtx[i] = c.getContext('2d');
+      apvCtx[i].strokeStyle = '#1e293b';
+      apvCtx[i].lineWidth = 1.5;
+      apvCtx[i].lineCap = 'round';
+      setupApvCanvas(c, i);
+    });
+  }, 100);
+}
+function closeEduFormModal(){ document.getElementById('eduFormModal').style.display = 'none'; }
+
+function setupApvCanvas(c, i){
+  function getPos(e){
+    var r = c.getBoundingClientRect();
+    var src = e.touches ? e.touches[0] : e;
+    return {x:(src.clientX-r.left)*(c.width/r.width), y:(src.clientY-r.top)*(c.height/r.height)};
+  }
+  c.addEventListener('mousedown',  function(e){ apvDrawing[i]=true; var p=getPos(e); apvCtx[i].beginPath(); apvCtx[i].moveTo(p.x,p.y); });
+  c.addEventListener('mousemove',  function(e){ if(!apvDrawing[i]) return; var p=getPos(e); apvCtx[i].lineTo(p.x,p.y); apvCtx[i].stroke(); });
+  c.addEventListener('mouseup',    function(){ apvDrawing[i]=false; });
+  c.addEventListener('mouseleave', function(){ apvDrawing[i]=false; });
+  c.addEventListener('touchstart', function(e){ e.preventDefault(); apvDrawing[i]=true; var p=getPos(e); apvCtx[i].beginPath(); apvCtx[i].moveTo(p.x,p.y); });
+  c.addEventListener('touchmove',  function(e){ e.preventDefault(); if(!apvDrawing[i]) return; var p=getPos(e); apvCtx[i].lineTo(p.x,p.y); apvCtx[i].stroke(); });
+  c.addEventListener('touchend',   function(){ apvDrawing[i]=false; });
+}
+function clearApv(i){ if(apvCtx[i]) apvCtx[i].clearRect(0,0,60,60); }
+
+function printEduForm(){
+  var printWin = window.open('','_blank','width=900,height=700');
+  var content = document.getElementById('eduFormPrint').innerHTML;
+  /* 캔버스를 이미지로 변환 */
+  var html = content;
+  [0,1,2].forEach(function(i){
+    var c = document.getElementById('apvCanvas'+i);
+    var img = c.toDataURL('image/png');
+    html = html.replace('id="apvCanvas'+i+'"', 'style="display:none" id="apvCanvas'+i+'"');
+    html = html.replace('</canvas>', '</canvas><img src="'+img+'" width="60" height="60" style="display:block;margin:4px auto;border:1px solid #ddd;border-radius:4px;">');
+  });
+  printWin.document.write('<html><head><meta charset="UTF-8"><title>정기 안전보건 교육일지</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Noto Sans KR\',sans-serif;padding:20px;}input,textarea{font-family:\'Noto Sans KR\',sans-serif;}button{display:none!important;}@media print{button{display:none!important;}}</style></head><body>'+html+'</body></html>');
+  printWin.document.close();
+  setTimeout(function(){ printWin.print(); }, 800);
+}
 
 function saveEduSession(){ window._saveEduSessionFn && window._saveEduSessionFn(); }
 function deleteEduSession(id){ if(!confirm('이 교육 회차를 삭제하시겠습니까?')) return; window._deleteEduSessionFn && window._deleteEduSessionFn(id); }
