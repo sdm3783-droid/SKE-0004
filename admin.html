@@ -300,6 +300,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <div class="nav-tab"         onclick="switchTab(this,'tab-manage')">✏️ 데이터 관리</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-checklist')">📋 유해요인조사표</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-report')">📝 예방보고서</div>
+    <div class="nav-tab" onclick="switchTab(this,'tab-improvement')">📈 개선계획서</div>
   </div>
 </div>
 
@@ -742,6 +743,78 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
+<!-- ══ TAB8 개선계획서 ══ -->
+<div class="tab-pane" id="tab-improvement">
+  <div class="card">
+    <div class="card-title">📈 작업환경 개선계획서 관리</div>
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button class="tb-btn tb-blue" onclick="openImproveModal()">+ 새 개선계획서 작성</button>
+      <button class="tb-btn tb-ghost" onclick="loadImprovements()">🔄 새로고침</button>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <div class="tbl-hdr"><div class="tbl-count" id="impCount">-</div></div>
+    <div class="tbl-scroll">
+      <table style="min-width:1100px">
+        <thead>
+          <tr>
+            <th rowspan="2">공정명</th>
+            <th rowspan="2">작업명</th>
+            <th rowspan="2">문제점(유해요인의 원인)</th>
+            <th rowspan="2">근로자의 의견</th>
+            <th rowspan="2">개선방안</th>
+            <th rowspan="2">추진일정</th>
+            <th rowspan="2">개선비용<br>(천원)</th>
+            <th colspan="3">개선우선순위</th>
+            <th rowspan="2">상세정보</th>
+            <th rowspan="2">관리</th>
+          </tr>
+          <tr><th>종합점수</th><th>증상호소</th></tr>
+        </thead>
+        <tbody id="impTblBody"><tr><td colspan="12" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 개선계획서 모달 -->
+<div id="improvementModal">
+  <div class="modal-backdrop" onclick="closeImproveModal()"></div>
+  <div class="modal-box" style="max-width:700px">
+    <div class="modal-hd">
+      <div class="modal-title">📈 작업환경 개선계획서 작성</div>
+      <button class="modal-close" onclick="closeImproveModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="impDocId">
+      <div class="m-sec">📌 기본 공정 정보</div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">공정명</div><input id="imp-process" type="text" class="m-inp" placeholder="예: 생산, 관리, 검사..."></div>
+        <div class="m-group"><div class="m-label">작업명 (부서)</div><input id="imp-task" type="text" class="m-inp" placeholder="예: 전체 또는 부서명"></div>
+      </div>
+      <div class="m-group"><div class="m-label">단위 작업명</div><input id="imp-unitTask" type="text" class="m-inp" placeholder="단위 작업 (예: 전체)"></div>
+      <div class="m-sec">📋 문제점 및 의견</div>
+      <div class="m-group"><div class="m-label">문제점 (유해요인 원인)</div><textarea id="imp-problem" class="m-inp" rows="3" style="resize:vertical"></textarea></div>
+      <div class="m-group"><div class="m-label">근로자의 의견</div><textarea id="imp-opinion" class="m-inp" rows="2" style="resize:vertical"></textarea></div>
+      <div class="m-sec">💡 개선 사항</div>
+      <div class="m-group"><div class="m-label">개선방안</div><textarea id="imp-solution" class="m-inp" rows="2" style="resize:vertical"></textarea></div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">추진 일정</div><input id="imp-schedule" type="text" class="m-inp" placeholder="즉시, 단기, 중장기 등"></div>
+        <div class="m-group"><div class="m-label">개선 비용 (천원)</div><input id="imp-cost" type="number" class="m-inp" placeholder="예: 20000"></div>
+      </div>
+      <div class="m-sec">📊 우선순위 및 증상</div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">개선우선순위 종합점수</div><input id="imp-score" type="number" class="m-inp" placeholder="점수 (예: 12)"></div>
+        <div class="m-group"><div class="m-label">증상호소 부위</div><input id="imp-symptom" type="text" class="m-inp" placeholder="예: 목, 어깨, 허리"></div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeImproveModal()">취소</button>
+      <button class="btn-save" onclick="saveImprove()">💾 저장</button>
+    </div>
+  </div>
+</div>
+
 <!-- 레거시 드로어 (숨김) -->
 <div id="dBack"></div>
 <div id="drawer"></div>
@@ -842,6 +915,7 @@ function switchTab(el, id){
   if(id==='tab-niosh')  renderNIOSH(allData);
   if(id==='tab-checklist') loadHazardSurveys();
   if(id==='tab-report') loadReports();
+  if(id==='tab-improvement') loadImprovements();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1674,6 +1748,105 @@ function openReportDetail(idx){
   document.getElementById('detailModal').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+
+/* ══ 개선계획서 함수 ══ */
+var improveData = [];
+
+function openImproveModal(docId){
+  document.getElementById('impDocId').value = docId || '';
+  document.getElementById('imp-process').value = '';
+  document.getElementById('imp-task').value = '';
+  document.getElementById('imp-unitTask').value = '';
+  document.getElementById('imp-problem').value = '';
+  document.getElementById('imp-opinion').value = '';
+  document.getElementById('imp-solution').value = '';
+  document.getElementById('imp-schedule').value = '';
+  document.getElementById('imp-cost').value = '';
+  document.getElementById('imp-score').value = '';
+  document.getElementById('imp-symptom').value = '';
+
+  if(docId){
+    var r = improveData.find(function(x){ return x.id === docId; });
+    if(r){
+      document.getElementById('imp-process').value = r.process || '';
+      document.getElementById('imp-task').value = r.task || '';
+      document.getElementById('imp-unitTask').value = r.unitTask || '';
+      document.getElementById('imp-problem').value = r.problem || '';
+      document.getElementById('imp-opinion').value = r.opinion || '';
+      document.getElementById('imp-solution').value = r.solution || '';
+      document.getElementById('imp-schedule').value = r.schedule || '';
+      document.getElementById('imp-cost').value = r.cost || '';
+      document.getElementById('imp-score').value = r.score || '';
+      document.getElementById('imp-symptom').value = r.symptom || '';
+    }
+  }
+  document.getElementById('improvementModal').classList.add('open');
+}
+
+function closeImproveModal(){
+  document.getElementById('improvementModal').classList.remove('open');
+}
+
+function saveImprove(){
+  window._saveImproveFn && window._saveImproveFn();
+}
+
+function loadImprovements(){
+  window._loadImprovesFn && window._loadImprovesFn();
+}
+
+function deleteImprove(id){
+  if(!confirm('이 개선계획서를 삭제하시겠습니까?')) return;
+  window._deleteImproveFn && window._deleteImproveFn(id);
+}
+
+function renderImprovements(){
+  document.getElementById('impCount').textContent = '전체 '+improveData.length+'건';
+  if(!improveData.length){
+    document.getElementById('impTblBody').innerHTML = '<tr><td colspan="12" class="empty-msg">등록된 개선계획서가 없습니다.</td></tr>';
+    return;
+  }
+  document.getElementById('impTblBody').innerHTML = improveData.map(function(r, i){
+    return '<tr>'
+      +'<td class="td-name">'+(r.process||'-')+'</td>'
+      +'<td>'+(r.task||'-')+'</td>'
+      +'<td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+(r.problem||'')+'">'+(r.problem||'-')+'</td>'
+      +'<td style="max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+(r.opinion||'')+'">'+(r.opinion||'-')+'</td>'
+      +'<td style="max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="'+(r.solution||'')+'">'+(r.solution||'-')+'</td>'
+      +'<td><span class="badge b-info">'+(r.schedule||'-')+'</span></td>'
+      +'<td style="font-weight:600;color:var(--accent)">'+(r.cost?Number(r.cost).toLocaleString():'-')+'</td>'
+      +'<td style="font-weight:900;color:var(--red)">'+(r.score||'-')+'</td>'
+      +'<td>'+(r.symptom||'-')+'</td>'
+      +'<td><button class="btn-detail" onclick="openImproveDetail('+i+')">상세보기</button></td>'
+      +'<td>'
+        +'<button class="btn-edit-sm" onclick="openImproveModal(\''+r.id+'\')">✏️ 수정</button>'
+        +'<button class="btn-del-sm" onclick="deleteImprove(\''+r.id+'\')">🗑</button>'
+      +'</td></tr>';
+  }).join('');
+}
+
+function openImproveDetail(idx){
+  var r = improveData[idx];
+  if(!r) return;
+  document.getElementById('detailTitle').textContent = (r.process||'-') + ' 개선계획서';
+
+  function row(k,v){return '<div class="detail-row"><span class="detail-key">'+k+'</span><span class="detail-val">'+(v||'-')+'</span></div>';}
+  function sec(icon,t){return '<div class="detail-sec-title">'+icon+' '+t+'</div>';}
+
+  var h = '';
+  h += '<div class="detail-sec">'+sec('📌','공정 정보')
+    +row('공정명',r.process)+row('작업명',r.task)+row('단위작업명',r.unitTask)+'</div>';
+  h += '<div class="detail-sec">'+sec('📋','문제점 및 의견')
+    +row('문제점(원인)',r.problem=r.problem?r.problem.replace(/\n/g,'<br>'):'')+row('근로자 의견',r.opinion=r.opinion?r.opinion.replace(/\n/g,'<br>'):'')+'</div>';
+  h += '<div class="detail-sec">'+sec('💡','개선방안')
+    +row('개선방안',r.solution=r.solution?r.solution.replace(/\n/g,'<br>'):'')+row('추진일정',r.schedule)+row('개선비용',r.cost?Number(r.cost).toLocaleString()+' 천원':'-')+'</div>';
+  h += '<div class="detail-sec">'+sec('📊','종합 지표')
+    +row('개선우선순위',r.score)+row('증상호소 부위',r.symptom)+'</div>';
+
+  document.getElementById('detailBody').innerHTML = h;
+  document.getElementById('detailModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 </script>
 
 <!-- Firebase Module -->
@@ -1832,6 +2005,59 @@ window._deleteReportFn = async function(id){
     await deleteDoc(doc(db,'reports',id));
     reportData = reportData.filter(r=>r.id!==id);
     renderReports();
+    alert('🗑 삭제 완료!');
+  } catch(e){ alert('오류: '+e.message); }
+};
+
+/* ══ 개선계획서 Firebase ══ */
+window._loadImprovesFn = async function(){
+  try{
+    const snap = await getDocs(query(collection(db,'improvement_plans'), orderBy('createdAt','desc')));
+    improveData = [];
+    snap.forEach(d => improveData.push(Object.assign({id:d.id}, d.data())));
+    renderImprovements();
+  } catch(e){
+    document.getElementById('impTblBody').innerHTML='<tr><td colspan="12" class="empty-msg">⚠️ '+e.message+'</td></tr>';
+  }
+};
+
+window._saveImproveFn = async function(){
+  const docId = document.getElementById('impDocId').value;
+  const data = {
+    process: document.getElementById('imp-process').value.trim(),
+    task: document.getElementById('imp-task').value.trim(),
+    unitTask: document.getElementById('imp-unitTask').value.trim(),
+    problem: document.getElementById('imp-problem').value.trim(),
+    opinion: document.getElementById('imp-opinion').value.trim(),
+    solution: document.getElementById('imp-solution').value.trim(),
+    schedule: document.getElementById('imp-schedule').value.trim(),
+    cost: parseInt(document.getElementById('imp-cost').value) || 0,
+    score: parseInt(document.getElementById('imp-score').value) || 0,
+    symptom: document.getElementById('imp-symptom').value.trim(),
+  };
+  if(!data.process){ alert('공정명을 입력해주세요.'); return; }
+  try{
+    if(docId){
+      await updateDoc(doc(db,'improvement_plans',docId), data);
+      var idx = improveData.findIndex(r=>r.id===docId);
+      if(idx>=0) Object.assign(improveData[idx], data);
+      alert('✅ 수정 완료!');
+    } else {
+      data.createdAt = Timestamp.now();
+      const ref = await addDoc(collection(db,'improvement_plans'), data);
+      improveData.unshift(Object.assign({id:ref.id}, data));
+      alert('✅ 저장 완료!');
+    }
+    closeImproveModal();
+    renderImprovements();
+  } catch(e){ alert('오류: '+e.message); }
+};
+
+window._deleteImproveFn = async function(id){
+  try{
+    await deleteDoc(doc(db,'improvement_plans',id));
+    improveData = improveData.filter(r=>r.id!==id);
+    renderImprovements();
     alert('🗑 삭제 완료!');
   } catch(e){ alert('오류: '+e.message); }
 };
