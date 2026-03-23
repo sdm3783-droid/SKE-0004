@@ -227,6 +227,33 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 .hwp-viewer td,.hwp-viewer th{border:1px solid #dde3f0;padding:6px 8px;font-size:12px;}
 .hwp-viewer th{background:#f0f4ff;font-weight:700;}
 .hwp-viewer p{margin:4px 0;font-size:13px;line-height:1.7;}
+/* 유해요인조사표 폼 */
+#hazardModal{position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;}
+#hazardModal.open{display:flex;}
+.hz-radio-group{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.hz-radio{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:6px 10px;border-radius:8px;transition:.15s;}
+.hz-radio:hover{background:var(--alight);}
+.hz-radio input[type="radio"],.hz-radio input[type="checkbox"]{width:16px;height:16px;accent-color:var(--accent);}
+.hz-radio-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px;}
+.hz-field-group{background:#f8fafc;border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin-bottom:8px;}
+.hz-field-label{font-size:12px;font-weight:800;color:var(--text);margin-bottom:6px;}
+.hz-since-inp{margin-top:6px;font-size:12px;}
+.hz-check-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
+.hz-check{display:flex;align-items:center;gap:6px;font-size:12px;padding:5px 8px;border-radius:6px;cursor:pointer;}
+.hz-check:hover{background:var(--alight);}
+.hz-check input{width:15px;height:15px;accent-color:var(--accent);}
+.hz-photo-area{margin-bottom:8px;}
+.hz-photo-preview{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+.hz-photo-thumb{position:relative;width:80px;height:80px;border-radius:10px;overflow:hidden;border:2px solid var(--border);box-shadow:var(--sh);}
+.hz-photo-thumb img{width:100%;height:100%;object-fit:cover;}
+.hz-photo-del{position:absolute;top:2px;right:2px;width:20px;height:20px;background:rgba(239,68,68,.9);color:#fff;border:none;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.hz-photo-btn{display:inline-flex;align-items:center;gap:4px;padding:8px 16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+@media(max-width:500px){
+  .hz-check-grid{grid-template-columns:1fr;}
+  .hz-radio-row{flex-direction:column;}
+  .m-grid2{grid-template-columns:1fr!important;}
+}
+
 .btn-print{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;gap:4px;transition:.2s;}
 .btn-print:hover{background:rgba(255,255,255,.35);}
 
@@ -288,7 +315,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <div class="nav-tab"         onclick="switchTab(this,'tab-niosh')">🔬 NIOSH 분석</div>
     <div class="nav-tab"         onclick="switchTab(this,'tab-records')">📋 전체 기록</div>
     <div class="nav-tab"         onclick="switchTab(this,'tab-manage')">✏️ 데이터 관리</div>
-    <div class="nav-tab" onclick="switchTab(this,'tab-checklist')">📋 유해요인 체크리스트</div>
+    <div class="nav-tab" onclick="switchTab(this,'tab-checklist')">📋 유해요인조사표</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-report')">📝 예방보고서</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-docs')">📂 유해요인조사표</div>
   </div>
@@ -435,20 +462,168 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
-<!-- ══ TAB6 유해요인 체크리스트 ══ -->
+<!-- ══ TAB6 유해요인조사표 (인원별 관리) ══ -->
 <div class="tab-pane" id="tab-checklist">
   <div class="card" style="background:linear-gradient(135deg,rgba(37,99,235,.04),rgba(124,58,237,.04));border-color:rgba(37,99,235,.15)">
-    <div class="card-title">📋 2026년 근골격계 유해요인 체크리스트</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">조사일자: 2026년 4월 28일 | 조사자: 유대순 | 사업장: 신광전자</div>
-    <div class="stat-grid" id="clStatGrid"></div>
+    <div class="card-title">📋 유해요인조사표 (인원별 관리)</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:8px">현장에서 핸드폰으로 촬영/입력 → Firestore 저장 → 관리자 수정/조회</div>
+    <div class="stat-grid" id="hzStatGrid"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="tb-btn tb-blue" onclick="openHazardForm()">+ 새 조사표 작성</button>
+      <button class="tb-btn tb-ghost" onclick="loadHazardSurveys()">🔄 새로고침</button>
+      <select class="tb-sel" id="hzFilterDept" onchange="filterHazardList()">
+        <option value="">전체 부서</option>
+      </select>
+      <input class="tb-inp" id="hzFilterName" placeholder="이름 검색" oninput="filterHazardList()" style="max-width:160px">
+    </div>
   </div>
   <div class="tbl-wrap">
-    <div class="tbl-hdr"><div class="tbl-count" id="clTblCount">-</div></div>
+    <div class="tbl-hdr"><div class="tbl-count" id="hzTblCount">-</div></div>
     <div class="tbl-scroll">
-      <table style="min-width:800px">
-        <thead><tr><th>공정명</th><th>공정내용</th><th>단위작업</th><th>작업인원</th><th>위험요인 수</th><th>위험 수준</th><th>상세</th></tr></thead>
-        <tbody id="clTblBody"></tbody>
+      <table style="min-width:750px">
+        <thead><tr><th>근로자명</th><th>부서</th><th>작업공정</th><th>조사일시</th><th>조사구분</th><th>총점수</th><th>사진</th><th>상세</th><th>관리</th></tr></thead>
+        <tbody id="hzTblBody"><tr><td colspan="9" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
       </table>
+    </div>
+  </div>
+</div>
+
+<!-- 유해요인조사표 작성/수정 모달 -->
+<div id="hazardModal">
+  <div class="modal-backdrop" onclick="closeHazardModal()"></div>
+  <div class="modal-box" style="max-width:600px">
+    <div class="modal-hd">
+      <div class="modal-title" id="hazardModalTitle">📋 유해요인 기본조사표</div>
+      <button class="modal-close" onclick="closeHazardModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="hzDocId">
+
+      <div class="m-sec">👤 기본 정보</div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">근로자명 *</div><input id="hz-worker" type="text" class="m-inp" placeholder="이름"></div>
+        <div class="m-group"><div class="m-label">부서명 *</div>
+          <select id="hz-dept" class="m-inp">
+            <option value="">선택</option>
+            <option>FST조립</option><option>검사</option><option>가공</option><option>기구</option>
+            <option>납땜</option><option>넘버링</option><option>라벨</option><option>몰딩</option>
+            <option>압착</option><option>연접</option><option>전장</option><option>조립</option>
+            <option>절단</option><option>케이블아세이</option><option>하우징</option><option>관리부</option>
+          </select>
+        </div>
+      </div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">작업공정명</div><input id="hz-process" type="text" class="m-inp" placeholder="예: FST 조립작업"></div>
+        <div class="m-group"><div class="m-label">작업명</div><input id="hz-task" type="text" class="m-inp" placeholder="예: 하네스 조립 작업"></div>
+      </div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">조사일시</div><input id="hz-date" type="date" class="m-inp"></div>
+        <div class="m-group"><div class="m-label">조사자</div><input id="hz-surveyor" type="text" class="m-inp" value="유대순"></div>
+      </div>
+
+      <div class="m-sec">📌 조사구분</div>
+      <div class="hz-radio-group" id="hz-typeGroup">
+        <label class="hz-radio"><input type="radio" name="hzType" value="정기조사" checked> 정기조사</label>
+        <label class="hz-radio"><input type="radio" name="hzType" value="수시-질환자발생"> 수시: 근골격계질환자 발생시</label>
+        <label class="hz-radio"><input type="radio" name="hzType" value="수시-새작업설비"> 수시: 새로운 작업/설비 도입시</label>
+        <label class="hz-radio"><input type="radio" name="hzType" value="수시-환경변경"> 수시: 작업환경 변경시</label>
+      </div>
+
+      <div class="m-sec">🏭 가. 작업장 상황 조사</div>
+      <div class="hz-field-group">
+        <div class="hz-field-label">작업설비</div>
+        <div class="hz-radio-row">
+          <label class="hz-radio"><input type="radio" name="hzEquip" value="변화없음" checked> 변화 없음</label>
+          <label class="hz-radio"><input type="radio" name="hzEquip" value="변화있음"> 변화 있음</label>
+        </div>
+        <input id="hz-equipSince" type="text" class="m-inp hz-since-inp" placeholder="언제부터" style="display:none">
+      </div>
+      <div class="hz-field-group">
+        <div class="hz-field-label">작업량</div>
+        <div class="hz-radio-row">
+          <label class="hz-radio"><input type="radio" name="hzAmount" value="변화없음" checked> 변화 없음</label>
+          <label class="hz-radio"><input type="radio" name="hzAmount" value="줄음"> 줄음</label>
+          <label class="hz-radio"><input type="radio" name="hzAmount" value="늘어남"> 늘어남</label>
+          <label class="hz-radio"><input type="radio" name="hzAmount" value="기타"> 기타</label>
+        </div>
+        <input id="hz-amountSince" type="text" class="m-inp hz-since-inp" placeholder="언제부터 / 기타 내용" style="display:none">
+      </div>
+      <div class="hz-field-group">
+        <div class="hz-field-label">작업속도</div>
+        <div class="hz-radio-row">
+          <label class="hz-radio"><input type="radio" name="hzSpeed" value="변화없음" checked> 변화 없음</label>
+          <label class="hz-radio"><input type="radio" name="hzSpeed" value="줄음"> 줄음</label>
+          <label class="hz-radio"><input type="radio" name="hzSpeed" value="늘어남"> 늘어남</label>
+          <label class="hz-radio"><input type="radio" name="hzSpeed" value="기타"> 기타</label>
+        </div>
+        <input id="hz-speedSince" type="text" class="m-inp hz-since-inp" placeholder="언제부터 / 기타 내용" style="display:none">
+      </div>
+      <div class="hz-field-group">
+        <div class="hz-field-label">업무변화</div>
+        <div class="hz-radio-row">
+          <label class="hz-radio"><input type="radio" name="hzWorkChange" value="변화없음" checked> 변화 없음</label>
+          <label class="hz-radio"><input type="radio" name="hzWorkChange" value="줄음"> 줄음</label>
+          <label class="hz-radio"><input type="radio" name="hzWorkChange" value="늘어남"> 늘어남</label>
+          <label class="hz-radio"><input type="radio" name="hzWorkChange" value="기타"> 기타</label>
+        </div>
+        <input id="hz-workChangeSince" type="text" class="m-inp hz-since-inp" placeholder="언제부터 / 기타 내용" style="display:none">
+      </div>
+
+      <div class="m-sec">📊 나. 작업조건 조사</div>
+      <div class="m-group"><div class="m-label">작업내용</div><textarea id="hz-workDesc" class="m-inp" rows="2" style="resize:vertical" placeholder="예: FST 제품에 하네스 조립 작업"></textarea></div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">부담작업(호)</div><input id="hz-burdenNo" type="text" class="m-inp" placeholder="예: 2호, 4호"></div>
+        <div class="m-group"><div class="m-label">작업부하(A) 1~5</div>
+          <select id="hz-loadA" class="m-inp" onchange="calcHzScore()">
+            <option value="">선택</option>
+            <option value="1">1 - 매우 쉬움</option><option value="2">2 - 쉬움</option>
+            <option value="3">3 - 약간 힘듦</option><option value="4">4 - 힘듦</option><option value="5">5 - 매우 힘듦</option>
+          </select>
+        </div>
+      </div>
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">작업빈도(B) 1~5</div>
+          <select id="hz-freqB" class="m-inp" onchange="calcHzScore()">
+            <option value="">선택</option>
+            <option value="1">1 - 3개월마다</option><option value="2">2 - 가끔(주2~3일)</option>
+            <option value="3">3 - 자주(1일4시간)</option><option value="4">4 - 계속(1일4시간 이상)</option><option value="5">5 - 초과근무(1일8시간 이상)</option>
+          </select>
+        </div>
+        <div class="m-group"><div class="m-label">총점수(A×B)</div>
+          <input id="hz-score" type="text" class="m-inp" readonly style="background:#f0f4ff;font-weight:900;font-size:16px;text-align:center;color:var(--accent)">
+        </div>
+      </div>
+
+      <div class="m-sec">⚠️ 3단계: 유해요인 및 원인 평가</div>
+      <div class="hz-field-group">
+        <div class="hz-field-label">유해요인 (해당 항목 체크)</div>
+        <div id="hz-hazardChecks" class="hz-check-grid">
+          <label class="hz-check"><input type="checkbox" name="hzHazard" value="반복작업"> 반복작업</label>
+          <label class="hz-check"><input type="checkbox" name="hzHazard" value="부자연스러운자세"> 부자연스러운 자세</label>
+          <label class="hz-check"><input type="checkbox" name="hzHazard" value="과도한힘"> 과도한 힘</label>
+          <label class="hz-check"><input type="checkbox" name="hzHazard" value="접촉스트레스"> 접촉 스트레스</label>
+          <label class="hz-check"><input type="checkbox" name="hzHazard" value="진동"> 진동</label>
+          <label class="hz-check"><input type="checkbox" name="hzHazard" value="온도"> 온도(고열/저온)</label>
+        </div>
+      </div>
+      <div class="m-group"><div class="m-label">유해요인 상세 부위</div><input id="hz-hazardPart" type="text" class="m-inp" placeholder="예: 손/손목, 목 구부림"></div>
+      <div class="m-group"><div class="m-label">유해요인에 대한 원인</div><textarea id="hz-hazardCause" class="m-inp" rows="3" style="resize:vertical" placeholder="예: 근로자 고정배치 작업, 반복적으로 손,손목을 사용해 조립작업"></textarea></div>
+
+      <div class="m-sec">📷 현장 사진</div>
+      <div class="hz-photo-area">
+        <div id="hzPhotoPreview" class="hz-photo-preview"></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <label class="hz-photo-btn">📷 사진 촬영<input type="file" accept="image/*" capture="environment" onchange="addHzPhoto(event)" style="display:none"></label>
+          <label class="hz-photo-btn" style="background:var(--alight);color:var(--accent)">🖼 갤러리 선택<input type="file" accept="image/*" multiple onchange="addHzPhoto(event)" style="display:none"></label>
+        </div>
+      </div>
+
+      <div class="m-sec">📝 비고</div>
+      <div class="m-group"><textarea id="hz-note" class="m-inp" rows="2" style="resize:vertical" placeholder="추가 메모"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeHazardModal()">취소</button>
+      <button class="btn-save" onclick="saveHazardSurvey()">💾 저장</button>
     </div>
   </div>
 </div>
@@ -703,7 +878,7 @@ function switchTab(el, id){
   if(id==='tab-check')  renderCheckTab();
   if(id==='tab-manage') renderManageTab();
   if(id==='tab-niosh')  renderNIOSH(allData);
-  if(id==='tab-checklist') renderChecklist();
+  if(id==='tab-checklist') loadHazardSurveys();
   if(id==='tab-report') loadReports();
   if(id==='tab-docs') renderDocs();
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1124,125 +1299,315 @@ function downloadCSV(){
 
 document.getElementById('pwInp').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
 
-/* ══ 유해요인 체크리스트 데이터 ══ */
-var CHECKLIST_DATA = {
-  surveyDate: '2026년 4월 28일',
-  surveyor: '유대순',
-  company: '신광전자',
-  criteria: [
-    '집중적 자료입력(마우스/키보드) 4시간 이상/일',
-    '같은 동작 반복작업 2시간 이상/일',
-    '머리 위 팔 들기/팔꿈치 몸 밖 2시간 이상/일',
-    '목/허리 구부리기/비틀기 2시간 이상/일',
-    '쪼그리기/무릎꿇기 2시간 이상/일',
-    '한 손가락 집기/조작 2시간 이상/일',
-    '한손 들기/쥐기 2시간 이상/일',
-    '25kg 이상 물건 들기 10회 이상/일',
-    '10kg 이상 어깨 위 들기 25회 이상/일',
-    '4.5kg 이상 물건 들기 분당 2회 이상',
-    '반복 충격 10회 이상/시간'
-  ],
-  bodyParts: [
-    '손,손가락,목,어깨','목,어깨,손목,손,팔꿈치','어깨,팔',
-    '목,허리','다리,무릎,허리','손가락','손',
-    '허리','팔,어깨,허리','허리','손,무릎'
-  ],
-  processes: [
-    {sheet:'FST',process:'FST',desc:'FST제품에 하네스 조립 작업',tasks:[{name:'FST 조립작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'검사',process:'검사',desc:'납땜 및 조립검사제품 기능검사',tasks:[{name:'검사 작업(4명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'가공',process:'가공',desc:'케이블 탈피 또는 탈피후 결합하는 작업',tasks:[{name:'가공 작업(3명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'기구',process:'기계가공',desc:'선반 및 MCT가공기를 이용한 단품가공',tasks:[{name:'기계가공작업(2명)',risks:[true,true,false,false,false,false,false,false,false,false,false]}]},
-    {sheet:'납땜',process:'납땜',desc:'가공된 케이블에 커넥터 연결 납땜 작업',tasks:[{name:'납땜작업(3명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'넘버링',process:'넘버링',desc:'케이블 튜브에 넘버링 작업',tasks:[{name:'넘버링 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'라벨',process:'라벨',desc:'조립된 제품에 라벨 부착 작업',tasks:[{name:'라벨 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'몰딩',process:'몰딩',desc:'케이블에 몰딩 작업',tasks:[{name:'몰딩 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'압착',process:'압착',desc:'가공된 케이블을 한 개씩 단자에 투입하여 압착',tasks:[{name:'압착 작업(3명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'연접',process:'연접',desc:'가공된 케이블에 여러선을 필름 부착작업',tasks:[{name:'연접 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'전장',process:'전장',desc:'장비에 하네스 조립 작업',tasks:[{name:'전장 작업(2명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'조립',process:'조립',desc:'케이블에 케이스 조립 작업',tasks:[{name:'조립 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'절단',process:'절단',desc:'케이블 커팅 작업(절단)',tasks:[{name:'절단 작업(1명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'케이블아세이',process:'케이블 아세이',desc:'케이블 커팅 및 아세이 작업',tasks:[{name:'케이블아세이 작업(2명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'하우징',process:'삽입',desc:'하우징에 터미널 삽입 작업',tasks:[{name:'삽입 작업(2명)',risks:[false,true,false,true,false,false,false,false,false,false,false]}]},
-    {sheet:'관리부',process:'관리부',desc:'사무직전원',tasks:[
-      {name:'회계(1명)',risks:[true,true,false,false,false,false,false,false,false,false,false]},
-      {name:'영업 및 사무지원(2명)',risks:[true,true,false,false,false,false,false,false,false,false,false]},
-      {name:'구매.자재관리(1명)',risks:[true,true,false,false,false,false,false,false,false,false,false]},
-      {name:'관리책임(1명)',risks:[true,true,false,false,false,false,false,false,false,false,false]},
-      {name:'설계(1명)',risks:[true,true,false,false,false,false,false,false,false,false,false]},
-      {name:'영업지원(2명)',risks:[true,true,false,false,false,false,false,false,false,false,false]}
-    ]}
-  ]
-};
+/* ══ 유해요인조사표 (인원별 관리) ══ */
+var hazardData = [];
+var hazardFiltered = [];
+var hzPhotos = []; /* 현재 편집중인 사진 (base64) */
 
-/* ══ 체크리스트 렌더 ══ */
-function renderChecklist(){
-  var procs = CHECKLIST_DATA.processes;
-  var totalProc = procs.length;
-  var totalWorkers = 0;
-  var totalRisks = 0;
+var HZ_DEPTS = ['FST조립','검사','가공','기구','납땜','넘버링','라벨','몰딩','압착','연접','전장','조립','절단','케이블아세이','하우징','관리부'];
 
-  procs.forEach(function(p){
-    p.tasks.forEach(function(t){
-      var m = t.name.match(/(\d+)명/);
-      if(m) totalWorkers += parseInt(m[1]);
-      t.risks.forEach(function(r){ if(r) totalRisks++; });
-    });
-  });
-
-  document.getElementById('clStatGrid').innerHTML =
-    '<div class="stat-card"><div class="stat-num c-blue">'+totalProc+'</div><div class="stat-lbl">전체 공정</div></div>'
-    +'<div class="stat-card"><div class="stat-num c-green">'+totalWorkers+'</div><div class="stat-lbl">전체 작업인원</div></div>'
-    +'<div class="stat-card"><div class="stat-num c-red">'+totalRisks+'</div><div class="stat-lbl">위험요인 발견</div></div>';
-
-  document.getElementById('clTblCount').textContent = '전체 '+totalProc+'개 공정';
-
-  var html = '';
-  procs.forEach(function(p, idx){
-    var workers = 0;
-    var riskCount = 0;
-    p.tasks.forEach(function(t){
-      var m = t.name.match(/(\d+)명/);
-      if(m) workers += parseInt(m[1]);
-      t.risks.forEach(function(r){ if(r) riskCount++; });
-    });
-    var taskNames = p.tasks.map(function(t){ return t.name; }).join(', ');
-    var levelClass = riskCount >= 4 ? 'b-serious' : riskCount >= 2 ? 'b-manage' : riskCount > 0 ? 'b-normal' : 'b-none';
-    var levelText = riskCount >= 4 ? '높음' : riskCount >= 2 ? '보통' : riskCount > 0 ? '낮음' : '없음';
-    html += '<tr>'
-      +'<td class="td-name">'+p.process+'</td>'
-      +'<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+p.desc+'</td>'
-      +'<td style="font-size:11px">'+taskNames+'</td>'
-      +'<td>'+workers+'명</td>'
-      +'<td><b>'+riskCount+'</b>개</td>'
-      +'<td><span class="badge '+levelClass+'">'+levelText+'</span></td>'
-      +'<td><button class="btn-detail" onclick="openChecklistDetail('+idx+')">상세보기</button></td>'
-      +'</tr>';
-  });
-  document.getElementById('clTblBody').innerHTML = html;
+function loadHazardSurveys(){
+  window._loadHazardFn && window._loadHazardFn();
 }
 
-function openChecklistDetail(idx){
-  var p = CHECKLIST_DATA.processes[idx];
-  if(!p) return;
-  document.getElementById('detailTitle').textContent = p.process + ' 유해요인 체크리스트';
+function renderHazardStats(){
+  var total = hazardData.length;
+  var depts = {};
+  var totalScore = 0;
+  var withPhoto = 0;
+  hazardData.forEach(function(r){
+    depts[r.dept] = (depts[r.dept]||0) + 1;
+    if(r.score) totalScore += parseInt(r.score)||0;
+    if(r.photos && r.photos.length) withPhoto++;
+  });
+  var deptCount = Object.keys(depts).length;
+  var avgScore = total ? (totalScore / total).toFixed(1) : '-';
+
+  document.getElementById('hzStatGrid').innerHTML =
+    '<div class="stat-card"><div class="stat-num c-blue">'+total+'</div><div class="stat-lbl">전체 조사</div></div>'
+    +'<div class="stat-card"><div class="stat-num c-green">'+deptCount+'</div><div class="stat-lbl">조사 부서</div></div>'
+    +'<div class="stat-card"><div class="stat-num c-purple">'+avgScore+'</div><div class="stat-lbl">평균 점수</div></div>'
+    +'<div class="stat-card"><div class="stat-num c-orange">'+withPhoto+'</div><div class="stat-lbl">사진 첨부</div></div>';
+
+  /* 부서 필터 드롭다운 */
+  var sel = document.getElementById('hzFilterDept');
+  var curVal = sel.value;
+  sel.innerHTML = '<option value="">전체 부서</option>';
+  Object.keys(depts).sort().forEach(function(d){
+    sel.innerHTML += '<option value="'+d+'"'+(d===curVal?' selected':'')+'>'+d+' ('+depts[d]+')</option>';
+  });
+}
+
+function filterHazardList(){
+  var dept = document.getElementById('hzFilterDept').value;
+  var name = document.getElementById('hzFilterName').value.trim().toLowerCase();
+  hazardFiltered = hazardData.filter(function(r){
+    if(dept && r.dept !== dept) return false;
+    if(name && (r.worker||'').toLowerCase().indexOf(name) < 0) return false;
+    return true;
+  });
+  renderHazardTable();
+}
+
+function renderHazardTable(){
+  document.getElementById('hzTblCount').textContent = '전체 '+hazardFiltered.length+'건';
+  if(!hazardFiltered.length){
+    document.getElementById('hzTblBody').innerHTML = '<tr><td colspan="9" class="empty-msg">등록된 조사표가 없습니다.</td></tr>';
+    return;
+  }
+  document.getElementById('hzTblBody').innerHTML = hazardFiltered.map(function(r, i){
+    var scoreClass = (r.score||0) >= 15 ? 'b-serious' : (r.score||0) >= 8 ? 'b-manage' : 'b-normal';
+    var photoIcon = (r.photos && r.photos.length) ? '📷 '+r.photos.length : '-';
+    var typeShort = (r.surveyType||'정기조사').replace('수시-','').replace('질환자발생','질환자').replace('새작업설비','설비').replace('환경변경','환경');
+    return '<tr>'
+      +'<td class="td-name">'+(r.worker||'-')+'</td>'
+      +'<td>'+(r.dept||'-')+'</td>'
+      +'<td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(r.process||'-')+'</td>'
+      +'<td>'+(r.surveyDate||'-')+'</td>'
+      +'<td><span class="badge b-b2">'+typeShort+'</span></td>'
+      +'<td><span class="badge '+scoreClass+'">'+(r.score||'-')+'</span></td>'
+      +'<td>'+photoIcon+'</td>'
+      +'<td><button class="btn-detail" onclick="openHazardDetail('+i+')">상세보기</button></td>'
+      +'<td>'
+        +'<button class="btn-edit-sm" onclick="openHazardForm(\''+r.id+'\')">✏️</button>'
+        +'<button class="btn-del-sm" onclick="deleteHazardSurvey(\''+r.id+'\')">🗑</button>'
+      +'</td></tr>';
+  }).join('');
+}
+
+/* 라디오/체크박스 변경시 since 입력 표시 */
+function setupHzRadioToggles(){
+  ['Equip','Amount','Speed','WorkChange'].forEach(function(key){
+    var radios = document.querySelectorAll('input[name="hz'+key+'"]');
+    var sinceInp = document.getElementById('hz-'+key.charAt(0).toLowerCase()+key.slice(1)+'Since');
+    radios.forEach(function(r){
+      r.addEventListener('change', function(){
+        sinceInp.style.display = (this.value !== '변화없음') ? 'block' : 'none';
+      });
+    });
+  });
+}
+
+function calcHzScore(){
+  var a = parseInt(document.getElementById('hz-loadA').value) || 0;
+  var b = parseInt(document.getElementById('hz-freqB').value) || 0;
+  document.getElementById('hz-score').value = (a && b) ? (a * b) : '';
+}
+
+function openHazardForm(docId){
+  hzPhotos = [];
+  document.getElementById('hzDocId').value = docId || '';
+  document.getElementById('hz-worker').value = '';
+  document.getElementById('hz-dept').value = '';
+  document.getElementById('hz-process').value = '';
+  document.getElementById('hz-task').value = '';
+  document.getElementById('hz-date').value = new Date().toISOString().slice(0,10);
+  document.getElementById('hz-surveyor').value = '유대순';
+  document.querySelectorAll('input[name="hzType"]')[0].checked = true;
+  ['Equip','Amount','Speed','WorkChange'].forEach(function(key){
+    document.querySelectorAll('input[name="hz'+key+'"]')[0].checked = true;
+    var sinceId = 'hz-'+key.charAt(0).toLowerCase()+key.slice(1)+'Since';
+    document.getElementById(sinceId).value = '';
+    document.getElementById(sinceId).style.display = 'none';
+  });
+  document.getElementById('hz-workDesc').value = '';
+  document.getElementById('hz-burdenNo').value = '';
+  document.getElementById('hz-loadA').value = '';
+  document.getElementById('hz-freqB').value = '';
+  document.getElementById('hz-score').value = '';
+  document.querySelectorAll('input[name="hzHazard"]').forEach(function(c){c.checked=false;});
+  document.getElementById('hz-hazardPart').value = '';
+  document.getElementById('hz-hazardCause').value = '';
+  document.getElementById('hz-note').value = '';
+  document.getElementById('hazardModalTitle').textContent = docId ? '✏️ 조사표 수정' : '📋 유해요인 기본조사표';
+
+  if(docId){
+    var r = hazardData.find(function(x){ return x.id === docId; });
+    if(r){
+      document.getElementById('hz-worker').value = r.worker || '';
+      document.getElementById('hz-dept').value = r.dept || '';
+      document.getElementById('hz-process').value = r.process || '';
+      document.getElementById('hz-task').value = r.task || '';
+      document.getElementById('hz-date').value = r.surveyDate || '';
+      document.getElementById('hz-surveyor').value = r.surveyor || '유대순';
+      /* 조사구분 */
+      var typeRadios = document.querySelectorAll('input[name="hzType"]');
+      typeRadios.forEach(function(rd){ rd.checked = (rd.value === (r.surveyType||'정기조사')); });
+      /* 작업장 상황 */
+      var sFields = {Equip:'equip',Amount:'amount',Speed:'speed',WorkChange:'workChange'};
+      Object.keys(sFields).forEach(function(key){
+        var val = r[sFields[key]] || '변화없음';
+        var radios = document.querySelectorAll('input[name="hz'+key+'"]');
+        radios.forEach(function(rd){ rd.checked = (rd.value === val); });
+        var sinceId = 'hz-'+key.charAt(0).toLowerCase()+key.slice(1)+'Since';
+        document.getElementById(sinceId).value = r[sFields[key]+'Since'] || '';
+        document.getElementById(sinceId).style.display = (val !== '변화없음') ? 'block' : 'none';
+      });
+      document.getElementById('hz-workDesc').value = r.workDesc || '';
+      document.getElementById('hz-burdenNo').value = r.burdenNo || '';
+      document.getElementById('hz-loadA').value = r.loadA || '';
+      document.getElementById('hz-freqB').value = r.freqB || '';
+      calcHzScore();
+      /* 유해요인 */
+      var hazards = r.hazards || [];
+      document.querySelectorAll('input[name="hzHazard"]').forEach(function(c){ c.checked = hazards.indexOf(c.value) >= 0; });
+      document.getElementById('hz-hazardPart').value = r.hazardPart || '';
+      document.getElementById('hz-hazardCause').value = r.hazardCause || '';
+      document.getElementById('hz-note').value = r.note || '';
+      hzPhotos = (r.photos || []).slice();
+    }
+  }
+  renderHzPhotoPreview();
+  document.getElementById('hazardModal').classList.add('open');
+  setupHzRadioToggles();
+}
+
+function closeHazardModal(){
+  document.getElementById('hazardModal').classList.remove('open');
+}
+
+function getHazardFormData(){
+  var typeVal = '정기조사';
+  document.querySelectorAll('input[name="hzType"]').forEach(function(r){ if(r.checked) typeVal = r.value; });
+  var sFields = {Equip:'equip',Amount:'amount',Speed:'speed',WorkChange:'workChange'};
+  var data = {
+    worker: document.getElementById('hz-worker').value.trim(),
+    dept: document.getElementById('hz-dept').value,
+    process: document.getElementById('hz-process').value.trim(),
+    task: document.getElementById('hz-task').value.trim(),
+    surveyDate: document.getElementById('hz-date').value,
+    surveyor: document.getElementById('hz-surveyor').value.trim(),
+    surveyType: typeVal
+  };
+  Object.keys(sFields).forEach(function(key){
+    var val = '변화없음';
+    document.querySelectorAll('input[name="hz'+key+'"]').forEach(function(r){ if(r.checked) val = r.value; });
+    data[sFields[key]] = val;
+    data[sFields[key]+'Since'] = document.getElementById('hz-'+key.charAt(0).toLowerCase()+key.slice(1)+'Since').value.trim();
+  });
+  data.workDesc = document.getElementById('hz-workDesc').value.trim();
+  data.burdenNo = document.getElementById('hz-burdenNo').value.trim();
+  data.loadA = document.getElementById('hz-loadA').value;
+  data.freqB = document.getElementById('hz-freqB').value;
+  var a = parseInt(data.loadA)||0, b = parseInt(data.freqB)||0;
+  data.score = (a && b) ? a*b : 0;
+  var hazards = [];
+  document.querySelectorAll('input[name="hzHazard"]').forEach(function(c){ if(c.checked) hazards.push(c.value); });
+  data.hazards = hazards;
+  data.hazardPart = document.getElementById('hz-hazardPart').value.trim();
+  data.hazardCause = document.getElementById('hz-hazardCause').value.trim();
+  data.note = document.getElementById('hz-note').value.trim();
+  data.photos = hzPhotos.slice();
+  return data;
+}
+
+function saveHazardSurvey(){
+  var data = getHazardFormData();
+  if(!data.worker){ alert('근로자명을 입력해주세요.'); return; }
+  if(!data.dept){ alert('부서를 선택해주세요.'); return; }
+  window._saveHazardFn && window._saveHazardFn(data);
+}
+
+function deleteHazardSurvey(id){
+  if(!confirm('이 조사표를 삭제하시겠습니까?')) return;
+  window._deleteHazardFn && window._deleteHazardFn(id);
+}
+
+/* 사진 추가 (Base64) */
+function addHzPhoto(e){
+  var files = Array.from(e.target.files);
+  files.forEach(function(file){
+    if(hzPhotos.length >= 5){ alert('사진은 최대 5장까지 첨부 가능합니다.'); return; }
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      /* 리사이즈: max 800px */
+      var img = new Image();
+      img.onload = function(){
+        var canvas = document.createElement('canvas');
+        var maxW = 800, maxH = 800;
+        var w = img.width, h = img.height;
+        if(w > maxW || h > maxH){
+          var ratio = Math.min(maxW/w, maxH/h);
+          w = Math.round(w*ratio); h = Math.round(h*ratio);
+        }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        var compressed = canvas.toDataURL('image/jpeg', 0.7);
+        hzPhotos.push(compressed);
+        renderHzPhotoPreview();
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+
+function removeHzPhoto(idx){
+  hzPhotos.splice(idx, 1);
+  renderHzPhotoPreview();
+}
+
+function renderHzPhotoPreview(){
+  var area = document.getElementById('hzPhotoPreview');
+  if(!hzPhotos.length){ area.innerHTML=''; return; }
+  area.innerHTML = hzPhotos.map(function(src, i){
+    return '<div class="hz-photo-thumb">'
+      +'<img src="'+src+'" alt="사진'+(i+1)+'">'
+      +'<button class="hz-photo-del" onclick="removeHzPhoto('+i+')">✕</button>'
+      +'</div>';
+  }).join('');
+}
+
+/* 상세보기 */
+function openHazardDetail(idx){
+  var r = hazardFiltered[idx];
+  if(!r) return;
+  document.getElementById('detailTitle').textContent = (r.worker||'') + ' 유해요인조사표';
+
+  function row(k,v){return '<div class="detail-row"><span class="detail-key">'+k+'</span><span class="detail-val">'+(v||'-')+'</span></div>';}
+  function sec(icon,t){return '<div class="detail-sec-title">'+icon+' '+t+'</div>';}
 
   var h = '';
-  h += '<div class="detail-sec"><div class="detail-sec-title">📋 공정 정보</div>';
-  h += '<div class="detail-row"><span class="detail-key">공정명</span><span class="detail-val">'+p.process+'</span></div>';
-  h += '<div class="detail-row"><span class="detail-key">공정내용</span><span class="detail-val">'+p.desc+'</span></div>';
+  h += '<div class="detail-sec">'+sec('👤','기본 정보')
+    +row('근로자명',r.worker)+row('부서',r.dept)+row('작업공정명',r.process)
+    +row('작업명',r.task)+row('조사일시',r.surveyDate)+row('조사자',r.surveyor)
+    +row('조사구분','<span class="badge b-b2">'+(r.surveyType||'정기조사')+'</span>')+'</div>';
+
+  h += '<div class="detail-sec">'+sec('🏭','가. 작업장 상황 조사')
+    +row('작업설비',(r.equip||'변화없음')+(r.equipSince?' ('+r.equipSince+')':''))
+    +row('작업량',(r.amount||'변화없음')+(r.amountSince?' ('+r.amountSince+')':''))
+    +row('작업속도',(r.speed||'변화없음')+(r.speedSince?' ('+r.speedSince+')':''))
+    +row('업무변화',(r.workChange||'변화없음')+(r.workChangeSince?' ('+r.workChangeSince+')':''))+'</div>';
+
+  h += '<div class="detail-sec">'+sec('📊','나. 작업조건 조사')
+    +row('작업내용',r.workDesc)+row('부담작업(호)',r.burdenNo)
+    +row('작업부하(A)',r.loadA ? r.loadA+'점' : '-')
+    +row('작업빈도(B)',r.freqB ? r.freqB+'점' : '-');
+  var scoreClass = (r.score||0)>=15?'b-serious':(r.score||0)>=8?'b-manage':'b-normal';
+  h += row('총점수(A×B)',r.score ? '<span class="badge '+scoreClass+'" style="font-size:14px;padding:3px 12px">'+r.score+'점</span>' : '-');
   h += '</div>';
 
-  p.tasks.forEach(function(t){
-    h += '<div class="detail-sec">';
-    h += '<div class="detail-sec-title">👷 '+t.name+'</div>';
-    CHECKLIST_DATA.criteria.forEach(function(c, ci){
-      var flagged = t.risks[ci];
-      var icon = flagged ? '<span style="color:#dc2626;font-weight:900">✅ 해당</span>' : '<span style="color:#94a3b8">✕ 해당없음</span>';
-      var bodyPart = flagged ? ' <span style="font-size:10px;color:var(--accent);background:var(--alight);padding:1px 6px;border-radius:4px">부위: '+CHECKLIST_DATA.bodyParts[ci]+'</span>' : '';
-      h += '<div class="detail-row"><span class="detail-key" style="min-width:auto;flex:1;font-size:11px">'+c+'</span><span class="detail-val" style="min-width:120px;text-align:right">'+icon+bodyPart+'</span></div>';
+  h += '<div class="detail-sec">'+sec('⚠️','3단계: 유해요인 및 원인 평가');
+  if(r.hazards && r.hazards.length){
+    h += row('유해요인', r.hazards.map(function(hz){return '<span class="badge b-serious" style="margin:1px">'+hz+'</span>';}).join(' '));
+  } else { h += row('유해요인','-'); }
+  h += row('상세 부위',r.hazardPart)+row('원인',r.hazardCause)+'</div>';
+
+  if(r.photos && r.photos.length){
+    h += '<div class="detail-sec">'+sec('📷','현장 사진')
+      +'<div style="display:flex;flex-wrap:wrap;gap:8px;padding:4px">';
+    r.photos.forEach(function(src, pi){
+      h += '<div style="width:120px;height:120px;border-radius:10px;overflow:hidden;border:2px solid var(--border);cursor:pointer" onclick="window.open(this.querySelector(\'img\').src)">'
+        +'<img src="'+src+'" style="width:100%;height:100%;object-fit:cover" alt="사진'+(pi+1)+'">'
+        +'</div>';
     });
-    h += '</div>';
-  });
+    h += '</div></div>';
+  }
+
+  if(r.note){
+    h += '<div class="detail-sec">'+sec('📝','비고')+row('메모',r.note)+'</div>';
+  }
 
   document.getElementById('detailBody').innerHTML = h;
   document.getElementById('detailModal').classList.add('open');
@@ -1664,6 +2029,60 @@ window._deleteReportFn = async function(id){
     await deleteDoc(doc(db,'reports',id));
     reportData = reportData.filter(r=>r.id!==id);
     renderReports();
+    alert('🗑 삭제 완료!');
+  } catch(e){ alert('오류: '+e.message); }
+};
+
+/* ══ 유해요인조사표 Firebase ══ */
+window._loadHazardFn = async function(){
+  try{
+    const snap = await getDocs(query(collection(db,'hazard_surveys'), orderBy('createdAt','desc')));
+    hazardData = [];
+    snap.forEach(d => hazardData.push(Object.assign({id:d.id}, d.data())));
+    hazardFiltered = hazardData.slice();
+    renderHazardStats();
+    renderHazardTable();
+    console.log('✅ 유해요인조사표 로드:', hazardData.length,'건');
+  } catch(e){
+    console.error('❌ 유해요인조사표 로드 오류:', e);
+    document.getElementById('hzTblBody').innerHTML='<tr><td colspan="9" class="empty-msg">⚠️ '+e.message+'</td></tr>';
+  }
+};
+
+window._saveHazardFn = async function(data){
+  const docId = document.getElementById('hzDocId').value;
+  try{
+    if(docId){
+      await updateDoc(doc(db,'hazard_surveys',docId), data);
+      var idx = hazardData.findIndex(r=>r.id===docId);
+      if(idx>=0) Object.assign(hazardData[idx], data);
+      alert('✅ 수정 완료!');
+    } else {
+      data.createdAt = Timestamp.now();
+      const ref = await addDoc(collection(db,'hazard_surveys'), data);
+      hazardData.unshift(Object.assign({id:ref.id}, data));
+      alert('✅ 저장 완료!');
+    }
+    closeHazardModal();
+    hazardFiltered = hazardData.slice();
+    renderHazardStats();
+    renderHazardTable();
+  } catch(e){ alert('오류: '+e.message); }
+};
+
+window._deleteHazardFn = async function(id){
+  try{
+    await deleteDoc(doc(db,'hazard_surveys',id));
+    hazardData = hazardData.filter(r=>r.id!==id);
+    hazardFiltered = hazardData.filter(function(r){
+      var dept = document.getElementById('hzFilterDept').value;
+      var name = document.getElementById('hzFilterName').value.trim().toLowerCase();
+      if(dept && r.dept !== dept) return false;
+      if(name && (r.worker||'').toLowerCase().indexOf(name) < 0) return false;
+      return true;
+    });
+    renderHazardStats();
+    renderHazardTable();
     alert('🗑 삭제 완료!');
   } catch(e){ alert('오류: '+e.message); }
 };
