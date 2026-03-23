@@ -6,6 +6,7 @@
 <title>근골격계 증상조사 - 관리자</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/cfb@1.2.2/dist/cfb.min.js"></script>
 <style>
 :root{
   --bg:#f0f4ff;--surface:#fff;--border:#dde3f0;
@@ -209,6 +210,23 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 .empty-msg{text-align:center;padding:36px;color:var(--text2);font-size:13px;}
 .btn-detail{padding:5px 12px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;white-space:nowrap;transition:.2s;}
 .btn-detail:hover{opacity:.85;transform:scale(1.03);}
+
+/* HWP 드롭존 */
+.hwp-dropzone{border:2.5px dashed var(--border);border-radius:16px;padding:40px 20px;text-align:center;margin-bottom:14px;transition:.3s;cursor:pointer;background:#fafbff;}
+.hwp-dropzone.drag-over{border-color:var(--accent);background:var(--alight);}
+.hwp-drop-icon{font-size:40px;margin-bottom:8px;}
+.hwp-drop-text{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.hwp-drop-sub{font-size:12px;color:var(--text2);margin-bottom:10px;}
+.hwp-file-btn{display:inline-block;padding:8px 20px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.hwp-file-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#fff;border:1px solid var(--border);border-radius:10px;margin-bottom:6px;box-shadow:var(--sh);}
+.hwp-file-name{font-size:13px;font-weight:700;flex:1;}
+.hwp-file-size{font-size:11px;color:var(--text2);}
+.hwp-viewer{background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-top:12px;box-shadow:var(--sh);max-height:70vh;overflow-y:auto;}
+.hwp-viewer h3{font-size:14px;font-weight:900;color:var(--accent);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--accent);}
+.hwp-viewer table{width:100%;border-collapse:collapse;margin:8px 0;}
+.hwp-viewer td,.hwp-viewer th{border:1px solid #dde3f0;padding:6px 8px;font-size:12px;}
+.hwp-viewer th{background:#f0f4ff;font-weight:700;}
+.hwp-viewer p{margin:4px 0;font-size:13px;line-height:1.7;}
 .btn-print{background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;gap:4px;transition:.2s;}
 .btn-print:hover{background:rgba(255,255,255,.35);}
 
@@ -458,10 +476,23 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 <!-- ══ TAB8 유해요인조사표 ══ -->
 <div class="tab-pane" id="tab-docs">
   <div class="card">
-    <div class="card-title">📂 2026년 유해요인조사표 (파트별)</div>
-    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">각 파트별 유해요인조사표를 PDF로 열람할 수 있습니다.</div>
+    <div class="card-title">📂 유해요인조사표 (한글 파일 열람)</div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:12px">HWP 한글 파일을 드래그앤드롭하거나 파일을 선택하여 내용을 확인할 수 있습니다.</div>
   </div>
-  <div id="docsListArea"></div>
+  <!-- 드롭존 -->
+  <div id="hwpDropZone" class="hwp-dropzone" ondragover="event.preventDefault();this.classList.add('drag-over')" ondragleave="this.classList.remove('drag-over')" ondrop="handleHwpDrop(event)">
+    <div class="hwp-drop-icon">📎</div>
+    <div class="hwp-drop-text">한글(.hwp) 파일을 여기에 드래그하세요</div>
+    <div class="hwp-drop-sub">또는</div>
+    <label class="hwp-file-btn">
+      파일 선택
+      <input type="file" accept=".hwp" multiple onchange="handleHwpSelect(event)" style="display:none">
+    </label>
+  </div>
+  <!-- 열린 파일 목록 -->
+  <div id="hwpFileList"></div>
+  <!-- 내용 표시 영역 -->
+  <div id="hwpViewerArea"></div>
 </div>
 
 <!-- 편집 모달 -->
@@ -1219,45 +1250,162 @@ function openChecklistDetail(idx){
 }
 
 /* ══ 유해요인조사표 데이터 ══ */
-var DOC_FILES = [
-  {dept:'FST조립', files:['유해요인조사표_윤준석.pdf']},
-  {dept:'가공', files:['유해요인조사표_박경은.pdf','유해요인조사표_이순덕.pdf','유해요인조사표_황금옥.pdf']},
-  {dept:'검사', files:['유해요인조사표_김영선.pdf','유해요인조사표_민지영.pdf','유해요인조사표_이영화.pdf','유해요인조사표_임경희.pdf']},
-  {dept:'관리부', files:['유해요인조사표_민시우.pdf','유해요인조사표_박상준.pdf','유해요인조사표_박웅.pdf','유해요인조사표_박화자.pdf','유해요인조사표_신동민.pdf','유해요인조사표_신수철.pdf','유해요인조사표_유대순.pdf','유해요인조사표_이경륜.pdf']},
-  {dept:'기구', files:['유해요인조사표_백형권.pdf','유해요인조사표_이종국.pdf']},
-  {dept:'납땜', files:['유해요인조사표_김경선.pdf','유해요인조사표_조경숙.pdf','유해요인조사표_홍희자.pdf']},
-  {dept:'넘버링', files:['유해요인조사표_이영순.pdf']},
-  {dept:'라벨', files:['유해요인조사표_오현숙.pdf']},
-  {dept:'몰딩', files:['유해요인조사표_송범규.pdf']},
-  {dept:'압착', files:['유해요인조사표_김은순.pdf','유해요인조사표_손점순.pdf','유해요인조사표_신창수.pdf']},
-  {dept:'연접', files:['유해요인조사표_김명란.pdf']},
-  {dept:'전장', files:['유해요인조사표_문명숙.pdf','유해요인조사표_이산옥.pdf','유해요인조사표_이현무.pdf']},
-  {dept:'절단', files:['유해요인조사표_홍순민.pdf']},
-  {dept:'조립', files:['유해요인조사표_김남규.pdf']},
-  {dept:'케이블 아세이', files:['유해요인조사표_이산옥.pdf','유해요인조사표_임홍순.pdf']},
-  {dept:'하우징', files:['유해요인조사표_김희옥.pdf','유해요인조사표_임나연.pdf']}
-];
+var hwpLoadedFiles = [];
 
-/* ══ 유해요인조사표 렌더 ══ */
-function renderDocs(){
-  var html = '';
-  DOC_FILES.forEach(function(d){
-    html += '<div class="dept-section">';
-    html += '<div class="dept-section-title"><span>🏢 '+d.dept+' ('+d.files.length+'명)</span></div>';
-    html += '<div class="dept-section-body">';
-    d.files.forEach(function(f){
-      var personName = f.replace('유해요인조사표_','').replace('.pdf','');
-      var url = 'docs/2026/'+d.dept+'/'+f;
-      html += '<div class="check-row">'
-        +'<span class="check-emp-name">'+personName+'</span>'
-        +'<span style="flex:1;font-size:12px;color:var(--text2)">'+f+'</span>'
-        +'<a href="'+url+'" target="_blank" style="text-decoration:none"><button class="btn-detail">📄 열기</button></a>'
-        +'</div>';
-    });
-    html += '</div></div>';
-  });
-  document.getElementById('docsListArea').innerHTML = html;
+/* ══ HWP 파일 드롭/선택 처리 ══ */
+function handleHwpDrop(e){
+  e.preventDefault();
+  e.currentTarget.classList.remove('drag-over');
+  var files = Array.from(e.dataTransfer.files).filter(function(f){return f.name.toLowerCase().endsWith('.hwp');});
+  if(!files.length){alert('HWP 파일만 첨부 가능합니다.');return;}
+  files.forEach(function(f){processHwpFile(f);});
 }
+function handleHwpSelect(e){
+  var files = Array.from(e.target.files);
+  files.forEach(function(f){processHwpFile(f);});
+  e.target.value='';
+}
+function processHwpFile(file){
+  var reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      var data = new Uint8Array(e.target.result);
+      var cfbData = CFB.read(data, {type:'array'});
+      var text = extractHwpText(cfbData);
+      var entry = {name:file.name, size:file.size, text:text, time:new Date()};
+      hwpLoadedFiles.unshift(entry);
+      renderHwpFileList();
+      viewHwpFile(0);
+    }catch(err){
+      alert('파일 읽기 오류: '+err.message+'\n\n이 파일 형식을 지원하지 못할 수 있습니다.');
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function extractHwpText(cfb){
+  /* HWP 파일의 BodyText/Section 스트림에서 텍스트 추출 */
+  var sections = [];
+  cfb.FileIndex.forEach(function(fi){
+    if(fi.name && fi.name.indexOf('Section')>=0 && fi.type===2){
+      sections.push(fi);
+    }
+  });
+  if(!sections.length){
+    /* PrvText (미리보기 텍스트) 시도 */
+    var prv = CFB.find(cfb, '/PrvText');
+    if(prv && prv.content){
+      return decodeUtf16(prv.content);
+    }
+    /* 전체 엔트리에서 텍스트 추출 시도 */
+    var allText = '';
+    cfb.FileIndex.forEach(function(fi){
+      if(fi.type===2 && fi.content && fi.content.length>0){
+        try{ allText += decodeUtf16(fi.content) + '\n'; }catch(e){}
+      }
+    });
+    return allText || '텍스트를 추출할 수 없습니다.';
+  }
+
+  var result = '';
+  sections.forEach(function(sec){
+    var content = sec.content;
+    if(!content || !content.length) return;
+    result += extractTextFromSection(content);
+  });
+
+  if(!result.trim()){
+    var prv2 = CFB.find(cfb, '/PrvText');
+    if(prv2 && prv2.content) return decodeUtf16(prv2.content);
+  }
+  return result || '텍스트를 추출할 수 없습니다.';
+}
+
+function extractTextFromSection(buf){
+  /* HWP BodyText Section 바이너리에서 텍스트 추출 */
+  var text = '';
+  var i = 0;
+  while(i < buf.length - 1){
+    /* HWP 레코드 헤더: 4바이트 (태그 10bit, 레벨 10bit, 크기 12bit) */
+    if(i + 4 > buf.length) break;
+    var header = buf[i] | (buf[i+1]<<8) | (buf[i+2]<<16) | (buf[i+3]<<24);
+    var tagId = header & 0x3FF;
+    var size = (header >> 20) & 0xFFF;
+    if(size === 0xFFF){
+      if(i + 8 > buf.length) break;
+      size = buf[i+4] | (buf[i+5]<<8) | (buf[i+6]<<16) | (buf[i+7]<<24);
+      i += 8;
+    } else {
+      i += 4;
+    }
+
+    /* HWPTAG_PARA_TEXT = 66+2 = 67 (base 66 = HWPTAG_BEGIN=16+50) */
+    if(tagId === 67 && size > 0){
+      var end = Math.min(i + size, buf.length);
+      var paraText = '';
+      for(var j = i; j < end - 1; j += 2){
+        var ch = buf[j] | (buf[j+1] << 8);
+        if(ch === 0) break;
+        if(ch === 13 || ch === 10){ paraText += '\n'; }
+        else if(ch >= 32){ paraText += String.fromCharCode(ch); }
+        else if(ch < 16){ /* 제어문자 - 건너뛰기: 추가 바이트 있을 수 있음 */ }
+      }
+      if(paraText.trim()) text += paraText + '\n';
+    }
+    i += size;
+    if(size <= 0 && tagId === 0) break;
+  }
+  return text;
+}
+
+function decodeUtf16(buf){
+  var str = '';
+  for(var i=0; i<buf.length-1; i+=2){
+    var ch = buf[i] | (buf[i+1]<<8);
+    if(ch === 0) continue;
+    str += String.fromCharCode(ch);
+  }
+  return str;
+}
+
+function renderHwpFileList(){
+  if(!hwpLoadedFiles.length){document.getElementById('hwpFileList').innerHTML='';return;}
+  var html = '<div class="card" style="margin-bottom:10px"><div class="card-title">📎 첨부된 파일 ('+hwpLoadedFiles.length+'개)</div>';
+  hwpLoadedFiles.forEach(function(f,i){
+    var sizeKb = (f.size/1024).toFixed(1);
+    html += '<div class="hwp-file-item">'
+      +'<span style="font-size:18px">📄</span>'
+      +'<span class="hwp-file-name">'+f.name+'</span>'
+      +'<span class="hwp-file-size">'+sizeKb+' KB</span>'
+      +'<button class="btn-detail" onclick="viewHwpFile('+i+')">내용 보기</button>'
+      +'<button class="btn-del-sm" onclick="removeHwpFile('+i+')">✕</button>'
+      +'</div>';
+  });
+  html += '</div>';
+  document.getElementById('hwpFileList').innerHTML = html;
+}
+
+function viewHwpFile(idx){
+  var f = hwpLoadedFiles[idx]; if(!f) return;
+  var lines = f.text.split('\n').filter(function(l){return l.trim();});
+  var html = '<div class="hwp-viewer">'
+    +'<h3>📄 '+f.name+'</h3>'
+    +'<div style="font-size:11px;color:var(--text2);margin-bottom:12px">첨부 시간: '+f.time.toLocaleString('ko-KR')+' | 크기: '+(f.size/1024).toFixed(1)+' KB</div>';
+  lines.forEach(function(line){
+    html += '<p>'+line.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</p>';
+  });
+  html += '</div>';
+  document.getElementById('hwpViewerArea').innerHTML = html;
+}
+
+function removeHwpFile(idx){
+  hwpLoadedFiles.splice(idx,1);
+  renderHwpFileList();
+  if(!hwpLoadedFiles.length) document.getElementById('hwpViewerArea').innerHTML='';
+  else viewHwpFile(0);
+}
+
+function renderDocs(){/* 초기화 - 드롭존은 HTML에 이미 있음 */}
 
 /* ══ 예방보고서 함수 ══ */
 var reportData = [];
