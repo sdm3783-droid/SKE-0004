@@ -2043,13 +2043,27 @@ function renderEduSigTable(){
     var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : g.sessionMonth||'-';
     return '<tr>'
       +'<td class="td-name">'+(g.worker||'-')+'</td>'
-      +'<td>'+(g.dept||'-')+'</td>'
+      +'<td style="cursor:pointer;" onclick="editEduDept(this,\''+g.id+'\',\''+( (g.dept||'').replace(/'/g,"\\'") )+'\')" title="클릭하여 부서 수정"><span style="border-bottom:1px dashed #94a3b8;">'+(g.dept||'-')+'</span> ✏️</td>'
       +'<td style="font-size:11px;">'+monthLabel+' '+(g.sessionTitle||'')+'</td>'
       +'<td style="font-size:11px;">'+dt+'</td>'
       +'<td style="text-align:center;"><button class="btn-detail" onclick="viewEduSig('+i+')">서명보기</button></td>'
       +'<td><button class="btn-del-sm" onclick="deleteEduSig(\''+g.id+'\')">🗑</button></td>'
       +'</tr>';
   }).join('');
+}
+
+function editEduDept(td, docId, currentDept){
+  var newDept = prompt('부서명을 수정하세요:', currentDept);
+  if(newDept === null) return;
+  newDept = newDept.trim();
+  if(!newDept){ alert('부서명을 입력해주세요.'); return; }
+  window._updateEduDeptFn && window._updateEduDeptFn(docId, newDept, function(){
+    td.innerHTML = '<span style="border-bottom:1px dashed #94a3b8;">'+newDept+'</span> ✏️';
+    var rec = eduSigs.find(function(g){ return g.id===docId; });
+    if(rec) rec.dept = newDept;
+    var rec2 = eduSigsFiltered.find(function(g){ return g.id===docId; });
+    if(rec2) rec2.dept = newDept;
+  });
 }
 
 function viewEduSig(idx){
@@ -2275,13 +2289,27 @@ function renderSafSigTable(){
     var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : g.sessionMonth||'-';
     return '<tr>'
       +'<td class="td-name">'+(g.worker||'-')+'</td>'
-      +'<td>'+(g.dept||'-')+'</td>'
+      +'<td style="cursor:pointer;" onclick="editSafDept(this,\''+g.id+'\',\''+( (g.dept||'').replace(/'/g,"\\'") )+'\')" title="클릭하여 부서 수정"><span style="border-bottom:1px dashed #94a3b8;">'+(g.dept||'-')+'</span> ✏️</td>'
       +'<td style="font-size:11px;">'+monthLabel+' '+(g.sessionTitle||'')+'</td>'
       +'<td style="font-size:11px;">'+dt+'</td>'
       +'<td style="text-align:center;"><button class="btn-detail" onclick="viewSafSig('+i+')">서명보기</button></td>'
       +'<td><button class="btn-del-sm" onclick="deleteSafSig(\''+g.id+'\')">🗑</button></td>'
       +'</tr>';
   }).join('');
+}
+
+function editSafDept(td, docId, currentDept){
+  var newDept = prompt('부서명을 수정하세요:', currentDept);
+  if(newDept === null) return;
+  newDept = newDept.trim();
+  if(!newDept){ alert('부서명을 입력해주세요.'); return; }
+  window._updateSafDeptFn && window._updateSafDeptFn(docId, newDept, function(){
+    td.innerHTML = '<span style="border-bottom:1px dashed #94a3b8;">'+newDept+'</span> ✏️';
+    var rec = safSigs.find(function(g){ return g.id===docId; });
+    if(rec) rec.dept = newDept;
+    var rec2 = safSigsFiltered.find(function(g){ return g.id===docId; });
+    if(rec2) rec2.dept = newDept;
+  });
 }
 
 function viewSafSig(idx){
@@ -3255,6 +3283,13 @@ window._deleteEduSigFn = async function(id){
   } catch(e){ alert('삭제 오류: '+e.message); }
 };
 
+window._updateEduDeptFn = async function(id, newDept, cb){
+  try{
+    await updateDoc(doc(db,'edu_signatures',id), { dept: newDept });
+    if(cb) cb();
+  } catch(e){ alert('수정 오류: '+e.message); }
+};
+
 /* ══ 산업안전교육 Firebase ══ */
 window._loadSafFn = async function(){
   try{
@@ -3325,6 +3360,13 @@ window._deleteSafSigFn = async function(id){
     filterSafSigs();
     alert('🗑 서명 삭제 완료!');
   } catch(e){ alert('삭제 오류: '+e.message); }
+};
+
+window._updateSafDeptFn = async function(id, newDept, cb){
+  try{
+    await updateDoc(doc(db,'safety_signatures',id), { dept: newDept });
+    if(cb) cb();
+  } catch(e){ alert('수정 오류: '+e.message); }
 };
 
 /* ══ 유해요인조사표 Firebase ══ */
