@@ -350,19 +350,49 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 <!-- ══ TAB2 제출 현황 ══ -->
 <div class="tab-pane" id="tab-check">
   <div class="card" style="margin-bottom:12px">
-    <div class="card-title">☑️ 전 직원 설문 제출 현황</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+      <div class="card-title" style="margin-bottom:0">☑️ 전 직원 설문 제출 현황</div>
+      <button class="tb-btn" style="background:#2563eb;color:#fff;font-size:12px;" onclick="openAddEmpModal()">+ 신규 인원 추가</button>
+    </div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-bottom:10px">
       <span>✅ 제출 완료 <b id="ck-done" style="color:var(--green)">-</b>명</span>
       <span>❌ 미제출 <b id="ck-todo" style="color:var(--red)">-</b>명</span>
       <span>전체 <b id="ck-total">-</b>명</span>
     </div>
-    <!-- 전체 진행 바 -->
     <div style="height:10px;background:#e8edf5;border-radius:5px;overflow:hidden;margin-bottom:4px">
       <div id="ck-progbar" style="height:100%;background:linear-gradient(90deg,var(--green),var(--accent));border-radius:5px;width:0%;transition:.5s"></div>
     </div>
     <div style="font-size:11px;color:var(--text2)" id="ck-pct">0%</div>
   </div>
+
+  <!-- 범례 -->
+  <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin-bottom:8px;padding:0 4px;">
+    <span>📋 증상조사</span>
+    <span>🔍 유해요인조사표</span>
+    <span>📝 예방보고서</span>
+    <span style="color:#2563eb;font-weight:700;">✅ 완료 &nbsp; ☐ 미완료</span>
+  </div>
+
   <div id="checkListArea"></div>
+</div>
+
+<!-- 신규 인원 추가 모달 -->
+<div id="addEmpModal" style="position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.5);">
+  <div style="background:#fff;border-radius:16px;padding:28px;width:320px;box-shadow:0 8px 40px rgba(0,0,0,.2);">
+    <div style="font-size:16px;font-weight:900;margin-bottom:18px;">👤 신규 인원 추가</div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:12px;font-weight:700;color:#475569;">이름 *</label>
+      <input id="newEmpName" type="text" placeholder="이름 입력" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid #dde3f0;border-radius:8px;font-size:14px;box-sizing:border-box;">
+    </div>
+    <div style="margin-bottom:20px;">
+      <label style="font-size:12px;font-weight:700;color:#475569;">부서 *</label>
+      <input id="newEmpDept" type="text" placeholder="부서명 입력" style="width:100%;margin-top:4px;padding:8px 10px;border:1.5px solid #dde3f0;border-radius:8px;font-size:14px;box-sizing:border-box;">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="closeAddEmpModal()" style="flex:1;padding:10px;border:1.5px solid #dde3f0;border-radius:8px;background:#fff;cursor:pointer;font-size:13px;">취소</button>
+      <button onclick="saveNewEmployee()" style="flex:2;padding:10px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;">💾 추가</button>
+    </div>
+  </div>
 </div>
 
 <!-- ══ TAB3 NIOSH 분석 ══ -->
@@ -1727,9 +1757,14 @@ function drawCharts(data){
 /* ══ 제출 현황 탭 ══ */
 function renderCheckTab(){
   var submittedMap={};
-  allData.forEach(function(r){
-    if(r.name) submittedMap[r.name]=r;
-  });
+  allData.forEach(function(r){ if(r.name) submittedMap[r.name]=r; });
+
+  var hazardMap={};
+  hazardData.forEach(function(r){ if(r.worker) hazardMap[r.worker]=r; });
+
+  var reportMap={};
+  reportData.forEach(function(r){ if(r.worker) reportMap[r.worker]=r; });
+
   var doneCount=0;
   EMPLOYEES.forEach(function(e){ if(submittedMap[e.name]) doneCount++; });
   var total=EMPLOYEES.length, pct=total?Math.round(doneCount/total*100):0;
@@ -1740,7 +1775,6 @@ function renderCheckTab(){
   document.getElementById('ck-progbar').style.width= pct+'%';
   document.getElementById('ck-pct').textContent   = pct+'% 완료';
 
-  // 부서별 그룹핑
   var deptMap={};
   EMPLOYEES.forEach(function(e){
     if(!deptMap[e.dept]) deptMap[e.dept]=[];
@@ -1762,29 +1796,100 @@ function renderCheckTab(){
       +'</div>'
       +'</div>'
       +'<div class="dept-section-body">';
+
     emps.forEach(function(e){
-      var r=submittedMap[e.name];
-      var judge= r ? judgeOverall(r) : '';
-      var jColor={'정상':'#059669','관리대상자':'#d97706','통증호소자':'#dc2626'};
-      var jBg={'정상':'rgba(16,185,129,.1)','관리대상자':'rgba(245,158,11,.12)','통증호소자':'rgba(239,68,68,.12)'};
-      html+='<div class="check-row">'
-        +'<span class="check-emp-name">'+e.name+'</span>'
-        +'<span class="check-emp-rank">'+e.rank+'</span>'
-        +'<div class="check-status">';
-      if(r){
-        var dt=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleDateString('ko-KR'):'';
-        html+='<span style="font-size:18px">✅</span>'
-          +'<span class="check-date">'+dt+'</span>'
-          +(judge?'<span style="padding:2px 7px;border-radius:8px;font-size:10px;font-weight:700;background:'+jBg[judge]+';color:'+jColor[judge]+'">'+judge+'</span>':'');
-      } else {
-        html+='<span style="font-size:18px;color:#e2e8f0">☐</span>'
-          +'<span style="font-size:12px;color:var(--red);font-weight:600">미제출</span>';
-      }
-      html+='</div></div>';
+      var survey  = submittedMap[e.name];
+      var hazard  = hazardMap[e.name];
+      var report  = reportMap[e.name];
+      var judge   = survey ? judgeOverall(survey) : '';
+      var jColor  = {'정상':'#059669','관리대상자':'#d97706','통증호소자':'#dc2626'};
+      var jBg     = {'정상':'rgba(16,185,129,.1)','관리대상자':'rgba(245,158,11,.12)','통증호소자':'rgba(239,68,68,.12)'};
+
+      html+='<div class="check-row" style="align-items:center;">'
+        +'<span class="check-emp-name" style="min-width:60px;">'+e.name+'</span>'
+        +'<div style="display:flex;gap:12px;align-items:center;flex:1;flex-wrap:wrap;">'
+
+        /* ① 증상조사 */
+        +'<div style="display:flex;flex-direction:column;align-items:center;min-width:64px;gap:2px;">'
+        +'<span style="font-size:10px;color:#64748b;font-weight:600;">📋 증상조사</span>'
+        +(survey
+          ? '<span style="font-size:16px;" title="'+( survey.createdAt?new Date(survey.createdAt.seconds*1000).toLocaleDateString('ko-KR'):'' )+'">✅</span>'
+            +(judge?'<span style="padding:1px 6px;border-radius:6px;font-size:9px;font-weight:700;background:'+jBg[judge]+';color:'+jColor[judge]+'">'+judge+'</span>':'')
+          : '<span style="font-size:16px;color:#e2e8f0;">☐</span><span style="font-size:10px;color:var(--red);">미제출</span>')
+        +'</div>'
+
+        /* ② 유해요인조사표 */
+        +'<div style="display:flex;flex-direction:column;align-items:center;min-width:80px;gap:2px;">'
+        +'<span style="font-size:10px;color:#64748b;font-weight:600;">🔍 유해요인</span>'
+        +(hazard
+          ? '<span style="font-size:16px;">✅</span>'
+          : '<span style="font-size:16px;color:#e2e8f0;">☐</span><span style="font-size:10px;color:var(--red);">미작성</span>')
+        +'</div>'
+
+        /* ③ 예방보고서 */
+        +'<div style="display:flex;flex-direction:column;align-items:center;min-width:80px;gap:2px;">'
+        +'<span style="font-size:10px;color:#64748b;font-weight:600;">📝 예방보고서</span>'
+        +(report
+          ? '<span style="font-size:16px;">✅</span>'
+          : hazard
+            ? '<span style="font-size:16px;color:#e2e8f0;">☐</span>'
+              +'<button onclick="autoCreateReport(\''+e.name+'\')" style="font-size:9px;padding:2px 6px;background:#059669;color:#fff;border:none;border-radius:5px;cursor:pointer;margin-top:1px;">자동작성</button>'
+            : '<span style="font-size:16px;color:#e2e8f0;">☐</span><span style="font-size:10px;color:#94a3b8;">대기중</span>')
+        +'</div>'
+
+        +'</div>'
+        +(e._manual?'<button onclick="deleteManualEmp(\''+e._id+'\')" style="font-size:10px;padding:2px 6px;background:#fee2e2;color:#dc2626;border:none;border-radius:5px;cursor:pointer;">삭제</button>':'')
+        +'</div>';
     });
     html+='</div></div>';
   });
   document.getElementById('checkListArea').innerHTML=html;
+}
+
+/* 신규 인원 추가 */
+function openAddEmpModal(){
+  document.getElementById('newEmpName').value='';
+  document.getElementById('newEmpDept').value='';
+  document.getElementById('addEmpModal').style.display='flex';
+}
+function closeAddEmpModal(){ document.getElementById('addEmpModal').style.display='none'; }
+
+function saveNewEmployee(){
+  var name = document.getElementById('newEmpName').value.trim();
+  var dept = document.getElementById('newEmpDept').value.trim();
+  if(!name){ alert('이름을 입력해 주세요.'); return; }
+  if(!dept){ alert('부서명을 입력해 주세요.'); return; }
+  window._saveManualEmpFn && window._saveManualEmpFn(name, dept);
+}
+
+function deleteManualEmp(id){
+  if(!confirm('이 인원을 삭제하시겠습니까?')) return;
+  window._deleteManualEmpFn && window._deleteManualEmpFn(id);
+}
+
+/* 예방보고서 자동작성 */
+function autoCreateReport(name){
+  var hazard = hazardData.find(function(r){ return r.worker===name; });
+  if(!hazard){ alert('유해요인조사표 데이터가 없습니다.'); return; }
+
+  document.getElementById('rptDocId').value = '';
+  document.getElementById('rpt-worker').value      = hazard.worker || name;
+  document.getElementById('rpt-age').value         = '';
+  document.getElementById('rpt-date').value        = new Date().toISOString().slice(0,10);
+  document.getElementById('rpt-place').value       = '회의실';
+  document.getElementById('rpt-surveyor').value    = hazard.surveyor || '유대순';
+  document.getElementById('rpt-burden').value      = (hazard.hazardTypes||[]).join(', ') || hazard.hazardFactor || '';
+  document.getElementById('rpt-q1').value          = hazard.workDesc || hazard.task || '';
+  document.getElementById('rpt-q2').value          = hazard.hazardCause || '';
+  document.getElementById('rpt-q3').value          = hazard.hazardPart || '';
+  document.getElementById('rpt-actionDate').value  = '';
+  document.getElementById('rpt-actionContent').value = '';
+
+  document.getElementById('reportModal').classList.add('open');
+  if(!document.querySelector('#tab-report').classList.contains('active')){
+    /* 보고서 모달 열기만 - 탭 전환 없이 */
+  }
+  alert('✅ 유해요인조사표 데이터로 자동 입력됐습니다.\n내용 확인 후 저장해 주세요.');
 }
 
 /* ══ NIOSH 분석 렌더 ══ */
@@ -3420,8 +3525,41 @@ const app = getApps().length ? getApps()[0] : initializeApp(cfg);
 const db  = getFirestore(app, '(default)');
 
 /* 로드 */
+/* ── manual_employees 로드/저장/삭제 ── */
+window._loadManualEmpsFn = async function(){
+  try{
+    const snap = await getDocs(collection(db,'manual_employees'));
+    snap.forEach(d => {
+      const emp = Object.assign({id:d.id}, d.data());
+      const exists = EMPLOYEES.find(function(e){ return e.name === emp.name; });
+      if(!exists) EMPLOYEES.push({name:emp.name, dept:emp.dept, rank:'', _manual:true, _id:emp.id});
+    });
+  } catch(e){ console.warn('manual_employees 로드 오류:', e.message); }
+};
+
+window._saveManualEmpFn = async function(name, dept){
+  try{
+    const docRef = await addDoc(collection(db,'manual_employees'),{
+      name:name, dept:dept, createdAt:Timestamp.now()
+    });
+    EMPLOYEES.push({name:name, dept:dept, rank:'', _manual:true, _id:docRef.id});
+    closeAddEmpModal();
+    renderCheckTab();
+    alert('✅ '+name+' 인원이 추가됐습니다.');
+  } catch(e){ alert('추가 오류: '+e.message); }
+};
+
+window._deleteManualEmpFn = async function(id){
+  try{
+    await deleteDoc(doc(db,'manual_employees',id));
+    EMPLOYEES = EMPLOYEES.filter(function(e){ return e._id !== id; });
+    renderCheckTab();
+  } catch(e){ alert('삭제 오류: '+e.message); }
+};
+
 window._loadFn = async function(){
   try{
+    await window._loadManualEmpsFn();
     const snap = await getDocs(query(collection(db,'surveys'), orderBy('createdAt','desc')));
     allData = [];
     snap.forEach(d => allData.push(Object.assign({id:d.id}, d.data())));
