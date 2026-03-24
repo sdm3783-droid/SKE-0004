@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>교육 서명 QR코드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Noto Sans KR', sans-serif; background: #f1f5f9; padding: 32px 16px; }
@@ -22,8 +23,8 @@
   .card-icon { font-size: 36px; margin-bottom: 10px; }
   .card-title { font-size: 18px; font-weight: 900; margin-bottom: 4px; color: #1e293b; }
   .card-desc { font-size: 12px; color: #64748b; margin-bottom: 20px; line-height: 1.6; }
-  .qr-wrap { margin: 0 auto 16px; width: 220px; height: 220px; }
-  .qr-wrap img { width: 100%; height: 100%; border-radius: 8px; border: 3px solid #e2e8f0; }
+  .qr-wrap { margin: 0 auto 16px; width: 220px; height: 220px; display:flex; align-items:center; justify-content:center; }
+  .qr-wrap canvas, .qr-wrap img { border-radius: 8px; border: 3px solid #e2e8f0; }
   .url-box {
     font-size: 10px;
     color: #94a3b8;
@@ -31,7 +32,7 @@
     background: #f8fafc;
     border-radius: 8px;
     padding: 8px 10px;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
     line-height: 1.5;
   }
   .btn-print {
@@ -48,7 +49,6 @@
     margin-top: 24px;
   }
   .print-hint { text-align: center; font-size: 12px; color: #94a3b8; margin-top: 12px; }
-
   @media print {
     body { background: #fff; padding: 8px; }
     .btn-print, .print-hint, .sub { display: none !important; }
@@ -64,29 +64,21 @@
 <p class="sub">아래 QR코드를 스캔하면 교육 서명 페이지로 이동합니다.</p>
 
 <div class="grid">
-
-  <!-- 정기안전보건교육 -->
   <div class="card">
     <div class="card-icon">📚</div>
     <div class="card-title">정기안전보건교육</div>
     <div class="card-desc">정기 안전보건교육 수강 후<br>아래 QR코드로 전자서명 해주세요.</div>
-    <div class="qr-wrap">
-      <img src="https://chart.googleapis.com/chart?chs=400x400&cht=qr&chl=https%3A%2F%2Fsdm3783-droid.github.io%2FSKE-0004%2Fsign.html&choe=UTF-8&chld=H|1" alt="정기안전보건교육 QR코드">
-    </div>
+    <div class="qr-wrap" id="qr1"></div>
     <div class="url-box">https://sdm3783-droid.github.io/SKE-0004/sign.html</div>
   </div>
 
-  <!-- 산업안전교육 -->
   <div class="card">
     <div class="card-icon">🦺</div>
     <div class="card-title">산업안전교육</div>
     <div class="card-desc">산업안전교육 수강 후<br>아래 QR코드로 전자서명 해주세요.</div>
-    <div class="qr-wrap">
-      <img src="https://chart.googleapis.com/chart?chs=400x400&cht=qr&chl=https%3A%2F%2Fsdm3783-droid.github.io%2FSKE-0004%2Fsign2.html&choe=UTF-8&chld=H|1" alt="산업안전교육 QR코드">
-    </div>
+    <div class="qr-wrap" id="qr2"></div>
     <div class="url-box">https://sdm3783-droid.github.io/SKE-0004/sign2.html</div>
   </div>
-
 </div>
 
 <div style="text-align:center;">
@@ -94,5 +86,19 @@
   <p class="print-hint">인쇄 후 교육장에 게시하거나 카카오톡으로 공유하세요.</p>
 </div>
 
+<script>
+new QRCode(document.getElementById('qr1'), {
+  text: 'https://sdm3783-droid.github.io/SKE-0004/sign.html',
+  width: 210, height: 210,
+  colorDark: '#1e293b', colorLight: '#ffffff',
+  correctLevel: QRCode.CorrectLevel.H
+});
+new QRCode(document.getElementById('qr2'), {
+  text: 'https://sdm3783-droid.github.io/SKE-0004/sign2.html',
+  width: 210, height: 210,
+  colorDark: '#1e293b', colorLight: '#ffffff',
+  correctLevel: QRCode.CorrectLevel.H
+});
+</script>
 </body>
 </html>
