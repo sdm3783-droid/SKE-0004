@@ -941,31 +941,35 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     </div>
     <div id="safFormPrint" style="padding:24px;font-family:'Noto Sans KR',sans-serif;">
       <!-- 상단: 제목 + 결재라인 -->
-      <div style="display:flex;align-items:stretch;justify-content:space-between;margin-bottom:0;border:1.5px solid #333;border-bottom:none;">
-        <div style="display:flex;align-items:center;gap:14px;padding:10px 20px;flex:1;">
-          <div style="width:40px;height:40px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🦺</div>
-          <div style="font-size:20px;font-weight:900;letter-spacing:2px;border:2px solid #555;padding:6px 20px;">안전보건교육일지</div>
+      <div style="display:flex;align-items:stretch;border:1.5px solid #333;border-bottom:none;">
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 16px;flex:1;">
+          <span style="font-size:22px;flex-shrink:0;">🦺</span>
+          <div style="font-size:18px;font-weight:900;letter-spacing:1px;border:2px solid #555;padding:5px 16px;">안전보건교육일지</div>
         </div>
-        <div style="border-left:1.5px solid #333;display:flex;flex-direction:column;min-width:180px;">
-          <div style="text-align:center;font-size:11px;font-weight:700;padding:3px 0;border-bottom:1px solid #333;background:#f0fdf4;">결 &nbsp; 재</div>
-          <div style="display:flex;flex:1;">
-            <div style="flex:1;border-right:1px solid #333;text-align:center;display:flex;flex-direction:column;">
-              <div style="font-size:10px;padding:2px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">담당</div>
-              <canvas id="safApvCanvas0" width="56" height="50" style="display:block;margin:3px auto;border:1px dashed #aaa;border-radius:3px;cursor:crosshair;touch-action:none;"></canvas>
-              <button onclick="clearSafApv(0)" style="font-size:8px;padding:1px 4px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin:2px auto 3px;">지우기</button>
-            </div>
-            <div style="flex:1;border-right:1px solid #333;text-align:center;display:flex;flex-direction:column;">
-              <div style="font-size:10px;padding:2px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">검토</div>
-              <canvas id="safApvCanvas1" width="56" height="50" style="display:block;margin:3px auto;border:1px dashed #aaa;border-radius:3px;cursor:crosshair;touch-action:none;"></canvas>
-              <button onclick="clearSafApv(1)" style="font-size:8px;padding:1px 4px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin:2px auto 3px;">지우기</button>
-            </div>
-            <div style="flex:1;text-align:center;display:flex;flex-direction:column;">
-              <div style="font-size:10px;padding:2px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">결재</div>
-              <canvas id="safApvCanvas2" width="56" height="50" style="display:block;margin:3px auto;border:1px dashed #aaa;border-radius:3px;cursor:crosshair;touch-action:none;"></canvas>
-              <button onclick="clearSafApv(2)" style="font-size:8px;padding:1px 4px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin:2px auto 3px;">지우기</button>
-            </div>
-          </div>
-        </div>
+        <table style="border-left:1.5px solid #333;border-collapse:collapse;min-width:186px;">
+          <tr>
+            <th colspan="3" style="text-align:center;font-size:11px;font-weight:700;padding:3px 0;border-bottom:1px solid #333;background:#f0fdf4;">결 &nbsp; 재</th>
+          </tr>
+          <tr>
+            <th style="border:1px solid #aaa;font-size:10px;font-weight:700;padding:2px 0;background:#f0fdf4;text-align:center;width:62px;">담당</th>
+            <th style="border:1px solid #aaa;font-size:10px;font-weight:700;padding:2px 0;background:#f0fdf4;text-align:center;width:62px;">검토</th>
+            <th style="border:1px solid #aaa;font-size:10px;font-weight:700;padding:2px 0;background:#f0fdf4;text-align:center;width:62px;">결재</th>
+          </tr>
+          <tr>
+            <td style="border:1px solid #aaa;text-align:center;padding:2px 0;">
+              <canvas id="safApvCanvas0" width="52" height="44" style="display:block;margin:2px auto;border:1px dashed #aaa;cursor:crosshair;touch-action:none;"></canvas>
+              <button onclick="clearSafApv(0)" style="font-size:8px;padding:1px 4px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:2px;">지우기</button>
+            </td>
+            <td style="border:1px solid #aaa;text-align:center;padding:2px 0;">
+              <canvas id="safApvCanvas1" width="52" height="44" style="display:block;margin:2px auto;border:1px dashed #aaa;cursor:crosshair;touch-action:none;"></canvas>
+              <button onclick="clearSafApv(1)" style="font-size:8px;padding:1px 4px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:2px;">지우기</button>
+            </td>
+            <td style="border:1px solid #aaa;text-align:center;padding:2px 0;">
+              <canvas id="safApvCanvas2" width="52" height="44" style="display:block;margin:2px auto;border:1px dashed #aaa;cursor:crosshair;touch-action:none;"></canvas>
+              <button onclick="clearSafApv(2)" style="font-size:8px;padding:1px 4px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:2px;">지우기</button>
+            </td>
+          </tr>
+        </table>
       </div>
       <!-- 사업 내 안전보건교육표 -->
       <table style="width:100%;border-collapse:collapse;border:1.5px solid #333;font-size:10px;margin-bottom:0;">
