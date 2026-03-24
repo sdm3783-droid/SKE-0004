@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SKE 직원 QR코드</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Noto Sans KR', sans-serif; background: #f1f5f9; padding: 32px 16px; }
@@ -13,18 +12,15 @@
   .sub { text-align: center; font-size: 13px; color: #64748b; margin-bottom: 32px; }
   .grid { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
   .card {
-    background: #fff;
-    border-radius: 16px;
+    background: #fff; border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0,0,0,.1);
-    padding: 32px 28px;
-    text-align: center;
-    width: 320px;
+    padding: 32px 28px; text-align: center; width: 320px;
   }
   .card-icon { font-size: 36px; margin-bottom: 10px; }
   .card-title { font-size: 18px; font-weight: 900; margin-bottom: 4px; color: #1e293b; }
   .card-desc { font-size: 12px; color: #64748b; margin-bottom: 20px; line-height: 1.6; }
-  .qr-wrap { margin: 0 auto 16px; text-align: center; }
-  .qr-wrap canvas { border-radius: 8px; border: 3px solid #e2e8f0; display: inline-block; }
+  .qr-wrap { margin: 0 auto 16px; }
+  .qr-wrap img { width: 210px; height: 210px; border-radius: 8px; border: 3px solid #e2e8f0; display: block; margin: 0 auto; }
   .url-box {
     font-size: 10px; color: #94a3b8; word-break: break-all;
     background: #f8fafc; border-radius: 8px;
@@ -41,7 +37,6 @@
     body { background: #fff; padding: 8px; }
     .btn-print, .print-hint, .sub { display: none !important; }
     .card { box-shadow: none; border: 1.5px solid #dde3f0; page-break-inside: avoid; }
-    .grid { gap: 16px; }
     h1 { font-size: 18px; }
   }
 </style>
@@ -52,11 +47,14 @@
 <p class="sub">아래 QR코드를 스캔하면 해당 페이지로 이동합니다.</p>
 
 <div class="grid">
+
   <div class="card">
     <div class="card-icon">🦴</div>
     <div class="card-title">근골격계 증상조사</div>
     <div class="card-desc">근골격계 증상조사 설문을<br>아래 QR코드로 참여해주세요.</div>
-    <div class="qr-wrap"><canvas id="qr0"></canvas></div>
+    <div class="qr-wrap">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=https://sdm3783-droid.github.io/SKE-0004/index.html&color=1e293b&bgcolor=ffffff&margin=4" alt="근골격계 증상조사 QR">
+    </div>
     <div class="url-box">https://sdm3783-droid.github.io/SKE-0004/index.html</div>
   </div>
 
@@ -64,7 +62,9 @@
     <div class="card-icon">📚</div>
     <div class="card-title">정기안전보건교육</div>
     <div class="card-desc">정기 안전보건교육 수강 후<br>아래 QR코드로 전자서명 해주세요.</div>
-    <div class="qr-wrap"><canvas id="qr1"></canvas></div>
+    <div class="qr-wrap">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=https://sdm3783-droid.github.io/SKE-0004/sign.html&color=1e293b&bgcolor=ffffff&margin=4" alt="정기안전보건교육 QR">
+    </div>
     <div class="url-box">https://sdm3783-droid.github.io/SKE-0004/sign.html</div>
   </div>
 
@@ -72,9 +72,12 @@
     <div class="card-icon">🦺</div>
     <div class="card-title">산업안전교육</div>
     <div class="card-desc">산업안전교육 수강 후<br>아래 QR코드로 전자서명 해주세요.</div>
-    <div class="qr-wrap"><canvas id="qr2"></canvas></div>
+    <div class="qr-wrap">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=https://sdm3783-droid.github.io/SKE-0004/sign2.html&color=1e293b&bgcolor=ffffff&margin=4" alt="산업안전교육 QR">
+    </div>
     <div class="url-box">https://sdm3783-droid.github.io/SKE-0004/sign2.html</div>
   </div>
+
 </div>
 
 <div style="text-align:center;">
@@ -82,11 +85,5 @@
   <p class="print-hint">인쇄 후 교육장에 게시하거나 카카오톡으로 공유하세요.</p>
 </div>
 
-<script>
-var opts = { width: 210, margin: 2, color: { dark: '#1e293b', light: '#ffffff' } };
-QRCode.toCanvas(document.getElementById('qr0'), 'https://sdm3783-droid.github.io/SKE-0004/index.html', opts);
-QRCode.toCanvas(document.getElementById('qr1'), 'https://sdm3783-droid.github.io/SKE-0004/sign.html', opts);
-QRCode.toCanvas(document.getElementById('qr2'), 'https://sdm3783-droid.github.io/SKE-0004/sign2.html', opts);
-</script>
 </body>
 </html>
