@@ -946,23 +946,29 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
           <div style="width:48px;height:48px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🦺</div>
           <div style="font-size:20px;font-weight:900;letter-spacing:2px;border:2px solid #555;padding:8px 24px;">안전보건교육일지</div>
         </div>
-        <div style="border-left:1.5px solid #333;display:flex;flex-direction:column;min-width:200px;">
+        <div style="border-left:1.5px solid #333;display:flex;flex-direction:column;min-width:210px;">
           <div style="text-align:center;font-size:11px;font-weight:700;padding:4px 0;border-bottom:1px solid #333;background:#f0fdf4;">결 &nbsp; 재</div>
-          <div style="display:flex;">
+          <div style="display:flex;flex:1;">
             <div style="flex:1;border-right:1px solid #333;text-align:center;">
               <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">담당</div>
-              <canvas id="safApvCanvas0" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
-              <button onclick="clearSafApv(0)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+              <div id="safApvArea0" onclick="openSafApvSign(0)" style="width:60px;height:60px;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafff8;">
+                <span style="font-size:9px;color:#aaa;">클릭서명</span>
+              </div>
+              <button onclick="clearSafApvSig(0)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
             </div>
             <div style="flex:1;border-right:1px solid #333;text-align:center;">
               <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">검토</div>
-              <canvas id="safApvCanvas1" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
-              <button onclick="clearSafApv(1)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+              <div id="safApvArea1" onclick="openSafApvSign(1)" style="width:60px;height:60px;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafff8;">
+                <span style="font-size:9px;color:#aaa;">클릭서명</span>
+              </div>
+              <button onclick="clearSafApvSig(1)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
             </div>
             <div style="flex:1;text-align:center;">
               <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">결재</div>
-              <canvas id="safApvCanvas2" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
-              <button onclick="clearSafApv(2)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+              <div id="safApvArea2" onclick="openSafApvSign(2)" style="width:60px;height:60px;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafff8;">
+                <span style="font-size:9px;color:#aaa;">클릭서명</span>
+              </div>
+              <button onclick="clearSafApvSig(2)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
             </div>
           </div>
         </div>
@@ -1118,6 +1124,23 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <img id="safSigImg" src="" alt="서명" style="width:100%;border:1px solid #dde3f0;border-radius:8px;background:#fafbff;">
     <div id="safSigModalInfo" style="font-size:12px;color:#64748b;margin-top:8px;"></div>
     <button onclick="closeSafSigModal()" style="margin-top:12px;width:100%;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">닫기</button>
+  </div>
+</div>
+
+<!-- 결재 서명 팝업 -->
+<div id="safApvSignPopup" style="position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.7);">
+  <div style="background:#fff;border-radius:14px;padding:20px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.4);">
+    <div style="font-size:14px;font-weight:800;margin-bottom:4px;" id="safApvSignTitle">담당 서명</div>
+    <div style="font-size:11px;color:#64748b;margin-bottom:12px;">손가락 또는 마우스로 서명해 주세요</div>
+    <div style="border:2px dashed #065f46;border-radius:10px;overflow:hidden;background:#fafff8;position:relative;margin-bottom:12px;">
+      <canvas id="safApvSignCanvas" style="width:100%;height:160px;display:block;touch-action:none;cursor:crosshair;"></canvas>
+      <div id="safApvSignHint" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;color:#aaa;font-size:13px;">여기에 서명하세요</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="clearSafApvPopup()" style="flex:1;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🗑 지우기</button>
+      <button onclick="saveSafApvSign()" style="flex:2;padding:10px;background:linear-gradient(135deg,#065f46,#059669);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✅ 저장</button>
+      <button onclick="closeSafApvSignPopup()" style="flex:1;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">취소</button>
+    </div>
   </div>
 </div>
 
@@ -2228,10 +2251,15 @@ function openSafSessionModal(docId){
 function closeSafSessionModal(){ document.getElementById('safSessionModal').style.display = 'none'; }
 
 /* ══ 산업안전교육 일지 양식 ══ */
-var safApvCtx = [null,null,null], safApvDrawing = [false,false,false];
+var safApvSigs = [null, null, null]; /* 결재 서명 이미지 저장 */
+var safApvCurrentIdx = 0;
+var safApvPopupCtx = null, safApvPopupDrawing = false, safApvPopupHasSig = false;
+var APVLABELS = ['담당','검토','결재'];
 
 function openSafFormModal(){
   document.getElementById('safFormModal').style.display = 'flex';
+  safApvSigs = [null, null, null];
+  [0,1,2].forEach(function(i){ renderSafApvArea(i); });
   var TOTAL = EMPLOYEES ? EMPLOYEES.length : 46;
   var activeSess = safSessions.find(function(s){ return s.active; });
   var filtered = activeSess ? safSigs.filter(function(g){ return g.sessionId===activeSess.id; }) : safSigs;
@@ -2247,42 +2275,97 @@ function openSafFormModal(){
   document.getElementById('sf-nm').value = '';
   document.getElementById('sf-nf').value = '';
   document.getElementById('sf-nt').value = Math.max(0, TOTAL - aT);
-  setTimeout(function(){
-    [0,1,2].forEach(function(i){
-      var c = document.getElementById('safApvCanvas'+i);
-      safApvCtx[i] = c.getContext('2d');
-      safApvCtx[i].strokeStyle = '#1e293b';
-      safApvCtx[i].lineWidth = 1.5;
-      safApvCtx[i].lineCap = 'round';
-      setupSafApvCanvas(c, i);
-    });
-  }, 100);
 }
 function closeSafFormModal(){ document.getElementById('safFormModal').style.display = 'none'; }
 
-function setupSafApvCanvas(c, i){
-  function getPos(e){ var r=c.getBoundingClientRect(); var src=e.touches?e.touches[0]:e; return {x:(src.clientX-r.left)*(c.width/r.width),y:(src.clientY-r.top)*(c.height/r.height)}; }
-  c.addEventListener('mousedown',  function(e){ safApvDrawing[i]=true; var p=getPos(e); safApvCtx[i].beginPath(); safApvCtx[i].moveTo(p.x,p.y); });
-  c.addEventListener('mousemove',  function(e){ if(!safApvDrawing[i]) return; var p=getPos(e); safApvCtx[i].lineTo(p.x,p.y); safApvCtx[i].stroke(); });
-  c.addEventListener('mouseup',    function(){ safApvDrawing[i]=false; });
-  c.addEventListener('mouseleave', function(){ safApvDrawing[i]=false; });
-  c.addEventListener('touchstart', function(e){ e.preventDefault(); safApvDrawing[i]=true; var p=getPos(e); safApvCtx[i].beginPath(); safApvCtx[i].moveTo(p.x,p.y); });
-  c.addEventListener('touchmove',  function(e){ e.preventDefault(); if(!safApvDrawing[i]) return; var p=getPos(e); safApvCtx[i].lineTo(p.x,p.y); safApvCtx[i].stroke(); });
-  c.addEventListener('touchend',   function(){ safApvDrawing[i]=false; });
+function renderSafApvArea(i){
+  var area = document.getElementById('safApvArea'+i);
+  if(!area) return;
+  if(safApvSigs[i]){
+    area.innerHTML = '<img src="'+safApvSigs[i]+'" style="width:56px;height:56px;object-fit:contain;">';
+  } else {
+    area.innerHTML = '<span style="font-size:9px;color:#aaa;">클릭서명</span>';
+  }
 }
-function clearSafApv(i){ if(safApvCtx[i]) safApvCtx[i].clearRect(0,0,60,60); }
+
+function openSafApvSign(idx){
+  safApvCurrentIdx = idx;
+  document.getElementById('safApvSignTitle').textContent = APVLABELS[idx]+' 서명';
+  document.getElementById('safApvSignPopup').style.display = 'flex';
+  safApvPopupHasSig = false;
+  document.getElementById('safApvSignHint').style.opacity = '1';
+  setTimeout(function(){
+    var c = document.getElementById('safApvSignCanvas');
+    var r = c.getBoundingClientRect();
+    c.width = r.width * (window.devicePixelRatio||1);
+    c.height = r.height * (window.devicePixelRatio||1);
+    safApvPopupCtx = c.getContext('2d');
+    safApvPopupCtx.scale(window.devicePixelRatio||1, window.devicePixelRatio||1);
+    safApvPopupCtx.strokeStyle = '#1e293b';
+    safApvPopupCtx.lineWidth = 2.5;
+    safApvPopupCtx.lineCap = 'round';
+    safApvPopupCtx.lineJoin = 'round';
+    safApvPopupCtx.clearRect(0,0,c.width,c.height);
+    /* 이전 서명 있으면 표시 */
+    if(safApvSigs[idx]){
+      var img = new Image();
+      img.onload = function(){ safApvPopupCtx.drawImage(img,0,0,r.width,r.height); };
+      img.src = safApvSigs[idx];
+      safApvPopupHasSig = true;
+    }
+    function getP(e){ var rb=c.getBoundingClientRect(); var s=e.touches?e.touches[0]:e; return {x:s.clientX-rb.left,y:s.clientY-rb.top}; }
+    c.onmousedown = function(e){ safApvPopupDrawing=true; var p=getP(e); safApvPopupCtx.beginPath(); safApvPopupCtx.moveTo(p.x,p.y); document.getElementById('safApvSignHint').style.opacity='0'; };
+    c.onmousemove = function(e){ if(!safApvPopupDrawing) return; var p=getP(e); safApvPopupCtx.lineTo(p.x,p.y); safApvPopupCtx.stroke(); safApvPopupHasSig=true; };
+    c.onmouseup = c.onmouseleave = function(){ safApvPopupDrawing=false; };
+    c.ontouchstart = function(e){ e.preventDefault(); safApvPopupDrawing=true; var p=getP(e); safApvPopupCtx.beginPath(); safApvPopupCtx.moveTo(p.x,p.y); document.getElementById('safApvSignHint').style.opacity='0'; };
+    c.ontouchmove = function(e){ e.preventDefault(); if(!safApvPopupDrawing) return; var p=getP(e); safApvPopupCtx.lineTo(p.x,p.y); safApvPopupCtx.stroke(); safApvPopupHasSig=true; };
+    c.ontouchend = function(){ safApvPopupDrawing=false; };
+  }, 100);
+}
+
+function clearSafApvPopup(){
+  if(!safApvPopupCtx) return;
+  var c = document.getElementById('safApvSignCanvas');
+  safApvPopupCtx.clearRect(0,0,c.width,c.height);
+  safApvPopupHasSig = false;
+  document.getElementById('safApvSignHint').style.opacity='1';
+}
+
+function saveSafApvSign(){
+  if(!safApvPopupHasSig){ alert('서명을 먼저 해주세요.'); return; }
+  var c = document.getElementById('safApvSignCanvas');
+  safApvSigs[safApvCurrentIdx] = c.toDataURL('image/png');
+  renderSafApvArea(safApvCurrentIdx);
+  closeSafApvSignPopup();
+}
+
+function closeSafApvSignPopup(){
+  document.getElementById('safApvSignPopup').style.display = 'none';
+  safApvPopupDrawing = false;
+}
+
+function clearSafApvSig(i){
+  safApvSigs[i] = null;
+  renderSafApvArea(i);
+}
 
 function printSafForm(){
   var printWin = window.open('','_blank','width=900,height=700');
   var content = document.getElementById('safFormPrint').innerHTML;
+  /* safApvArea에 저장된 서명 이미지로 교체 */
   var html = content;
   [0,1,2].forEach(function(i){
-    var c = document.getElementById('safApvCanvas'+i);
-    var img = c.toDataURL('image/png');
-    html = html.replace('id="safApvCanvas'+i+'"', 'style="display:none" id="safApvCanvas'+i+'"');
-    html = html.replace('</canvas>', '</canvas><img src="'+img+'" width="60" height="60" style="display:block;margin:4px auto;border:1px solid #ddd;border-radius:4px;">');
+    var sig = safApvSigs[i];
+    var placeholder = sig
+      ? '<img src="'+sig+'" style="width:56px;height:56px;object-fit:contain;">'
+      : '<span style="font-size:9px;color:#ccc;">미서명</span>';
+    /* onclick 제거하고 이미지로 교체 */
+    html = html.replace(
+      'id="safApvArea'+i+'" onclick="openSafApvSign('+i+')"',
+      'id="safApvArea'+i+'" style="pointer-events:none;"'
+    );
   });
-  printWin.document.write('<html><head><meta charset="UTF-8"><title>산업안전교육 일지</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Noto Sans KR\',sans-serif;padding:8px;}input,textarea{font-family:\'Noto Sans KR\',sans-serif;}button{display:none!important;}table{font-size:9px!important;}td{padding:2px 4px!important;}input{font-size:9px!important;}@page{size:A4 portrait;margin:8mm;}@media print{html,body{width:210mm;height:297mm;overflow:hidden;}}</style></head><body>'+html+'</body></html>');
+  printWin.document.write('<html><head><meta charset="UTF-8"><title>안전보건교육일지</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Noto Sans KR\',sans-serif;padding:8px;}input,textarea{font-family:\'Noto Sans KR\',sans-serif;}button{display:none!important;}table{font-size:9px!important;}td{padding:2px 4px!important;}input{font-size:9px!important;}@page{size:A4 portrait;margin:8mm;}@media print{html,body{width:210mm;height:297mm;overflow:hidden;}}</style></head><body>'+html+'</body></html>');
   printWin.document.close();
   setTimeout(function(){ printWin.print(); }, 800);
 }
