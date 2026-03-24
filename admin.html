@@ -904,6 +904,12 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     </div>
   </div>
 
+  <!-- 직원별 서명 체크현황 -->
+  <div class="card">
+    <div class="card-title">☑️ 직원별 서명 현황</div>
+    <div id="eduCheckGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin-top:8px;"></div>
+  </div>
+
   <!-- 서명 현황 -->
   <div class="card">
     <div class="card-title">✍️ 전자서명 제출 현황</div>
@@ -960,6 +966,12 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
       </div>
     </div>
   </div>
+  <!-- 직원별 서명 체크현황 -->
+  <div class="card">
+    <div class="card-title">☑️ 직원별 서명 현황</div>
+    <div id="safCheckGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin-top:8px;"></div>
+  </div>
+
   <div class="card">
     <div class="card-title">✍️ 전자서명 제출 현황</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
@@ -2246,8 +2258,21 @@ function filterEduSigs(){
   renderEduSigTable();
 }
 
+function renderEduCheckGrid(){
+  var signedNames = eduSigs.map(function(g){ return g.worker; });
+  var html = EMPLOYEES.map(function(e){
+    var done = signedNames.indexOf(e.name) >= 0;
+    return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;font-size:12px;font-weight:600;background:'+(done?'#dcfce7':'#fef2f2')+';border:1px solid '+(done?'#86efac':'#fca5a5')+';">'
+      +'<span style="font-size:14px;">'+(done?'✅':'❌')+'</span>'
+      +'<span style="color:'+(done?'#166534':'#991b1b')+';">'+e.name+'</span>'
+      +'</div>';
+  }).join('');
+  document.getElementById('eduCheckGrid').innerHTML = html;
+}
+
 function renderEduSigTable(){
   document.getElementById('eduSigCount').textContent = '전체 '+eduSigsFiltered.length+'건';
+  renderEduCheckGrid();
   var total = EMPLOYEES.length;
   var signed = eduSigsFiltered.length;
   document.getElementById('eduSigStats').innerHTML =
@@ -2554,8 +2579,21 @@ function filterSafSigs(){
   renderSafSigTable();
 }
 
+function renderSafCheckGrid(){
+  var signedNames = safSigs.map(function(g){ return g.worker; });
+  var html = EMPLOYEES.map(function(e){
+    var done = signedNames.indexOf(e.name) >= 0;
+    return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;font-size:12px;font-weight:600;background:'+(done?'#dcfce7':'#fef2f2')+';border:1px solid '+(done?'#86efac':'#fca5a5')+';">'
+      +'<span style="font-size:14px;">'+(done?'✅':'❌')+'</span>'
+      +'<span style="color:'+(done?'#166534':'#991b1b')+';">'+e.name+'</span>'
+      +'</div>';
+  }).join('');
+  document.getElementById('safCheckGrid').innerHTML = html;
+}
+
 function renderSafSigTable(){
   document.getElementById('safSigCount').textContent = '전체 '+safSigsFiltered.length+'건';
+  renderSafCheckGrid();
   var total = EMPLOYEES.length;
   var signed = safSigsFiltered.length;
   document.getElementById('safSigStats').innerHTML =
