@@ -313,6 +313,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <div class="nav-tab" onclick="switchTab(this,'tab-checklist')">📋 유해요인조사표</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-report')">📝 예방보고서</div>
     <div class="nav-tab" onclick="switchTab(this,'tab-improvement')">📈 개선계획서</div>
+    <div class="nav-tab" onclick="switchTab(this,'tab-printall')">🖨️ 전체출력</div>
   </div>
 </div>
 
@@ -801,6 +802,75 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 </div>
 
 <!-- ══ TAB 정기안전보건교육 ══ -->
+<!-- ══ TAB 전체출력 ══ -->
+<div class="tab-pane" id="tab-printall">
+  <div style="display:grid;gap:16px;">
+
+    <!-- 증상조사 전체기록 -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div class="card-title">📋 증상조사 전체기록</div>
+          <div style="font-size:12px;color:#64748b;margin-top:2px;">전체 인원의 증상조사 결과를 일괄 출력합니다.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <label style="font-size:12px;"><input type="checkbox" id="chk-survey" checked style="margin-right:4px;">선택</label>
+          <button class="tb-btn" style="background:#2563eb;color:#fff;" onclick="printAllSurveys()">🖨️ 전체 출력</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 유해요인조사표 -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div class="card-title">📋 유해요인조사표</div>
+          <div style="font-size:12px;color:#64748b;margin-top:2px;">전체 인원의 유해요인조사표를 일괄 출력합니다.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <label style="font-size:12px;"><input type="checkbox" id="chk-hazard" checked style="margin-right:4px;">선택</label>
+          <button class="tb-btn" style="background:#7c3aed;color:#fff;" onclick="printAllHazards()">🖨️ 전체 출력</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 예방보고서 -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div class="card-title">📝 예방보고서</div>
+          <div style="font-size:12px;color:#64748b;margin-top:2px;">전체 예방보고서를 일괄 출력합니다.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <label style="font-size:12px;"><input type="checkbox" id="chk-report" checked style="margin-right:4px;">선택</label>
+          <button class="tb-btn" style="background:#059669;color:#fff;" onclick="printAllReports()">🖨️ 전체 출력</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 개선계획서 -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div class="card-title">📈 개선계획서</div>
+          <div style="font-size:12px;color:#64748b;margin-top:2px;">전체 개선계획서를 일괄 출력합니다.</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <label style="font-size:12px;"><input type="checkbox" id="chk-improve" checked style="margin-right:4px;">선택</label>
+          <button class="tb-btn" style="background:#d97706;color:#fff;" onclick="printAllImprovements()">🖨️ 전체 출력</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 선택 일괄출력 -->
+    <div style="text-align:center;padding:8px;">
+      <button onclick="printSelected()" style="background:#0f172a;color:#fff;border:none;border-radius:10px;padding:14px 40px;font-size:15px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🖨️ 선택 항목 일괄 출력</button>
+      <div style="font-size:11px;color:#94a3b8;margin-top:8px;">체크된 항목을 한번에 출력합니다.</div>
+    </div>
+
+  </div>
+</div>
+
 <div class="tab-pane" id="tab-edu">
   <!-- 서명 페이지 배너 -->
   <div style="background:linear-gradient(135deg,#1e3a8a,#7c3aed);border-radius:14px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
@@ -1945,6 +2015,144 @@ function closeDetail(){
 }
 function closeDrawer(){ closeDetail(); }
 function printDetail(){ window.print(); }
+
+/* ══ 전체출력 공통 ══ */
+var PRINT_CSS = '<meta charset="UTF-8"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">'
+  +'<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Noto Sans KR\',sans-serif;padding:12px;font-size:11px;}'
+  +'h2{font-size:16px;font-weight:900;margin:16px 0 8px;padding-bottom:4px;border-bottom:2px solid #333;}'
+  +'table{width:100%;border-collapse:collapse;margin-bottom:20px;}'
+  +'th{background:#f0f0f0;border:1px solid #aaa;padding:5px 4px;font-size:10px;}'
+  +'td{border:1px solid #aaa;padding:4px 5px;font-size:10px;vertical-align:top;}'
+  +'@page{size:A4 portrait;margin:8mm;}'
+  +'</style>';
+
+function openPrintWin(html){
+  var w = window.open('','_blank','width=900,height=700');
+  w.document.write('<html><head>'+PRINT_CSS+'</head><body>'+html+'</body></html>');
+  w.document.close();
+  setTimeout(function(){ w.print(); }, 700);
+}
+
+function printAllSurveys(){
+  if(!allData.length){ alert('증상조사 데이터가 없습니다.'); return; }
+  var rows = allData.map(function(r){
+    var j = judgeOverall(r);
+    var jColor = j==='통증호소자'?'color:red;font-weight:700':j==='관리대상자'?'color:orange;font-weight:700':'';
+    var dt = r.createdAt ? new Date(r.createdAt.seconds*1000).toLocaleDateString('ko-KR') : '-';
+    var painParts = r.painParts && r.painParts.length ? r.painParts.join(', ') : '없음';
+    return '<tr>'
+      +'<td style="text-align:center;">'+dt+'</td>'
+      +'<td style="text-align:center;font-weight:700;">'+(r.name||'-')+'</td>'
+      +'<td style="text-align:center;">'+(r.dept||'-')+'</td>'
+      +'<td style="text-align:center;">'+(r.age||'-')+'세 '+(r.gender||'')+'</td>'
+      +'<td style="text-align:center;">'+(r.careerYr||0)+'년'+(r.careerMo||0)+'개월</td>'
+      +'<td style="text-align:center;">'+(r.hasPain||'-')+'</td>'
+      +'<td>'+painParts+'</td>'
+      +'<td style="text-align:center;'+jColor+'">'+j+'</td>'
+      +'</tr>';
+  }).join('');
+  var html = '<h2>📋 근골격계 증상조사 전체기록 (총 '+allData.length+'건)</h2>'
+    +'<table><thead><tr>'
+    +'<th>제출일</th><th>성명</th><th>부서</th><th>나이/성별</th><th>현직장경력</th><th>통증여부</th><th>통증부위</th><th>판정</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>';
+  openPrintWin(html);
+}
+
+function printAllHazards(){
+  if(!hazardData.length){ alert('유해요인조사표 데이터가 없습니다.'); return; }
+  var rows = hazardData.map(function(r){
+    var hazards = r.hazards && r.hazards.length ? r.hazards.map(function(h){ return h.name||h; }).join(', ') : '-';
+    return '<tr>'
+      +'<td style="text-align:center;font-weight:700;">'+(r.worker||'-')+'</td>'
+      +'<td style="text-align:center;">'+(r.dept||'-')+'</td>'
+      +'<td>'+(r.process||'-')+'</td>'
+      +'<td>'+(r.task||'-')+'</td>'
+      +'<td style="text-align:center;">'+(r.surveyType||'-')+'</td>'
+      +'<td style="text-align:center;">'+(r.score||0)+'점</td>'
+      +'<td>'+(r.hazardCause||'-')+'</td>'
+      +'<td style="text-align:center;">'+(r.surveyDate||'-')+'</td>'
+      +'</tr>';
+  }).join('');
+  var html = '<h2>📋 유해요인조사표 전체 (총 '+hazardData.length+'건)</h2>'
+    +'<table><thead><tr>'
+    +'<th>성명</th><th>부서</th><th>작업공정</th><th>작업내용</th><th>조사구분</th><th>총점수</th><th>유해요인원인</th><th>조사일</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>';
+  openPrintWin(html);
+}
+
+function printAllReports(){
+  if(!reportData.length){ alert('예방보고서 데이터가 없습니다.'); return; }
+  var rows = reportData.map(function(r){
+    return '<tr>'
+      +'<td style="text-align:center;font-weight:700;">'+(r.worker||'-')+'</td>'
+      +'<td style="text-align:center;">'+(r.date||'-')+'</td>'
+      +'<td>'+(r.place||'-')+'</td>'
+      +'<td>'+(r.burden||'-')+'</td>'
+      +'<td>'+(r.symptom||'-')+'</td>'
+      +'<td>'+(r.action||'-')+'</td>'
+      +'<td style="text-align:center;">'+(r.actionDate||'-')+'</td>'
+      +'</tr>';
+  }).join('');
+  var html = '<h2>📝 예방보고서 전체 (총 '+reportData.length+'건)</h2>'
+    +'<table><thead><tr>'
+    +'<th>성명</th><th>발생일</th><th>발생장소</th><th>신체부담요인</th><th>증상</th><th>조치사항</th><th>조치일</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>';
+  openPrintWin(html);
+}
+
+function printAllImprovements(){
+  if(!improveData.length){ alert('개선계획서 데이터가 없습니다.'); return; }
+  var rows = improveData.map(function(r){
+    return '<tr>'
+      +'<td>'+(r.process||'-')+'</td>'
+      +'<td>'+(r.taskName||'-')+'</td>'
+      +'<td>'+(r.problem||'-')+'</td>'
+      +'<td>'+(r.workerOpinion||'-')+'</td>'
+      +'<td>'+(r.improvement||'-')+'</td>'
+      +'<td style="text-align:center;">'+(r.schedule||'-')+'</td>'
+      +'<td style="text-align:center;">'+(r.cost||'-')+'천원</td>'
+      +'<td style="text-align:center;">'+(r.priority||'-')+'</td>'
+      +'</tr>';
+  }).join('');
+  var html = '<h2>📈 개선계획서 전체 (총 '+improveData.length+'건)</h2>'
+    +'<table><thead><tr>'
+    +'<th>공정명</th><th>작업명</th><th>문제점</th><th>근로자의견</th><th>개선방안</th><th>추진일정</th><th>비용</th><th>우선순위</th>'
+    +'</tr></thead><tbody>'+rows+'</tbody></table>';
+  openPrintWin(html);
+}
+
+function printSelected(){
+  var html = '';
+  if(document.getElementById('chk-survey') && document.getElementById('chk-survey').checked && allData.length){
+    var rows = allData.map(function(r){
+      var j=judgeOverall(r); var jColor=j==='통증호소자'?'color:red;font-weight:700':j==='관리대상자'?'color:orange;font-weight:700':'';
+      var dt=r.createdAt?new Date(r.createdAt.seconds*1000).toLocaleDateString('ko-KR'):'-';
+      var painParts=r.painParts&&r.painParts.length?r.painParts.join(', '):'없음';
+      return '<tr><td style="text-align:center;">'+dt+'</td><td style="text-align:center;font-weight:700;">'+(r.name||'-')+'</td><td style="text-align:center;">'+(r.dept||'-')+'</td><td style="text-align:center;">'+(r.hasPain||'-')+'</td><td>'+painParts+'</td><td style="text-align:center;'+jColor+'">'+j+'</td></tr>';
+    }).join('');
+    html += '<h2>📋 증상조사 전체기록 (총 '+allData.length+'건)</h2><table><thead><tr><th>제출일</th><th>성명</th><th>부서</th><th>통증여부</th><th>통증부위</th><th>판정</th></tr></thead><tbody>'+rows+'</tbody></table>';
+  }
+  if(document.getElementById('chk-hazard') && document.getElementById('chk-hazard').checked && hazardData.length){
+    var rows2 = hazardData.map(function(r){
+      return '<tr><td style="text-align:center;font-weight:700;">'+(r.worker||'-')+'</td><td style="text-align:center;">'+(r.dept||'-')+'</td><td>'+(r.process||'-')+'</td><td style="text-align:center;">'+(r.score||0)+'점</td><td style="text-align:center;">'+(r.surveyDate||'-')+'</td></tr>';
+    }).join('');
+    html += '<h2>📋 유해요인조사표 (총 '+hazardData.length+'건)</h2><table><thead><tr><th>성명</th><th>부서</th><th>작업공정</th><th>총점수</th><th>조사일</th></tr></thead><tbody>'+rows2+'</tbody></table>';
+  }
+  if(document.getElementById('chk-report') && document.getElementById('chk-report').checked && reportData.length){
+    var rows3 = reportData.map(function(r){
+      return '<tr><td style="text-align:center;font-weight:700;">'+(r.worker||'-')+'</td><td style="text-align:center;">'+(r.date||'-')+'</td><td>'+(r.burden||'-')+'</td><td>'+(r.action||'-')+'</td></tr>';
+    }).join('');
+    html += '<h2>📝 예방보고서 (총 '+reportData.length+'건)</h2><table><thead><tr><th>성명</th><th>발생일</th><th>신체부담요인</th><th>조치사항</th></tr></thead><tbody>'+rows3+'</tbody></table>';
+  }
+  if(document.getElementById('chk-improve') && document.getElementById('chk-improve').checked && improveData.length){
+    var rows4 = improveData.map(function(r){
+      return '<tr><td>'+(r.process||'-')+'</td><td>'+(r.taskName||'-')+'</td><td>'+(r.improvement||'-')+'</td><td style="text-align:center;">'+(r.schedule||'-')+'</td></tr>';
+    }).join('');
+    html += '<h2>📈 개선계획서 (총 '+improveData.length+'건)</h2><table><thead><tr><th>공정명</th><th>작업명</th><th>개선방안</th><th>추진일정</th></tr></thead><tbody>'+rows4+'</tbody></table>';
+  }
+  if(!html){ alert('선택된 항목이 없거나 데이터가 없습니다.'); return; }
+  openPrintWin(html);
+}
 
 /* ══ 페이지네이션 공통 ══ */
 function renderPaging(elId, cur, total, cb){
