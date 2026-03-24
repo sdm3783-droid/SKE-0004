@@ -2282,7 +2282,7 @@ function printSafForm(){
     html = html.replace('id="safApvCanvas'+i+'"', 'style="display:none" id="safApvCanvas'+i+'"');
     html = html.replace('</canvas>', '</canvas><img src="'+img+'" width="60" height="60" style="display:block;margin:4px auto;border:1px solid #ddd;border-radius:4px;">');
   });
-  printWin.document.write('<html><head><meta charset="UTF-8"><title>산업안전교육 일지</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Noto Sans KR\',sans-serif;padding:20px;}input,textarea{font-family:\'Noto Sans KR\',sans-serif;}button{display:none!important;}</style></head><body>'+html+'</body></html>');
+  printWin.document.write('<html><head><meta charset="UTF-8"><title>산업안전교육 일지</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Noto Sans KR\',sans-serif;padding:8px;}input,textarea{font-family:\'Noto Sans KR\',sans-serif;}button{display:none!important;}table{font-size:9px!important;}td{padding:2px 4px!important;}input{font-size:9px!important;}@page{size:A4 portrait;margin:8mm;}@media print{html,body{width:210mm;height:297mm;overflow:hidden;}}</style></head><body>'+html+'</body></html>');
   printWin.document.close();
   setTimeout(function(){ printWin.print(); }, 800);
 }
