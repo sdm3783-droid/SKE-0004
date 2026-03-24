@@ -290,9 +290,13 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
       <span class="hdr-title">근골격계 증상조사 관리자</span>
       <span class="hdr-badge" id="totalBadge">-건</span>
     </div>
-    <div id="hdrEdu" onclick="switchSection('edu')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;">
+    <div id="hdrEdu" onclick="switchSection('edu')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;border-right:1px solid rgba(255,255,255,.25);margin-right:16px;">
       <span style="font-size:18px">📚</span>
       <span class="hdr-title">정기안전보건교육</span>
+    </div>
+    <div id="hdrSafety" onclick="switchSection('safety')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;">
+      <span style="font-size:18px">🦺</span>
+      <span class="hdr-title">산업안전교육</span>
     </div>
   </div>
   <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -841,6 +845,223 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
+<!-- ══ TAB 산업안전교육 ══ -->
+<div class="tab-pane" id="tab-safety">
+  <div style="background:linear-gradient(135deg,#064e3b,#065f46);border-radius:14px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+    <div style="color:#fff;">
+      <div style="font-size:14px;font-weight:900;">📱 직원 전자서명 페이지 (산업안전교육)</div>
+      <div style="font-size:11px;opacity:.8;margin-top:2px;">아래 링크를 직원에게 공유하거나 QR코드로 만들어 배포하세요</div>
+    </div>
+    <a href="sign2.html" target="_blank" style="background:rgba(255,255,255,.2);color:#fff;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,.4);">🔗 서명 페이지 열기</a>
+  </div>
+  <div class="card">
+    <div class="card-title">📋 교육 회차 관리</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+      <button class="tb-btn tb-blue" onclick="openSafSessionModal()">+ 새 교육 회차 등록</button>
+      <button class="tb-btn tb-ghost" onclick="loadSafData()">🔄 새로고침</button>
+      <button class="tb-btn" style="background:#065f46;color:#fff;" onclick="openSafFormModal()">📄 교육일지 양식 작성</button>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-hdr"><div class="tbl-count" id="safSessionCount">-</div></div>
+      <div class="tbl-scroll">
+        <table style="min-width:680px">
+          <thead><tr><th>월</th><th>교육 제목</th><th>교육일</th><th>강사</th><th>서명수</th><th>상태</th><th>관리</th></tr></thead>
+          <tbody id="safSessionTbody"><tr><td colspan="7" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-title">✍️ 전자서명 제출 현황</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+      <select id="safSigFilter" class="tb-sel" onchange="filterSafSigs()"><option value="">전체 회차</option></select>
+      <input type="text" id="safSigNameFilter" class="tb-inp" placeholder="이름 검색" oninput="filterSafSigs()">
+    </div>
+    <div class="stat-grid" id="safSigStats">
+      <div class="stat-card"><div class="stat-num c-blue" id="saf-stat-done">0</div><div class="stat-lbl">서명 완료</div></div>
+      <div class="stat-card"><div class="stat-num c-red" id="saf-stat-pending">46</div><div class="stat-lbl">미서명 (전직원 기준)</div></div>
+      <div class="stat-card"><div class="stat-num c-green" id="saf-stat-total">46</div><div class="stat-lbl">전체 직원</div></div>
+    </div>
+    <div class="tbl-wrap">
+      <div class="tbl-hdr"><div class="tbl-count" id="safSigCount">-</div></div>
+      <div class="tbl-scroll">
+        <table style="min-width:660px">
+          <thead><tr><th>이름</th><th>부서</th><th>교육 회차</th><th>서명일시</th><th>서명 확인</th><th>관리</th></tr></thead>
+          <tbody id="safSigTbody"><tr><td colspan="6" class="empty-msg">제출된 서명이 없습니다.</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 산업안전교육 회차 등록/수정 모달 -->
+<div id="safSessionModal" style="position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;">
+  <div class="modal-backdrop" onclick="closeSafSessionModal()"></div>
+  <div class="modal-box">
+    <div class="modal-hd">
+      <div class="modal-title" id="safSessionModalTitle">🦺 새 교육 회차 등록</div>
+      <button class="modal-close" onclick="closeSafSessionModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="safSessionDocId">
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">교육 월 *</div><input id="saf-month" type="month" class="m-inp"></div>
+        <div class="m-group"><div class="m-label">교육일</div><input id="saf-eduDate" type="date" class="m-inp"></div>
+      </div>
+      <div class="m-group"><div class="m-label">교육 제목 *</div><input id="saf-title" type="text" class="m-inp" placeholder="예: 산업안전교육 (3월)"></div>
+      <div class="m-group"><div class="m-label">강사명</div><input id="saf-instructor" type="text" class="m-inp" placeholder="예: 신동민"></div>
+      <div class="m-group">
+        <div class="m-label">교육자료 PDF 링크 (Google Drive)</div>
+        <input id="saf-pdfUrl" type="url" class="m-inp" placeholder="https://drive.google.com/file/d/.../preview">
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:8px 10px;margin-top:6px;font-size:11px;color:#166534;line-height:1.6;">
+          📌 Google Drive → 공유 → 링크 복사 후 <b>/view</b>를 <b>/preview</b>로 변경
+        </div>
+      </div>
+      <div class="m-group" style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="saf-active" style="width:18px;height:18px;accent-color:#10b981;">
+        <label for="saf-active" style="font-size:13px;font-weight:700;color:#065f46;cursor:pointer;">✅ 이 회차를 활성화 (직원 서명 페이지에 표시)</label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeSafSessionModal()">취소</button>
+      <button class="btn-save" onclick="saveSafSession()">💾 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 산업안전교육 교육일지 양식 모달 -->
+<div id="safFormModal" style="position:fixed;inset:0;z-index:800;display:none;align-items:flex-start;justify-content:center;padding:20px;background:rgba(0,0,0,.6);overflow-y:auto;">
+  <div style="background:#fff;border-radius:12px;width:100%;max-width:780px;box-shadow:0 20px 60px rgba(0,0,0,.3);margin:auto;">
+    <div style="padding:14px 18px;border-bottom:1px solid #dde3f0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2;border-radius:12px 12px 0 0;">
+      <div style="font-size:14px;font-weight:800;">📄 산업안전교육 일지</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="printSafForm()" style="padding:7px 16px;background:#065f46;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🖨️ 인쇄</button>
+        <button onclick="closeSafFormModal()" style="padding:7px 12px;background:#f1f5f9;color:#64748b;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✕ 닫기</button>
+      </div>
+    </div>
+    <div id="safFormPrint" style="padding:24px;font-family:'Noto Sans KR',sans-serif;">
+      <!-- 상단: 제목 + 결재라인 -->
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0;border:1.5px solid #333;border-bottom:none;">
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 20px;flex:1;">
+          <div style="width:48px;height:48px;background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🦺</div>
+          <div style="font-size:22px;font-weight:900;letter-spacing:2px;border:2px solid #555;padding:8px 24px;">산업 안전 교육</div>
+        </div>
+        <div style="border-left:1.5px solid #333;display:flex;flex-direction:column;min-width:200px;">
+          <div style="text-align:center;font-size:11px;font-weight:700;padding:4px 0;border-bottom:1px solid #333;background:#f0fdf4;">결 &nbsp; 재</div>
+          <div style="display:flex;">
+            <div style="flex:1;border-right:1px solid #333;text-align:center;">
+              <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">담당</div>
+              <canvas id="safApvCanvas0" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
+              <button onclick="clearSafApv(0)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+            </div>
+            <div style="flex:1;border-right:1px solid #333;text-align:center;">
+              <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">검토</div>
+              <canvas id="safApvCanvas1" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
+              <button onclick="clearSafApv(1)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+            </div>
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">결재</div>
+              <canvas id="safApvCanvas2" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
+              <button onclick="clearSafApv(2)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table id="safFormTable" style="width:100%;border-collapse:collapse;border:1.5px solid #333;border-top:none;font-size:12px;">
+        <tr>
+          <td style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;width:100px;text-align:center;">사업장명</td>
+          <td colspan="5" style="padding:7px 10px;border:1px solid #aaa;"><input type="text" id="sf-company" value="에스케이이" style="border:none;outline:none;width:100%;font-size:12px;font-family:'Noto Sans KR',sans-serif;"></td>
+        </tr>
+        <tr>
+          <td rowspan="4" style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:middle;">일시<br><span style="font-size:10px;font-weight:400;">(2026년도)</span></td>
+          <td colspan="5" style="padding:4px 8px;border:1px solid #aaa;background:#f8faff;font-size:10px;font-weight:700;">교육일정</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="sf-d1" placeholder="월/일" style="width:40px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> <span style="background:#d1fae5;padding:1px 5px;border-radius:3px;font-size:10px;">1차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="sf-t1s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="sf-t1e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
+          <td colspan="3" style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="sf-h1" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="sf-d2" placeholder="월/일" style="width:40px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> <span style="background:#d1fae5;padding:1px 5px;border-radius:3px;font-size:10px;">2차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="sf-t2s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="sf-t2e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
+          <td colspan="3" style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="sf-h2" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="sf-d3" placeholder="월/일" style="width:40px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> <span style="background:#d1fae5;padding:1px 5px;border-radius:3px;font-size:10px;">3차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="sf-t3s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="sf-t3e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
+          <td colspan="3" style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="sf-h3" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
+        </tr>
+        <tr>
+          <td rowspan="4" style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:middle;">교육 인원</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">구 분</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">남</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">여</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">계</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">비고</td>
+        </tr>
+        <tr>
+          <td style="font-size:11px;padding:5px 8px;border:1px solid #aaa;text-align:center;background:#fafbff;">대상 인원</td>
+          <td style="border:1px solid #aaa;"><input type="text" id="sf-tm" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="sf-tf" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="sf-tt" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td rowspan="3" style="border:1px solid #aaa;vertical-align:middle;"><textarea id="sf-note" rows="3" style="width:100%;border:none;outline:none;font-size:11px;font-family:'Noto Sans KR',sans-serif;resize:none;padding:4px;"></textarea></td>
+        </tr>
+        <tr>
+          <td style="font-size:11px;padding:5px 8px;border:1px solid #aaa;text-align:center;background:#fafbff;">참석인원</td>
+          <td style="border:1px solid #aaa;"><input type="text" id="sf-am" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="sf-af" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="sf-at" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+        </tr>
+        <tr>
+          <td style="font-size:11px;padding:5px 8px;border:1px solid #aaa;text-align:center;background:#fafbff;">미참석 인원</td>
+          <td style="border:1px solid #aaa;"><input type="text" id="sf-nm" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="sf-nf" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="sf-nt" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+        </tr>
+        <tr>
+          <td style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;">교육주제</td>
+          <td colspan="5" style="padding:7px 10px;border:1px solid #aaa;"><input type="text" id="sf-subject" value="사고사례로 배우는 안전한 작업 방법" style="border:none;outline:none;width:100%;font-size:12px;font-family:'Noto Sans KR',sans-serif;"></td>
+        </tr>
+        <tr>
+          <td style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:top;">교육내용</td>
+          <td colspan="5" style="padding:10px 16px;border:1px solid #aaa;line-height:2.2;">
+            <div style="color:#065f46;margin-bottom:4px;">Ⅰ. &nbsp;<input type="text" id="sf-c1" value="사고사례 분석" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+            <div style="color:#065f46;margin-bottom:4px;">Ⅱ. &nbsp;<input type="text" id="sf-c2" value="안전한 작업 방법" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+            <div style="color:#065f46;margin-bottom:4px;">Ⅲ. &nbsp;<input type="text" id="sf-c3" value="위험 요소 식별 및 예방" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+            <div style="color:#065f46;">Ⅳ. &nbsp;<input type="text" id="sf-c4" value="비상 대응 절차" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;font-size:11px;">교육실시자/<br>교육 장소</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">성 &nbsp; 명</td>
+          <td colspan="2" style="border:1px solid #aaa;"><input type="text" id="sf-instructor" style="width:100%;border:none;outline:none;text-align:center;font-size:12px;padding:6px;font-family:'Noto Sans KR',sans-serif;"></td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">직 &nbsp; 위</td>
+          <td style="border:1px solid #aaa;"><input type="text" id="sf-position" style="width:100%;border:none;outline:none;text-align:center;font-size:12px;padding:6px;font-family:'Noto Sans KR',sans-serif;"></td>
+        </tr>
+        <tr>
+          <td style="background:#f0fdf4;border:1px solid #aaa;"></td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">교육장소</td>
+          <td colspan="4" style="border:1px solid #aaa;"><input type="text" id="sf-place" style="width:100%;border:none;outline:none;font-size:12px;padding:6px;font-family:'Noto Sans KR',sans-serif;"></td>
+        </tr>
+        <tr>
+          <td style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:top;">특이사항</td>
+          <td colspan="5" style="padding:6px;border:1px solid #aaa;"><textarea id="sf-special" rows="3" style="width:100%;border:none;outline:none;font-size:12px;font-family:'Noto Sans KR',sans-serif;resize:vertical;padding:4px;"></textarea></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 산업안전교육 서명 확인 모달 -->
+<div id="safSigModal" style="position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.6);">
+  <div style="background:#fff;border-radius:14px;padding:20px;max-width:400px;width:100%;">
+    <div style="font-size:14px;font-weight:800;margin-bottom:12px;" id="safSigModalTitle">서명 확인</div>
+    <img id="safSigImg" src="" alt="서명" style="width:100%;border:1px solid #dde3f0;border-radius:8px;background:#fafbff;">
+    <div id="safSigModalInfo" style="font-size:12px;color:#64748b;margin-top:8px;"></div>
+    <button onclick="closeSafSigModal()" style="margin-top:12px;width:100%;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">닫기</button>
+  </div>
+</div>
+
 <!-- 교육 회차 등록/수정 모달 -->
 <div id="eduSessionModal" style="position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;">
   <div class="modal-backdrop" onclick="closeEduSessionModal()"></div>
@@ -1172,26 +1393,30 @@ function doLogout(){ if(confirm('로그아웃 하시겠습니까?')) location.re
 
 /* ── 탭 전환 ── */
 function switchSection(sec){
-  var isMusculo = sec === 'musculo';
   /* 헤더 강조 */
-  document.getElementById('hdrMusculo').style.opacity = isMusculo ? '1' : '.55';
-  document.getElementById('hdrEdu').style.opacity     = isMusculo ? '.55' : '1';
-  document.getElementById('hdrEdu').style.background  = isMusculo ? '' : 'rgba(255,255,255,.15)';
+  document.getElementById('hdrMusculo').style.opacity   = sec==='musculo' ? '1' : '.55';
+  document.getElementById('hdrMusculo').style.background= sec==='musculo' ? '' : '';
+  document.getElementById('hdrEdu').style.opacity       = sec==='edu' ? '1' : '.55';
+  document.getElementById('hdrEdu').style.background    = sec==='edu' ? 'rgba(255,255,255,.15)' : '';
+  document.getElementById('hdrSafety').style.opacity    = sec==='safety' ? '1' : '.55';
+  document.getElementById('hdrSafety').style.background = sec==='safety' ? 'rgba(255,255,255,.15)' : '';
   /* 탭바 */
-  document.getElementById('navTabs').style.display = isMusculo ? 'block' : 'none';
+  document.getElementById('navTabs').style.display = sec==='musculo' ? 'block' : 'none';
   /* 탭 콘텐츠 */
-  document.querySelectorAll('.tab-pane').forEach(function(p){
-    p.style.display = 'none'; p.classList.remove('active');
-  });
-  if(isMusculo){
+  document.querySelectorAll('.tab-pane').forEach(function(p){ p.style.display='none'; p.classList.remove('active'); });
+  if(sec==='musculo'){
     var activeTab = document.querySelector('#navTabs .nav-tab.active');
     var activeId = activeTab ? activeTab.getAttribute('onclick').match(/'([^']+)'\s*\)/)[1] : 'tab-overview';
     document.getElementById(activeId).style.display = 'block';
     document.getElementById(activeId).classList.add('active');
-  } else {
+  } else if(sec==='edu'){
     document.getElementById('tab-edu').style.display = 'block';
     document.getElementById('tab-edu').classList.add('active');
     loadEduData();
+  } else if(sec==='safety'){
+    document.getElementById('tab-safety').style.display = 'block';
+    document.getElementById('tab-safety').classList.add('active');
+    loadSafData();
   }
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -1825,6 +2050,187 @@ function printEduForm(){
 function saveEduSession(){ window._saveEduSessionFn && window._saveEduSessionFn(); }
 function deleteEduSession(id){ if(!confirm('이 교육 회차를 삭제하시겠습니까?')) return; window._deleteEduSessionFn && window._deleteEduSessionFn(id); }
 function deleteEduSig(id){ if(!confirm('이 서명을 삭제하시겠습니까?')) return; window._deleteEduSigFn && window._deleteEduSigFn(id); }
+
+/* ══ 산업안전교육 ══ */
+var safSessions = [], safSigs = [], safSigsFiltered = [];
+
+function loadSafData(){ window._loadSafFn && window._loadSafFn(); }
+
+function renderSafSessions(){
+  document.getElementById('safSessionCount').textContent = '전체 '+safSessions.length+'건';
+  if(!safSessions.length){
+    document.getElementById('safSessionTbody').innerHTML = '<tr><td colspan="7" class="empty-msg">등록된 교육 회차가 없습니다.</td></tr>';
+    return;
+  }
+  var sel = document.getElementById('safSigFilter');
+  var curVal = sel.value;
+  sel.innerHTML = '<option value="">전체 회차</option>';
+  safSessions.forEach(function(s){
+    var parts = (s.month||'').split('-');
+    var label = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : s.month;
+    sel.innerHTML += '<option value="'+s.id+'"'+(s.id===curVal?' selected':'')+'>'+label+' '+s.title+'</option>';
+  });
+  document.getElementById('safSessionTbody').innerHTML = safSessions.map(function(s){
+    var parts = (s.month||'').split('-');
+    var label = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : s.month;
+    var sigCount = safSigs.filter(function(g){ return g.sessionId===s.id; }).length;
+    var badge = s.active
+      ? '<span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">✅ 활성</span>'
+      : '<span style="background:#f1f5f9;color:#94a3b8;padding:2px 8px;border-radius:10px;font-size:11px;">비활성</span>';
+    return '<tr>'
+      +'<td style="font-weight:700;">'+label+'</td>'
+      +'<td>'+(s.title||'-')+'</td>'
+      +'<td>'+(s.eduDate||'-')+'</td>'
+      +'<td>'+(s.instructor||'-')+'</td>'
+      +'<td style="text-align:center;font-weight:700;color:#065f46;">'+sigCount+'명</td>'
+      +'<td>'+badge+'</td>'
+      +'<td>'
+        +(s.pdfUrl?'<a href="'+s.pdfUrl+'" target="_blank" style="font-size:11px;color:#065f46;margin-right:6px;">📄PDF</a>':'')
+        +'<button class="btn-edit-sm" onclick="openSafSessionModal(\''+s.id+'\')">✏️</button> '
+        +'<button class="btn-del-sm" onclick="deleteSafSession(\''+s.id+'\')">🗑</button>'
+      +'</td></tr>';
+  }).join('');
+}
+
+function filterSafSigs(){
+  var sessionId = document.getElementById('safSigFilter').value;
+  var name = document.getElementById('safSigNameFilter').value.trim().toLowerCase();
+  safSigsFiltered = safSigs.filter(function(g){
+    if(sessionId && g.sessionId !== sessionId) return false;
+    if(name && (g.worker||'').toLowerCase().indexOf(name)<0) return false;
+    return true;
+  });
+  renderSafSigTable();
+}
+
+function renderSafSigTable(){
+  document.getElementById('safSigCount').textContent = '전체 '+safSigsFiltered.length+'건';
+  var total = EMPLOYEES.length;
+  var signed = safSigsFiltered.length;
+  document.getElementById('safSigStats').innerHTML =
+    '<div class="stat-card" style="min-width:100px;"><div class="stat-num c-blue">'+signed+'</div><div class="stat-lbl">서명 완료</div></div>'
+    +'<div class="stat-card" style="min-width:100px;"><div class="stat-num c-red">'+(total-signed<0?0:total-signed)+'</div><div class="stat-lbl">미서명 (전직원 기준)</div></div>'
+    +'<div class="stat-card" style="min-width:100px;"><div class="stat-num c-green">'+total+'</div><div class="stat-lbl">전체 직원</div></div>';
+  if(!safSigsFiltered.length){
+    document.getElementById('safSigTbody').innerHTML = '<tr><td colspan="6" class="empty-msg">제출된 서명이 없습니다.</td></tr>';
+    return;
+  }
+  document.getElementById('safSigTbody').innerHTML = safSigsFiltered.map(function(g, i){
+    var dt = g.signedAt && g.signedAt.toDate ? g.signedAt.toDate().toLocaleString('ko-KR') : (g.signedAt||'-');
+    var parts = (g.sessionMonth||'').split('-');
+    var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : g.sessionMonth||'-';
+    return '<tr>'
+      +'<td class="td-name">'+(g.worker||'-')+'</td>'
+      +'<td>'+(g.dept||'-')+'</td>'
+      +'<td style="font-size:11px;">'+monthLabel+' '+(g.sessionTitle||'')+'</td>'
+      +'<td style="font-size:11px;">'+dt+'</td>'
+      +'<td style="text-align:center;"><button class="btn-detail" onclick="viewSafSig('+i+')">서명보기</button></td>'
+      +'<td><button class="btn-del-sm" onclick="deleteSafSig(\''+g.id+'\')">🗑</button></td>'
+      +'</tr>';
+  }).join('');
+}
+
+function viewSafSig(idx){
+  var g = safSigsFiltered[idx]; if(!g) return;
+  document.getElementById('safSigModalTitle').textContent = g.worker+' ('+g.dept+') 서명';
+  document.getElementById('safSigImg').src = g.signatureData || '';
+  var dt = g.signedAt && g.signedAt.toDate ? g.signedAt.toDate().toLocaleString('ko-KR') : '';
+  document.getElementById('safSigModalInfo').textContent = '서명일시: '+dt;
+  document.getElementById('safSigModal').style.display = 'flex';
+}
+function closeSafSigModal(){ document.getElementById('safSigModal').style.display = 'none'; }
+
+function openSafSessionModal(docId){
+  document.getElementById('safSessionDocId').value = docId||'';
+  document.getElementById('saf-month').value = '';
+  document.getElementById('saf-eduDate').value = '';
+  document.getElementById('saf-title').value = '';
+  document.getElementById('saf-instructor').value = '';
+  document.getElementById('saf-active').checked = false;
+  document.getElementById('saf-pdfUrl').value = '';
+  if(docId){
+    var s = safSessions.find(function(x){ return x.id===docId; });
+    if(s){
+      document.getElementById('saf-month').value = s.month||'';
+      document.getElementById('saf-eduDate').value = s.eduDate||'';
+      document.getElementById('saf-title').value = s.title||'';
+      document.getElementById('saf-instructor').value = s.instructor||'';
+      document.getElementById('saf-active').checked = !!s.active;
+      document.getElementById('saf-pdfUrl').value = s.pdfUrl||'';
+    }
+    document.getElementById('safSessionModalTitle').textContent = '🦺 교육 회차 수정';
+  } else {
+    document.getElementById('safSessionModalTitle').textContent = '🦺 새 교육 회차 등록';
+    var now = new Date();
+    document.getElementById('saf-month').value = now.getFullYear()+'-'+(now.getMonth()+1<10?'0':'')+(now.getMonth()+1);
+  }
+  document.getElementById('safSessionModal').style.display = 'flex';
+}
+function closeSafSessionModal(){ document.getElementById('safSessionModal').style.display = 'none'; }
+
+/* ══ 산업안전교육 일지 양식 ══ */
+var safApvCtx = [null,null,null], safApvDrawing = [false,false,false];
+
+function openSafFormModal(){
+  document.getElementById('safFormModal').style.display = 'flex';
+  var TOTAL = EMPLOYEES ? EMPLOYEES.length : 46;
+  var activeSess = safSessions.find(function(s){ return s.active; });
+  var filtered = activeSess ? safSigs.filter(function(g){ return g.sessionId===activeSess.id; }) : safSigs;
+  var aM = filtered.filter(function(g){ return g.gender==='남'; }).length;
+  var aF = filtered.filter(function(g){ return g.gender==='여'; }).length;
+  var aT = filtered.length;
+  document.getElementById('sf-tm').value = '';
+  document.getElementById('sf-tf').value = '';
+  document.getElementById('sf-tt').value = TOTAL;
+  document.getElementById('sf-am').value = aM || '';
+  document.getElementById('sf-af').value = aF || '';
+  document.getElementById('sf-at').value = aT;
+  document.getElementById('sf-nm').value = '';
+  document.getElementById('sf-nf').value = '';
+  document.getElementById('sf-nt').value = Math.max(0, TOTAL - aT);
+  setTimeout(function(){
+    [0,1,2].forEach(function(i){
+      var c = document.getElementById('safApvCanvas'+i);
+      safApvCtx[i] = c.getContext('2d');
+      safApvCtx[i].strokeStyle = '#1e293b';
+      safApvCtx[i].lineWidth = 1.5;
+      safApvCtx[i].lineCap = 'round';
+      setupSafApvCanvas(c, i);
+    });
+  }, 100);
+}
+function closeSafFormModal(){ document.getElementById('safFormModal').style.display = 'none'; }
+
+function setupSafApvCanvas(c, i){
+  function getPos(e){ var r=c.getBoundingClientRect(); var src=e.touches?e.touches[0]:e; return {x:(src.clientX-r.left)*(c.width/r.width),y:(src.clientY-r.top)*(c.height/r.height)}; }
+  c.addEventListener('mousedown',  function(e){ safApvDrawing[i]=true; var p=getPos(e); safApvCtx[i].beginPath(); safApvCtx[i].moveTo(p.x,p.y); });
+  c.addEventListener('mousemove',  function(e){ if(!safApvDrawing[i]) return; var p=getPos(e); safApvCtx[i].lineTo(p.x,p.y); safApvCtx[i].stroke(); });
+  c.addEventListener('mouseup',    function(){ safApvDrawing[i]=false; });
+  c.addEventListener('mouseleave', function(){ safApvDrawing[i]=false; });
+  c.addEventListener('touchstart', function(e){ e.preventDefault(); safApvDrawing[i]=true; var p=getPos(e); safApvCtx[i].beginPath(); safApvCtx[i].moveTo(p.x,p.y); });
+  c.addEventListener('touchmove',  function(e){ e.preventDefault(); if(!safApvDrawing[i]) return; var p=getPos(e); safApvCtx[i].lineTo(p.x,p.y); safApvCtx[i].stroke(); });
+  c.addEventListener('touchend',   function(){ safApvDrawing[i]=false; });
+}
+function clearSafApv(i){ if(safApvCtx[i]) safApvCtx[i].clearRect(0,0,60,60); }
+
+function printSafForm(){
+  var printWin = window.open('','_blank','width=900,height=700');
+  var content = document.getElementById('safFormPrint').innerHTML;
+  var html = content;
+  [0,1,2].forEach(function(i){
+    var c = document.getElementById('safApvCanvas'+i);
+    var img = c.toDataURL('image/png');
+    html = html.replace('id="safApvCanvas'+i+'"', 'style="display:none" id="safApvCanvas'+i+'"');
+    html = html.replace('</canvas>', '</canvas><img src="'+img+'" width="60" height="60" style="display:block;margin:4px auto;border:1px solid #ddd;border-radius:4px;">');
+  });
+  printWin.document.write('<html><head><meta charset="UTF-8"><title>산업안전교육 일지</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Noto Sans KR\',sans-serif;padding:20px;}input,textarea{font-family:\'Noto Sans KR\',sans-serif;}button{display:none!important;}</style></head><body>'+html+'</body></html>');
+  printWin.document.close();
+  setTimeout(function(){ printWin.print(); }, 800);
+}
+
+function saveSafSession(){ window._saveSafSessionFn && window._saveSafSessionFn(); }
+function deleteSafSession(id){ if(!confirm('이 교육 회차를 삭제하시겠습니까?')) return; window._deleteSafSessionFn && window._deleteSafSessionFn(id); }
+function deleteSafSig(id){ if(!confirm('이 서명을 삭제하시겠습니까?')) return; window._deleteSafSigFn && window._deleteSafSigFn(id); }
 
 /* ══ 유해요인조사표 (인원별 관리) ══ */
 var hazardData = [];
@@ -2631,6 +3037,78 @@ window._deleteEduSigFn = async function(id){
     await deleteDoc(doc(db,'edu_signatures',id));
     eduSigs = eduSigs.filter(function(g){ return g.id!==id; });
     filterEduSigs();
+    alert('🗑 서명 삭제 완료!');
+  } catch(e){ alert('삭제 오류: '+e.message); }
+};
+
+/* ══ 산업안전교육 Firebase ══ */
+window._loadSafFn = async function(){
+  try{
+    const [sessSnap, sigSnap] = await Promise.all([
+      getDocs(query(collection(db,'safety_sessions'), orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'safety_signatures'), orderBy('signedAt','desc')))
+    ]);
+    safSessions = []; sessSnap.forEach(d => safSessions.push(Object.assign({id:d.id}, d.data())));
+    safSigs = [];     sigSnap.forEach(d => safSigs.push(Object.assign({id:d.id}, d.data())));
+    safSigsFiltered = safSigs.slice();
+    renderSafSessions();
+    renderSafSigTable();
+  } catch(e){ alert('산업안전교육 데이터 로드 오류: '+e.message); }
+};
+
+window._saveSafSessionFn = async function(){
+  var docId = document.getElementById('safSessionDocId').value;
+  var month = document.getElementById('saf-month').value;
+  var title = document.getElementById('saf-title').value.trim();
+  if(!month){ alert('교육 월을 선택해주세요.'); return; }
+  if(!title){ alert('교육 제목을 입력해주세요.'); return; }
+  var data = {
+    month: month, title: title,
+    eduDate: document.getElementById('saf-eduDate').value,
+    instructor: document.getElementById('saf-instructor').value.trim(),
+    active: document.getElementById('saf-active').checked
+  };
+  if(data.active){
+    const batch = writeBatch(db);
+    safSessions.forEach(function(s){
+      if(s.id !== docId && s.active){ batch.update(doc(db,'safety_sessions',s.id), {active:false}); s.active=false; }
+    });
+    await batch.commit();
+  }
+  var pdfUrl = document.getElementById('saf-pdfUrl').value.trim();
+  if(pdfUrl) data.pdfUrl = pdfUrl;
+  try{
+    if(docId){
+      await updateDoc(doc(db,'safety_sessions',docId), data);
+      var idx = safSessions.findIndex(function(s){ return s.id===docId; });
+      if(idx>=0) Object.assign(safSessions[idx], data);
+      alert('✅ 수정 완료!');
+    } else {
+      data.createdAt = Timestamp.now();
+      const ref = await addDoc(collection(db,'safety_sessions'), data);
+      safSessions.unshift(Object.assign({id:ref.id}, data));
+      alert('✅ 등록 완료!');
+    }
+    closeSafSessionModal();
+    renderSafSessions();
+    filterSafSigs();
+  } catch(e){ alert('저장 오류: '+e.message); }
+};
+
+window._deleteSafSessionFn = async function(id){
+  try{
+    await deleteDoc(doc(db,'safety_sessions',id));
+    safSessions = safSessions.filter(function(s){ return s.id!==id; });
+    renderSafSessions();
+    alert('🗑 삭제 완료!');
+  } catch(e){ alert('삭제 오류: '+e.message); }
+};
+
+window._deleteSafSigFn = async function(id){
+  try{
+    await deleteDoc(doc(db,'safety_signatures',id));
+    safSigs = safSigs.filter(function(g){ return g.id!==id; });
+    filterSafSigs();
     alert('🗑 서명 삭제 완료!');
   } catch(e){ alert('삭제 오류: '+e.message); }
 };
