@@ -60,10 +60,18 @@
 </head>
 <body>
 
-<h1>📋 교육 전자서명 QR코드</h1>
-<p class="sub">아래 QR코드를 스캔하면 교육 서명 페이지로 이동합니다.</p>
+<h1>📋 SKE 직원 QR코드</h1>
+<p class="sub">아래 QR코드를 스캔하면 해당 페이지로 이동합니다.</p>
 
 <div class="grid">
+  <div class="card">
+    <div class="card-icon">🦴</div>
+    <div class="card-title">근골격계 증상조사</div>
+    <div class="card-desc">근골격계 증상조사 설문을<br>아래 QR코드로 참여해주세요.</div>
+    <div class="qr-wrap" id="qr0"></div>
+    <div class="url-box">https://sdm3783-droid.github.io/SKE-0004/index.html</div>
+  </div>
+
   <div class="card">
     <div class="card-icon">📚</div>
     <div class="card-title">정기안전보건교육</div>
@@ -87,6 +95,12 @@
 </div>
 
 <script>
+new QRCode(document.getElementById('qr0'), {
+  text: 'https://sdm3783-droid.github.io/SKE-0004/index.html',
+  width: 210, height: 210,
+  colorDark: '#1e293b', colorLight: '#ffffff',
+  correctLevel: QRCode.CorrectLevel.H
+});
 new QRCode(document.getElementById('qr1'), {
   text: 'https://sdm3783-droid.github.io/SKE-0004/sign.html',
   width: 210, height: 210,
