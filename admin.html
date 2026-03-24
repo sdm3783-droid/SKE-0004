@@ -1036,6 +1036,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <div style="padding:14px 18px;border-bottom:1px solid #dde3f0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2;border-radius:12px 12px 0 0;">
       <div style="font-size:14px;font-weight:800;">📄 산업안전교육 일지</div>
       <div style="display:flex;gap:8px;">
+        <button onclick="saveSafFormData()" style="padding:7px 16px;background:#16a34a;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💾 저장</button>
         <button onclick="printSafForm()" style="padding:7px 16px;background:#065f46;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🖨️ 인쇄</button>
         <button onclick="closeSafFormModal()" style="padding:7px 12px;background:#f1f5f9;color:#64748b;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✕ 닫기</button>
       </div>
@@ -1304,6 +1305,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
     <div style="padding:14px 18px;border-bottom:1px solid #dde3f0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2;border-radius:12px 12px 0 0;">
       <div style="font-size:14px;font-weight:800;">📄 정기 안전·보건 교육 일지</div>
       <div style="display:flex;gap:8px;">
+        <button onclick="saveEduFormData()" style="padding:7px 16px;background:#16a34a;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💾 저장</button>
         <button onclick="printEduForm()" style="padding:7px 16px;background:#2563eb;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🖨️ 인쇄</button>
         <button onclick="closeEduFormModal()" style="padding:7px 12px;background:#f1f5f9;color:#64748b;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✕ 닫기</button>
       </div>
@@ -2372,6 +2374,9 @@ var eduApvPopupCtx = null, eduApvPopupDrawing = false, eduApvPopupHasSig = false
 
 function openEduFormModal(){
   document.getElementById('eduFormModal').style.display = 'flex';
+  /* 저장된 데이터 불러오기 */
+  var activeSess = eduSessions.find(function(s){ return s.active; });
+  if(activeSess && activeSess.formData){ setTimeout(function(){ setEduFormValues(activeSess.formData); }, 200); }
   eduApvSigs = [null, null, null];
   [0,1,2].forEach(function(i){ renderEduApvArea(i); });
 
@@ -2392,6 +2397,38 @@ function openEduFormModal(){
   document.getElementById('ef-nt').value = Math.max(0, TOTAL-aT);
 }
 function closeEduFormModal(){ document.getElementById('eduFormModal').style.display = 'none'; }
+
+var EDU_FORM_FIELDS = ['ef-company','ef-d1','ef-t1s','ef-t1e','ef-h1','ef-d2','ef-t2s','ef-t2e','ef-h2','ef-d3','ef-t3s','ef-t3e','ef-h3','ef-tm','ef-tf','ef-tt','ef-note','ef-am','ef-af','ef-at','ef-nm','ef-nf','ef-nt','ef-subject','ef-c1','ef-c2','ef-c3','ef-c4','ef-instructor','ef-position','ef-place','ef-special'];
+
+function getEduFormValues(){
+  var d = {};
+  EDU_FORM_FIELDS.forEach(function(id){ var el=document.getElementById(id); if(el) d[id]=el.value; });
+  d['apv0'] = eduApvSigs[0] || '';
+  d['apv1'] = eduApvSigs[1] || '';
+  d['apv2'] = eduApvSigs[2] || '';
+  return d;
+}
+
+function setEduFormValues(d){
+  if(!d) return;
+  EDU_FORM_FIELDS.forEach(function(id){ var el=document.getElementById(id); if(el && d[id]!==undefined) el.value=d[id]; });
+  [0,1,2].forEach(function(i){
+    if(d['apv'+i]){
+      eduApvSigs[i] = d['apv'+i];
+      var area = document.getElementById('eduApvArea'+i);
+      if(area){ area.innerHTML='<img src="'+d['apv'+i]+'" style="max-width:58px;max-height:58px;object-fit:contain;">'; }
+    }
+  });
+}
+
+function saveEduFormData(){
+  var activeSess = eduSessions.find(function(s){ return s.active; });
+  if(!activeSess){ alert('활성화된 교육 회차가 없습니다.'); return; }
+  var data = getEduFormValues();
+  window._saveEduFormFn && window._saveEduFormFn(activeSess.id, data, function(){
+    alert('✅ 저장 완료!');
+  });
+}
 
 function renderEduApvArea(i){
   var area = document.getElementById('eduApvArea'+i);
@@ -2693,6 +2730,9 @@ var APVLABELS = ['담당','검토','결재'];
 
 function openSafFormModal(){
   document.getElementById('safFormModal').style.display = 'flex';
+  /* 저장된 데이터 불러오기 */
+  var activeSess = safSessions.find(function(s){ return s.active; });
+  if(activeSess && activeSess.formData){ setTimeout(function(){ setSafFormValues(activeSess.formData); }, 200); }
   safApvSigs = [null, null, null];
   [0,1,2].forEach(function(i){ renderSafApvArea(i); });
   var TOTAL = EMPLOYEES ? EMPLOYEES.length : 46;
@@ -2712,6 +2752,38 @@ function openSafFormModal(){
   document.getElementById('sf-nt').value = Math.max(0, TOTAL - aT);
 }
 function closeSafFormModal(){ document.getElementById('safFormModal').style.display = 'none'; }
+
+var SAF_FORM_FIELDS = ['sf-company','sf-d1','sf-t1s','sf-t1e','sf-h1','sf-d2','sf-t2s','sf-t2e','sf-h2','sf-d3','sf-t3s','sf-t3e','sf-h3','sf-tm','sf-tf','sf-tt','sf-note','sf-am','sf-af','sf-at','sf-nm','sf-nf','sf-nt','sf-subject','sf-c1','sf-c2','sf-c3','sf-c4','sf-instructor','sf-position','sf-place','sf-special'];
+
+function getSafFormValues(){
+  var d = {};
+  SAF_FORM_FIELDS.forEach(function(id){ var el=document.getElementById(id); if(el) d[id]=el.value; });
+  d['apv0'] = safApvSigs[0] || '';
+  d['apv1'] = safApvSigs[1] || '';
+  d['apv2'] = safApvSigs[2] || '';
+  return d;
+}
+
+function setSafFormValues(d){
+  if(!d) return;
+  SAF_FORM_FIELDS.forEach(function(id){ var el=document.getElementById(id); if(el && d[id]!==undefined) el.value=d[id]; });
+  [0,1,2].forEach(function(i){
+    if(d['apv'+i]){
+      safApvSigs[i] = d['apv'+i];
+      var area = document.getElementById('safApvArea'+i);
+      if(area){ area.innerHTML='<img src="'+d['apv'+i]+'" style="max-width:58px;max-height:58px;object-fit:contain;">'; }
+    }
+  });
+}
+
+function saveSafFormData(){
+  var activeSess = safSessions.find(function(s){ return s.active; });
+  if(!activeSess){ alert('활성화된 교육 회차가 없습니다.'); return; }
+  var data = getSafFormValues();
+  window._saveSafFormFn && window._saveSafFormFn(activeSess.id, data, function(){
+    alert('✅ 저장 완료!');
+  });
+}
 
 function renderSafApvArea(i){
   var area = document.getElementById('safApvArea'+i);
@@ -3625,6 +3697,13 @@ window._deleteEduSigFn = async function(id){
   } catch(e){ alert('삭제 오류: '+e.message); }
 };
 
+window._saveEduFormFn = async function(sessionId, data, cb){
+  try{
+    await updateDoc(doc(db,'edu_sessions',sessionId), { formData: data });
+    if(cb) cb();
+  } catch(e){ alert('저장 오류: '+e.message); }
+};
+
 window._updateEduNameFn = async function(id, newName, cb){
   try{
     await updateDoc(doc(db,'edu_signatures',id), { worker: newName });
@@ -3709,6 +3788,13 @@ window._deleteSafSigFn = async function(id){
     filterSafSigs();
     alert('🗑 서명 삭제 완료!');
   } catch(e){ alert('삭제 오류: '+e.message); }
+};
+
+window._saveSafFormFn = async function(sessionId, data, cb){
+  try{
+    await updateDoc(doc(db,'safety_sessions',sessionId), { formData: data });
+    if(cb) cb();
+  } catch(e){ alert('저장 오류: '+e.message); }
 };
 
 window._updateSafNameFn = async function(id, newName, cb){
