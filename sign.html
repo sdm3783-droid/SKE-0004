@@ -336,6 +336,27 @@ window.submitSign = async function(){
     document.querySelector('.btn-primary').textContent = '제출 중...';
     document.querySelector('.btn-primary').disabled = true;
 
+    /* 중복 제출 확인 */
+    var dupSnap = await getDocs(query(
+      collection(db,'edu_signatures'),
+      where('sessionId','==', activeSession.id),
+      where('worker','==', name)
+    ));
+    if(!dupSnap.empty){
+      var monthStr2 = activeSession.month || '';
+      var parts2 = monthStr2.split('-');
+      var label2 = parts2.length===2 ? parts2[0]+'년 '+parseInt(parts2[1])+'월' : monthStr2;
+      document.getElementById('successInfo').innerHTML =
+        '<b>'+name+'</b>님은<br>'+label2+' '+(activeSession.title||'정기 안전보건교육')+'<br>서명이 이미 완료된 상태입니다.';
+      document.getElementById('successScreen').style.background = 'linear-gradient(135deg,#fef9c3,#fef08a)';
+      document.getElementById('successScreen').querySelector('.success-icon').textContent = '⚠️';
+      document.getElementById('successScreen').querySelector('.success-title').textContent = '이미 제출하였습니다';
+      document.getElementById('successScreen').classList.add('show');
+      document.querySelector('.btn-primary').textContent = '📩 서명 제출하기';
+      document.querySelector('.btn-primary').disabled = false;
+      return;
+    }
+
     await addDoc(collection(db,'edu_signatures'),{
       sessionId: activeSession.id,
       sessionMonth: activeSession.month,
