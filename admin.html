@@ -2061,23 +2061,34 @@ function printAllSurveys(){
 function printAllHazards(){
   if(!hazardData.length){ alert('유해요인조사표 데이터가 없습니다.'); return; }
   var rows = hazardData.map(function(r){
-    var hazards = r.hazards && r.hazards.length ? r.hazards.map(function(h){ return h.name||h; }).join(', ') : '-';
     return '<tr>'
-      +'<td style="text-align:center;font-weight:700;">'+(r.worker||'-')+'</td>'
-      +'<td style="text-align:center;">'+(r.dept||'-')+'</td>'
-      +'<td>'+(r.process||'-')+'</td>'
-      +'<td>'+(r.task||'-')+'</td>'
-      +'<td style="text-align:center;">'+(r.surveyType||'-')+'</td>'
-      +'<td style="text-align:center;">'+(r.score||0)+'점</td>'
-      +'<td>'+(r.hazardCause||'-')+'</td>'
-      +'<td style="text-align:center;">'+(r.surveyDate||'-')+'</td>'
+      +'<td style="text-align:center;font-weight:700;width:6%;">'+(r.worker||'-')+'</td>'
+      +'<td style="text-align:center;width:7%;">'+(r.dept||'-')+'</td>'
+      +'<td style="width:13%;word-break:keep-all;word-wrap:break-word;">'+(r.process||'-')+'</td>'
+      +'<td style="width:22%;word-break:keep-all;word-wrap:break-word;">'+(r.task||'-')+'</td>'
+      +'<td style="text-align:center;width:9%;">'+(r.surveyType||'-')+'</td>'
+      +'<td style="text-align:center;width:6%;">'+(r.score||0)+'점</td>'
+      +'<td style="width:28%;word-break:keep-all;word-wrap:break-word;">'+(r.hazardCause||'-')+'</td>'
+      +'<td style="text-align:center;width:9%;">'+(r.surveyDate||'-')+'</td>'
       +'</tr>';
   }).join('');
+  var css = '<meta charset="UTF-8"><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Noto Sans KR\',sans-serif;padding:10px;font-size:10.5px;}'
+    +'h2{font-size:15px;font-weight:900;margin:10px 0 6px;padding-bottom:4px;border-bottom:2px solid #333;}'
+    +'table{width:100%;border-collapse:collapse;table-layout:fixed;}'
+    +'th{background:#f0f0f0;border:1px solid #888;padding:5px 3px;font-size:10px;text-align:center;}'
+    +'td{border:1px solid #aaa;padding:4px 4px;font-size:10px;vertical-align:middle;line-height:1.4;}'
+    +'@page{size:A4 landscape;margin:8mm;}'
+    +'</style>';
   var html = '<h2>📋 유해요인조사표 전체 (총 '+hazardData.length+'건)</h2>'
     +'<table><thead><tr>'
-    +'<th>성명</th><th>부서</th><th>작업공정</th><th>작업내용</th><th>조사구분</th><th>총점수</th><th>유해요인원인</th><th>조사일</th>'
+    +'<th style="width:6%">성명</th><th style="width:7%">부서</th><th style="width:13%">작업공정</th><th style="width:22%">작업내용</th>'
+    +'<th style="width:9%">조사구분</th><th style="width:6%">총점수</th><th style="width:28%">유해요인원인</th><th style="width:9%">조사일</th>'
     +'</tr></thead><tbody>'+rows+'</tbody></table>';
-  openPrintWin(html);
+  var w = window.open('','_blank','width=1100,height=750');
+  w.document.write('<html><head>'+css+'</head><body>'+html+'</body></html>');
+  w.document.close();
+  setTimeout(function(){ w.print(); }, 700);
 }
 
 function printAllReports(){
