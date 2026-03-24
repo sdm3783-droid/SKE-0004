@@ -1144,6 +1144,23 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
+<!-- 정기안전보건교육 결재 서명 팝업 -->
+<div id="eduApvSignPopup" style="position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.7);">
+  <div style="background:#fff;border-radius:14px;padding:20px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.4);">
+    <div style="font-size:14px;font-weight:800;margin-bottom:4px;" id="eduApvSignTitle">담당 서명</div>
+    <div style="font-size:11px;color:#64748b;margin-bottom:12px;">손가락 또는 마우스로 서명해 주세요</div>
+    <div style="border:2px dashed #2563eb;border-radius:10px;overflow:hidden;background:#fafbff;position:relative;margin-bottom:12px;">
+      <canvas id="eduApvSignCanvas" style="width:100%;height:160px;display:block;touch-action:none;cursor:crosshair;"></canvas>
+      <div id="eduApvSignHint" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;color:#aaa;font-size:13px;">여기에 서명하세요</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="clearEduApvPopup()" style="flex:1;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🗑 지우기</button>
+      <button onclick="saveEduApvSign()" style="flex:2;padding:10px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✅ 저장</button>
+      <button onclick="closeEduApvSignPopup()" style="flex:1;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">취소</button>
+    </div>
+  </div>
+</div>
+
 <!-- 교육 회차 등록/수정 모달 -->
 <div id="eduSessionModal" style="position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;">
   <div class="modal-backdrop" onclick="closeEduSessionModal()"></div>
@@ -1202,23 +1219,29 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
           <div style="font-size:22px;font-weight:900;letter-spacing:2px;border:2px solid #555;padding:8px 24px;">정기 안전 · 보건 교육</div>
         </div>
         <!-- 결재라인 -->
-        <div style="border-left:1.5px solid #333;display:flex;flex-direction:column;min-width:200px;">
+        <div style="border-left:1.5px solid #333;display:flex;flex-direction:column;min-width:210px;">
           <div style="text-align:center;font-size:11px;font-weight:700;padding:4px 0;border-bottom:1px solid #333;background:#f8faff;">결 &nbsp; 재</div>
-          <div style="display:flex;">
+          <div style="display:flex;flex:1;">
             <div style="flex:1;border-right:1px solid #333;text-align:center;">
               <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f8faff;">담당</div>
-              <canvas id="apvCanvas0" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
-              <button onclick="clearApv(0)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+              <div id="eduApvArea0" onclick="openEduApvSign(0)" style="width:60px;height:60px;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafbff;">
+                <span style="font-size:9px;color:#aaa;">클릭서명</span>
+              </div>
+              <button onclick="clearEduApvSig(0)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
             </div>
             <div style="flex:1;border-right:1px solid #333;text-align:center;">
               <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f8faff;">검토</div>
-              <canvas id="apvCanvas1" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
-              <button onclick="clearApv(1)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+              <div id="eduApvArea1" onclick="openEduApvSign(1)" style="width:60px;height:60px;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafbff;">
+                <span style="font-size:9px;color:#aaa;">클릭서명</span>
+              </div>
+              <button onclick="clearEduApvSig(1)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
             </div>
             <div style="flex:1;text-align:center;">
               <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f8faff;">결재</div>
-              <canvas id="apvCanvas2" width="60" height="60" style="display:block;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:crosshair;touch-action:none;"></canvas>
-              <button onclick="clearApv(2)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+              <div id="eduApvArea2" onclick="openEduApvSign(2)" style="width:60px;height:60px;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafbff;">
+                <span style="font-size:9px;color:#aaa;">클릭서명</span>
+              </div>
+              <button onclick="clearEduApvSig(2)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
             </div>
           </div>
         </div>
@@ -2051,78 +2074,110 @@ function openEduSessionModal(docId){
 function closeEduSessionModal(){ document.getElementById('eduSessionModal').style.display = 'none'; }
 
 /* ══ 교육일지 양식 ══ */
-var apvCtx = [null,null,null], apvDrawing = [false,false,false];
+/* ══ 정기안전보건교육 결재 서명 팝업 ══ */
+var eduApvSigs = [null, null, null];
+var eduApvCurrentIdx = 0;
+var eduApvPopupCtx = null, eduApvPopupDrawing = false, eduApvPopupHasSig = false;
 
 function openEduFormModal(){
   document.getElementById('eduFormModal').style.display = 'flex';
+  eduApvSigs = [null, null, null];
+  [0,1,2].forEach(function(i){ renderEduApvArea(i); });
 
-  /* ── 성별 자동 집계 ── */
   var TOTAL = EMPLOYEES ? EMPLOYEES.length : 46;
-  /* 활성 회차 서명만 필터 */
   var activeSess = eduSessions.find(function(s){ return s.active; });
-  var filtered = activeSess
-    ? eduSigs.filter(function(g){ return g.sessionId === activeSess.id; })
-    : eduSigs;
-
-  var aM = filtered.filter(function(g){ return g.gender === '남'; }).length;
-  var aF = filtered.filter(function(g){ return g.gender === '여'; }).length;
+  var filtered = activeSess ? eduSigs.filter(function(g){ return g.sessionId===activeSess.id; }) : eduSigs;
+  var aM = filtered.filter(function(g){ return g.gender==='남'; }).length;
+  var aF = filtered.filter(function(g){ return g.gender==='여'; }).length;
   var aT = filtered.length;
-
-  /* 전체 직원 남/여 구분은 데이터 없으면 총계만 표시 */
-  var allM = eduSigs.filter(function(g){ return g.gender==='남'; });
-  var allF = eduSigs.filter(function(g){ return g.gender==='여'; });
-  /* 대상인원: 전체직원 수 (성별 미상시 계만) */
   document.getElementById('ef-tm').value = '';
   document.getElementById('ef-tf').value = '';
   document.getElementById('ef-tt').value = TOTAL;
-  /* 참석인원 */
   document.getElementById('ef-am').value = aM || '';
   document.getElementById('ef-af').value = aF || '';
   document.getElementById('ef-at').value = aT;
-  /* 미참석 */
-  document.getElementById('ef-nm').value = aM ? (TOTAL - aT < 0 ? 0 : '') : '';
+  document.getElementById('ef-nm').value = aM ? (TOTAL-aT<0?0:'') : '';
   document.getElementById('ef-nf').value = aF ? '' : '';
-  document.getElementById('ef-nt').value = Math.max(0, TOTAL - aT);
-
-  setTimeout(function(){
-    [0,1,2].forEach(function(i){
-      var c = document.getElementById('apvCanvas'+i);
-      apvCtx[i] = c.getContext('2d');
-      apvCtx[i].strokeStyle = '#1e293b';
-      apvCtx[i].lineWidth = 1.5;
-      apvCtx[i].lineCap = 'round';
-      setupApvCanvas(c, i);
-    });
-  }, 100);
+  document.getElementById('ef-nt').value = Math.max(0, TOTAL-aT);
 }
 function closeEduFormModal(){ document.getElementById('eduFormModal').style.display = 'none'; }
 
-function setupApvCanvas(c, i){
-  function getPos(e){
-    var r = c.getBoundingClientRect();
-    var src = e.touches ? e.touches[0] : e;
-    return {x:(src.clientX-r.left)*(c.width/r.width), y:(src.clientY-r.top)*(c.height/r.height)};
-  }
-  c.addEventListener('mousedown',  function(e){ apvDrawing[i]=true; var p=getPos(e); apvCtx[i].beginPath(); apvCtx[i].moveTo(p.x,p.y); });
-  c.addEventListener('mousemove',  function(e){ if(!apvDrawing[i]) return; var p=getPos(e); apvCtx[i].lineTo(p.x,p.y); apvCtx[i].stroke(); });
-  c.addEventListener('mouseup',    function(){ apvDrawing[i]=false; });
-  c.addEventListener('mouseleave', function(){ apvDrawing[i]=false; });
-  c.addEventListener('touchstart', function(e){ e.preventDefault(); apvDrawing[i]=true; var p=getPos(e); apvCtx[i].beginPath(); apvCtx[i].moveTo(p.x,p.y); });
-  c.addEventListener('touchmove',  function(e){ e.preventDefault(); if(!apvDrawing[i]) return; var p=getPos(e); apvCtx[i].lineTo(p.x,p.y); apvCtx[i].stroke(); });
-  c.addEventListener('touchend',   function(){ apvDrawing[i]=false; });
+function renderEduApvArea(i){
+  var area = document.getElementById('eduApvArea'+i);
+  if(!area) return;
+  area.innerHTML = eduApvSigs[i]
+    ? '<img src="'+eduApvSigs[i]+'" style="width:56px;height:56px;object-fit:contain;">'
+    : '<span style="font-size:9px;color:#aaa;">클릭서명</span>';
 }
-function clearApv(i){ if(apvCtx[i]) apvCtx[i].clearRect(0,0,60,60); }
+
+function openEduApvSign(idx){
+  eduApvCurrentIdx = idx;
+  document.getElementById('eduApvSignTitle').textContent = APVLABELS[idx]+' 서명';
+  document.getElementById('eduApvSignPopup').style.display = 'flex';
+  eduApvPopupHasSig = false;
+  document.getElementById('eduApvSignHint').style.opacity = '1';
+  setTimeout(function(){
+    var c = document.getElementById('eduApvSignCanvas');
+    var r = c.getBoundingClientRect();
+    c.width = r.width * (window.devicePixelRatio||1);
+    c.height = r.height * (window.devicePixelRatio||1);
+    eduApvPopupCtx = c.getContext('2d');
+    eduApvPopupCtx.scale(window.devicePixelRatio||1, window.devicePixelRatio||1);
+    eduApvPopupCtx.strokeStyle = '#1e293b';
+    eduApvPopupCtx.lineWidth = 2.5;
+    eduApvPopupCtx.lineCap = 'round';
+    eduApvPopupCtx.lineJoin = 'round';
+    eduApvPopupCtx.clearRect(0,0,c.width,c.height);
+    if(eduApvSigs[idx]){
+      var img = new Image();
+      img.onload = function(){ eduApvPopupCtx.drawImage(img,0,0,r.width,r.height); };
+      img.src = eduApvSigs[idx];
+      eduApvPopupHasSig = true;
+    }
+    function getP(e){ var rb=c.getBoundingClientRect(); var s=e.touches?e.touches[0]:e; return {x:s.clientX-rb.left,y:s.clientY-rb.top}; }
+    c.onmousedown = function(e){ eduApvPopupDrawing=true; var p=getP(e); eduApvPopupCtx.beginPath(); eduApvPopupCtx.moveTo(p.x,p.y); document.getElementById('eduApvSignHint').style.opacity='0'; };
+    c.onmousemove = function(e){ if(!eduApvPopupDrawing) return; var p=getP(e); eduApvPopupCtx.lineTo(p.x,p.y); eduApvPopupCtx.stroke(); eduApvPopupHasSig=true; };
+    c.onmouseup = c.onmouseleave = function(){ eduApvPopupDrawing=false; };
+    c.ontouchstart = function(e){ e.preventDefault(); eduApvPopupDrawing=true; var p=getP(e); eduApvPopupCtx.beginPath(); eduApvPopupCtx.moveTo(p.x,p.y); document.getElementById('eduApvSignHint').style.opacity='0'; };
+    c.ontouchmove = function(e){ e.preventDefault(); if(!eduApvPopupDrawing) return; var p=getP(e); eduApvPopupCtx.lineTo(p.x,p.y); eduApvPopupCtx.stroke(); eduApvPopupHasSig=true; };
+    c.ontouchend = function(){ eduApvPopupDrawing=false; };
+  }, 100);
+}
+
+function clearEduApvPopup(){
+  if(!eduApvPopupCtx) return;
+  var c = document.getElementById('eduApvSignCanvas');
+  eduApvPopupCtx.clearRect(0,0,c.width,c.height);
+  eduApvPopupHasSig = false;
+  document.getElementById('eduApvSignHint').style.opacity='1';
+}
+
+function saveEduApvSign(){
+  if(!eduApvPopupHasSig){ alert('서명을 먼저 해주세요.'); return; }
+  var c = document.getElementById('eduApvSignCanvas');
+  eduApvSigs[eduApvCurrentIdx] = c.toDataURL('image/png');
+  renderEduApvArea(eduApvCurrentIdx);
+  closeEduApvSignPopup();
+}
+
+function closeEduApvSignPopup(){
+  document.getElementById('eduApvSignPopup').style.display = 'none';
+  eduApvPopupDrawing = false;
+}
+
+function clearEduApvSig(i){
+  eduApvSigs[i] = null;
+  renderEduApvArea(i);
+}
 
 function printEduForm(){
   var printWin = window.open('','_blank','width=900,height=700');
-  var content = document.getElementById('eduFormPrint').innerHTML;
-  /* 캔버스를 이미지로 변환 */
-  var html = content;
+  var html = document.getElementById('eduFormPrint').innerHTML;
   [0,1,2].forEach(function(i){
-    var c = document.getElementById('apvCanvas'+i);
-    var img = c.toDataURL('image/png');
-    html = html.replace('id="apvCanvas'+i+'"', 'style="display:none" id="apvCanvas'+i+'"');
-    html = html.replace('</canvas>', '</canvas><img src="'+img+'" width="60" height="60" style="display:block;margin:4px auto;border:1px solid #ddd;border-radius:4px;">');
+    html = html.replace(
+      'id="eduApvArea'+i+'" onclick="openEduApvSign('+i+')"',
+      'id="eduApvArea'+i+'" style="pointer-events:none;"'
+    );
   });
   printWin.document.write('<html><head><meta charset="UTF-8"><title>정기 안전보건 교육일지</title><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Noto Sans KR\',sans-serif;padding:20px;}input,textarea{font-family:\'Noto Sans KR\',sans-serif;}button{display:none!important;}@media print{button{display:none!important;}}</style></head><body>'+html+'</body></html>');
   printWin.document.close();
