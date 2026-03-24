@@ -2263,7 +2263,7 @@ function renderEduSigTable(){
     var parts = (g.sessionMonth||'').split('-');
     var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : g.sessionMonth||'-';
     return '<tr>'
-      +'<td class="td-name">'+(g.worker||'-')+'</td>'
+      +'<td style="cursor:pointer;" onclick="editEduName(this,\''+g.id+'\',\''+( (g.worker||'').replace(/'/g,"\\'") )+'\')" title="클릭하여 이름 수정"><span style="border-bottom:1px dashed #94a3b8;font-weight:700;">'+(g.worker||'-')+'</span> ✏️</td>'
       +'<td style="cursor:pointer;" onclick="editEduDept(this,\''+g.id+'\',\''+( (g.dept||'').replace(/'/g,"\\'") )+'\')" title="클릭하여 부서 수정"><span style="border-bottom:1px dashed #94a3b8;">'+(g.dept||'-')+'</span> ✏️</td>'
       +'<td style="font-size:11px;">'+monthLabel+' '+(g.sessionTitle||'')+'</td>'
       +'<td style="font-size:11px;">'+dt+'</td>'
@@ -2271,6 +2271,20 @@ function renderEduSigTable(){
       +'<td><button class="btn-del-sm" onclick="deleteEduSig(\''+g.id+'\')">🗑</button></td>'
       +'</tr>';
   }).join('');
+}
+
+function editEduName(td, docId, currentName){
+  var newName = prompt('이름을 수정하세요:', currentName);
+  if(newName === null) return;
+  newName = newName.trim();
+  if(!newName){ alert('이름을 입력해주세요.'); return; }
+  window._updateEduNameFn && window._updateEduNameFn(docId, newName, function(){
+    td.innerHTML = '<span style="border-bottom:1px dashed #94a3b8;font-weight:700;">'+newName+'</span> ✏️';
+    var rec = eduSigs.find(function(g){ return g.id===docId; });
+    if(rec) rec.worker = newName;
+    var rec2 = eduSigsFiltered.find(function(g){ return g.id===docId; });
+    if(rec2) rec2.worker = newName;
+  });
 }
 
 function editEduDept(td, docId, currentDept){
@@ -2557,7 +2571,7 @@ function renderSafSigTable(){
     var parts = (g.sessionMonth||'').split('-');
     var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : g.sessionMonth||'-';
     return '<tr>'
-      +'<td class="td-name">'+(g.worker||'-')+'</td>'
+      +'<td style="cursor:pointer;" onclick="editSafName(this,\''+g.id+'\',\''+( (g.worker||'').replace(/'/g,"\\'") )+'\')" title="클릭하여 이름 수정"><span style="border-bottom:1px dashed #94a3b8;font-weight:700;">'+(g.worker||'-')+'</span> ✏️</td>'
       +'<td style="cursor:pointer;" onclick="editSafDept(this,\''+g.id+'\',\''+( (g.dept||'').replace(/'/g,"\\'") )+'\')" title="클릭하여 부서 수정"><span style="border-bottom:1px dashed #94a3b8;">'+(g.dept||'-')+'</span> ✏️</td>'
       +'<td style="font-size:11px;">'+monthLabel+' '+(g.sessionTitle||'')+'</td>'
       +'<td style="font-size:11px;">'+dt+'</td>'
@@ -2565,6 +2579,20 @@ function renderSafSigTable(){
       +'<td><button class="btn-del-sm" onclick="deleteSafSig(\''+g.id+'\')">🗑</button></td>'
       +'</tr>';
   }).join('');
+}
+
+function editSafName(td, docId, currentName){
+  var newName = prompt('이름을 수정하세요:', currentName);
+  if(newName === null) return;
+  newName = newName.trim();
+  if(!newName){ alert('이름을 입력해주세요.'); return; }
+  window._updateSafNameFn && window._updateSafNameFn(docId, newName, function(){
+    td.innerHTML = '<span style="border-bottom:1px dashed #94a3b8;font-weight:700;">'+newName+'</span> ✏️';
+    var rec = safSigs.find(function(g){ return g.id===docId; });
+    if(rec) rec.worker = newName;
+    var rec2 = safSigsFiltered.find(function(g){ return g.id===docId; });
+    if(rec2) rec2.worker = newName;
+  });
 }
 
 function editSafDept(td, docId, currentDept){
@@ -3559,6 +3587,13 @@ window._deleteEduSigFn = async function(id){
   } catch(e){ alert('삭제 오류: '+e.message); }
 };
 
+window._updateEduNameFn = async function(id, newName, cb){
+  try{
+    await updateDoc(doc(db,'edu_signatures',id), { worker: newName });
+    if(cb) cb();
+  } catch(e){ alert('수정 오류: '+e.message); }
+};
+
 window._updateEduDeptFn = async function(id, newDept, cb){
   try{
     await updateDoc(doc(db,'edu_signatures',id), { dept: newDept });
@@ -3636,6 +3671,13 @@ window._deleteSafSigFn = async function(id){
     filterSafSigs();
     alert('🗑 서명 삭제 완료!');
   } catch(e){ alert('삭제 오류: '+e.message); }
+};
+
+window._updateSafNameFn = async function(id, newName, cb){
+  try{
+    await updateDoc(doc(db,'safety_signatures',id), { worker: newName });
+    if(cb) cb();
+  } catch(e){ alert('수정 오류: '+e.message); }
 };
 
 window._updateSafDeptFn = async function(id, newDept, cb){
