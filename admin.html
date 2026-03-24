@@ -352,7 +352,10 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   <div class="card" style="margin-bottom:12px">
     <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px">
       <div class="card-title" style="margin-bottom:0">☑️ 전 직원 설문 제출 현황</div>
-      <button class="tb-btn" style="background:#2563eb;color:#fff;font-size:12px;" onclick="openAddEmpModal()">+ 신규 인원 추가</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="tb-btn" style="background:#2563eb;color:#fff;font-size:12px;" onclick="openAddEmpModal()">+ 신규 인원 추가</button>
+        <button class="tb-btn" id="btnToggleInactive" style="background:#64748b;color:#fff;font-size:12px;" onclick="toggleInactiveView()">🚪 퇴사자 보기</button>
+      </div>
     </div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-bottom:10px">
       <span>✅ 제출 완료 <b id="ck-done" style="color:var(--green)">-</b>명</span>
@@ -1598,6 +1601,9 @@ var EMPLOYEES = [
   {dept:'부설연구소', name:'권민국', rank:'이사'},
 ];
 
+var inactiveNames = []; /* 퇴사자 이름 목록 */
+var showInactive = false; /* 퇴사자 표시 토글 */
+
 var allData = [], filtered = [];
 var currentPage = 1, pageSize = 20;
 var sortKey = 'createdAt', sortAsc = false;
@@ -1838,11 +1844,37 @@ function renderCheckTab(){
         +'</div>'
 
         +'</div>'
-        +(e._manual?'<button onclick="deleteManualEmp(\''+e._id+'\')" style="font-size:10px;padding:2px 6px;background:#fee2e2;color:#dc2626;border:none;border-radius:5px;cursor:pointer;">삭제</button>':'')
+        /* 관리 버튼 */
+        +'<div style="display:flex;gap:4px;margin-left:auto;">'
+        +(e._manual
+          ? '<button onclick="deleteManualEmp(\''+e._id+'\')" style="font-size:10px;padding:2px 7px;background:#fee2e2;color:#dc2626;border:none;border-radius:5px;cursor:pointer;">삭제</button>'
+          : '<button onclick="retireEmployee(\''+e.name+'\')" style="font-size:10px;padding:2px 7px;background:#f1f5f9;color:#64748b;border:1px solid #cbd5e1;border-radius:5px;cursor:pointer;">🚪 퇴사</button>'
+        )
+        +'</div>'
         +'</div>';
     });
     html+='</div></div>';
   });
+
+  /* 퇴사자 섹션 */
+  if(showInactive && inactiveNames.length){
+    html+='<div class="dept-section" style="opacity:.7;border:1.5px dashed #cbd5e1;">'
+      +'<div class="dept-section-title" style="background:#f1f5f9;color:#64748b;">'
+      +'<span>🚪 퇴사자 ('+inactiveNames.length+'명)</span>'
+      +'</div>'
+      +'<div class="dept-section-body">';
+    inactiveNames.forEach(function(item){
+      html+='<div class="check-row" style="opacity:.6;">'
+        +'<span class="check-emp-name" style="text-decoration:line-through;color:#94a3b8;">'+item.name+'</span>'
+        +'<span style="font-size:11px;color:#94a3b8;margin-left:8px;">퇴사처리됨</span>'
+        +'<div style="margin-left:auto;">'
+        +'<button onclick="reinstateEmployee(\''+item.id+'\',\''+item.name+'\')" style="font-size:10px;padding:2px 7px;background:#dcfce7;color:#059669;border:1px solid #86efac;border-radius:5px;cursor:pointer;">♻️ 복직</button>'
+        +'</div>'
+        +'</div>';
+    });
+    html+='</div></div>';
+  }
+
   document.getElementById('checkListArea').innerHTML=html;
 }
 
@@ -1865,6 +1897,21 @@ function saveNewEmployee(){
 function deleteManualEmp(id){
   if(!confirm('이 인원을 삭제하시겠습니까?')) return;
   window._deleteManualEmpFn && window._deleteManualEmpFn(id);
+}
+
+/* 퇴사처리 / 복직처리 */
+function retireEmployee(name){
+  if(!confirm('【'+name+'】을(를) 퇴사처리 하시겠습니까?\n데이터는 보존됩니다.')) return;
+  window._retireEmpFn && window._retireEmpFn(name);
+}
+function reinstateEmployee(id, name){
+  if(!confirm('【'+name+'】을(를) 복직처리 하시겠습니까?')) return;
+  window._reinstateEmpFn && window._reinstateEmpFn(id, name);
+}
+function toggleInactiveView(){
+  showInactive = !showInactive;
+  document.getElementById('btnToggleInactive').textContent = showInactive ? '🙈 퇴사자 숨기기' : '🚪 퇴사자 보기';
+  renderCheckTab();
 }
 
 /* 예방보고서 자동작성 */
@@ -3528,13 +3575,49 @@ const db  = getFirestore(app, '(default)');
 /* ── manual_employees 로드/저장/삭제 ── */
 window._loadManualEmpsFn = async function(){
   try{
+    /* 수동 추가 인원 */
     const snap = await getDocs(collection(db,'manual_employees'));
     snap.forEach(d => {
       const emp = Object.assign({id:d.id}, d.data());
       const exists = EMPLOYEES.find(function(e){ return e.name === emp.name; });
       if(!exists) EMPLOYEES.push({name:emp.name, dept:emp.dept, rank:'', _manual:true, _id:emp.id});
     });
+    /* 퇴사자 로드 */
+    const retSnap = await getDocs(collection(db,'retired_employees'));
+    inactiveNames = [];
+    retSnap.forEach(d => inactiveNames.push(Object.assign({id:d.id}, d.data())));
+    /* 퇴사자를 EMPLOYEES에서 제거 */
+    inactiveNames.forEach(function(item){
+      var idx = EMPLOYEES.findIndex(function(e){ return e.name === item.name; });
+      if(idx !== -1) EMPLOYEES.splice(idx, 1);
+    });
   } catch(e){ console.warn('manual_employees 로드 오류:', e.message); }
+};
+
+/* 퇴사처리 */
+window._retireEmpFn = async function(name){
+  try{
+    const docRef = await addDoc(collection(db,'retired_employees'),{
+      name:name, retiredAt:Timestamp.now()
+    });
+    inactiveNames.push({id:docRef.id, name:name});
+    var idx = EMPLOYEES.findIndex(function(e){ return e.name === name; });
+    if(idx !== -1) EMPLOYEES.splice(idx, 1);
+    renderCheckTab();
+    alert('🚪 '+name+' 퇴사처리 완료. 데이터는 보존됩니다.');
+  } catch(e){ alert('오류: '+e.message); }
+};
+
+/* 복직처리 */
+window._reinstateEmpFn = async function(id, name){
+  try{
+    await deleteDoc(doc(db,'retired_employees', id));
+    inactiveNames = inactiveNames.filter(function(i){ return i.id !== id; });
+    /* EMPLOYEES 원본에서 찾아서 복구 - 없으면 기본으로 추가 */
+    EMPLOYEES.push({name:name, dept:'', rank:''});
+    renderCheckTab();
+    alert('♻️ '+name+' 복직처리 완료.');
+  } catch(e){ alert('오류: '+e.message); }
 };
 
 window._saveManualEmpFn = async function(name, dept){
