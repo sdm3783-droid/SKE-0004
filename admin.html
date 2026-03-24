@@ -821,6 +821,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
       <button class="tb-btn tb-blue" onclick="openEduSessionModal()">+ 새 교육 회차 등록</button>
       <button class="tb-btn tb-ghost" onclick="loadEduData()">🔄 새로고침</button>
       <button class="tb-btn" style="background:#7c3aed;color:#fff;" onclick="openEduFormModal()">📄 교육일지 양식 작성</button>
+      <button class="tb-btn" style="background:#0f172a;color:#fff;" onclick="printEduSignSheet()">🖨️ 교육서명지 인쇄</button>
     </div>
     <div class="tbl-wrap">
       <div class="tbl-hdr"><div class="tbl-count" id="eduSessionCount">-</div></div>
@@ -877,6 +878,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
       <button class="tb-btn tb-blue" onclick="openSafSessionModal()">+ 새 교육 회차 등록</button>
       <button class="tb-btn tb-ghost" onclick="loadSafData()">🔄 새로고침</button>
       <button class="tb-btn" style="background:#065f46;color:#fff;" onclick="openSafFormModal()">📄 교육일지 양식 작성</button>
+      <button class="tb-btn" style="background:#0f172a;color:#fff;" onclick="printSafSignSheet()">🖨️ 교육서명지 인쇄</button>
     </div>
     <div class="tbl-wrap">
       <div class="tbl-hdr"><div class="tbl-count" id="safSessionCount">-</div></div>
@@ -2201,6 +2203,54 @@ function clearEduApvSig(i){
   renderEduApvArea(i);
 }
 
+function printSignSheet(sigs, title){
+  if(!sigs || !sigs.length){ alert('출력할 서명 데이터가 없습니다.'); return; }
+  var rows = '';
+  var pairs = [];
+  for(var i=0;i<sigs.length;i+=2) pairs.push([sigs[i], sigs[i+1]||null]);
+  pairs.forEach(function(p){
+    function cell(g){
+      if(!g) return '<td></td><td></td><td></td>';
+      var dt = g.signedAt && g.signedAt.toDate ? g.signedAt.toDate() : new Date();
+      var dateStr = (dt.getMonth()+1)+'/'+ dt.getDate();
+      var sig = g.signatureData ? '<img src="'+g.signatureData+'" style="width:80px;height:32px;object-fit:contain;">' : '';
+      return '<td style="text-align:center;font-size:11px;">'+dateStr+'</td>'
+            +'<td style="font-size:12px;font-weight:700;text-align:center;">'+(g.worker||'')+'</td>'
+            +'<td style="text-align:center;">'+sig+'</td>';
+    }
+    rows += '<tr style="height:38px;">'+cell(p[0])+cell(p[1])+'</tr>';
+  });
+  var html = '<h2 style="text-align:center;font-size:20px;font-weight:900;margin-bottom:16px;letter-spacing:2px;">교육 서명지</h2>'
+    +'<p style="text-align:center;font-size:12px;color:#555;margin-bottom:10px;">'+title+'</p>'
+    +'<table style="width:100%;border-collapse:collapse;border:1.5px solid #333;">'
+    +'<thead><tr style="background:#f0f0f0;">'
+    +'<th style="border:1px solid #aaa;padding:5px 4px;font-size:11px;width:7%;">날짜</th>'
+    +'<th style="border:1px solid #aaa;padding:5px 4px;font-size:11px;width:18%;">성&nbsp;&nbsp;&nbsp;명</th>'
+    +'<th style="border:1px solid #aaa;padding:5px 4px;font-size:11px;width:25%;">서&nbsp;&nbsp;&nbsp;명</th>'
+    +'<th style="border:1px solid #aaa;padding:5px 4px;font-size:11px;width:7%;">날짜</th>'
+    +'<th style="border:1px solid #aaa;padding:5px 4px;font-size:11px;width:18%;">성&nbsp;&nbsp;&nbsp;명</th>'
+    +'<th style="border:1px solid #aaa;padding:5px 4px;font-size:11px;width:25%;">서&nbsp;&nbsp;&nbsp;명</th>'
+    +'</tr></thead>'
+    +'<tbody>'+rows+'</tbody></table>';
+  var w = window.open('','_blank','width=900,height=700');
+  w.document.write('<html><head><meta charset="UTF-8"><title>교육서명지</title>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">'
+    +'<style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:\'Noto Sans KR\',sans-serif;padding:16px;}'
+    +'td,th{border:1px solid #aaa;padding:3px 5px;}'
+    +'@page{size:A4 portrait;margin:8mm;}'
+    +'@media print{html,body{width:210mm;}}'
+    +'</style></head><body>'+html+'</body></html>');
+  w.document.close();
+  setTimeout(function(){ w.print(); }, 600);
+}
+
+function printEduSignSheet(){
+  var activeSess = eduSessions.find(function(s){ return s.active; });
+  var filtered = activeSess ? eduSigs.filter(function(g){ return g.sessionId===activeSess.id; }) : eduSigs;
+  var title = activeSess ? (activeSess.title||'') + ' (' + (activeSess.month||'') + ')' : '전체';
+  printSignSheet(filtered, title);
+}
+
 function printEduForm(){
   var printWin = window.open('','_blank','width=900,height=700');
   var html = document.getElementById('eduFormPrint').innerHTML;
@@ -2447,6 +2497,13 @@ function closeSafApvSignPopup(){
 function clearSafApvSig(i){
   safApvSigs[i] = null;
   renderSafApvArea(i);
+}
+
+function printSafSignSheet(){
+  var activeSess = safSessions.find(function(s){ return s.active; });
+  var filtered = activeSess ? safSigs.filter(function(g){ return g.sessionId===activeSess.id; }) : safSigs;
+  var title = activeSess ? (activeSess.title||'') + ' (' + (activeSess.month||'') + ')' : '전체';
+  printSignSheet(filtered, title);
 }
 
 function printSafForm(){
