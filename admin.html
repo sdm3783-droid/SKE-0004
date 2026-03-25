@@ -3783,6 +3783,7 @@ window._saveReportFn = async function(){
     }
     closeReportModal();
     renderReports();
+    renderCheckTab();
   } catch(e){ alert('오류: '+e.message); }
 };
 
@@ -3791,6 +3792,7 @@ window._deleteReportFn = async function(id){
     await deleteDoc(doc(db,'reports',id));
     reportData = reportData.filter(r=>r.id!==id);
     renderReports();
+    renderCheckTab();
     alert('🗑 삭제 완료!');
   } catch(e){ alert('오류: '+e.message); }
 };
