@@ -2437,7 +2437,11 @@ function renderEduSigTable(){
     return;
   }
   document.getElementById('eduSigTbody').innerHTML = eduSigsFiltered.map(function(g, i){
-    var dt = g.signedAt && g.signedAt.toDate ? g.signedAt.toDate().toLocaleString('ko-KR') : (g.signedAt||'-');
+    /* 교육일지 양식에 저장된 eduDate 우선 표시, 없으면 signedAt */
+    var sess = eduSessions.find(function(s){ return s.id === g.sessionId; });
+    var dt = (sess && sess.eduDate)
+      ? sess.eduDate
+      : (g.signedAt && g.signedAt.toDate ? g.signedAt.toDate().toLocaleDateString('ko-KR') : (g.signedAt||'-'));
     var parts = (g.sessionMonth||'').split('-');
     var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : g.sessionMonth||'-';
     return '<tr>'
@@ -2793,7 +2797,11 @@ function renderSafSigTable(){
     return;
   }
   document.getElementById('safSigTbody').innerHTML = safSigsFiltered.map(function(g, i){
-    var dt = g.signedAt && g.signedAt.toDate ? g.signedAt.toDate().toLocaleString('ko-KR') : (g.signedAt||'-');
+    /* 교육일지 양식에 저장된 eduDate 우선 표시, 없으면 signedAt */
+    var sess = safSessions.find(function(s){ return s.id === g.sessionId; });
+    var dt = (sess && sess.eduDate)
+      ? sess.eduDate
+      : (g.signedAt && g.signedAt.toDate ? g.signedAt.toDate().toLocaleDateString('ko-KR') : (g.signedAt||'-'));
     var parts = (g.sessionMonth||'').split('-');
     var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : g.sessionMonth||'-';
     return '<tr>'
