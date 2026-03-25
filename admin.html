@@ -3932,6 +3932,9 @@ window._deleteEduSigFn = async function(id){
 window._saveEduFormFn = async function(sessionId, data, cb){
   try{
     await updateDoc(doc(db,'edu_sessions',sessionId), { formData: data });
+    /* 메모리 내 세션 데이터도 즉시 업데이트 */
+    var sess = eduSessions.find(function(s){ return s.id === sessionId; });
+    if(sess) sess.formData = data;
     if(cb) cb();
   } catch(e){ alert('저장 오류: '+e.message); }
 };
@@ -4025,6 +4028,9 @@ window._deleteSafSigFn = async function(id){
 window._saveSafFormFn = async function(sessionId, data, cb){
   try{
     await updateDoc(doc(db,'safety_sessions',sessionId), { formData: data });
+    /* 메모리 내 세션 데이터도 즉시 업데이트 */
+    var sess = safSessions.find(function(s){ return s.id === sessionId; });
+    if(sess) sess.formData = data;
     if(cb) cb();
   } catch(e){ alert('저장 오류: '+e.message); }
 };
