@@ -2401,8 +2401,10 @@ function renderEduSessions(){
 }
 
 function filterEduSigs(){
-  var sessionId = document.getElementById('eduSigFilter').value;
-  var name = document.getElementById('eduSigSearch').value.trim().toLowerCase();
+  var sfEl = document.getElementById('eduSigFilter');
+  var snEl = document.getElementById('eduSigSearch');
+  var sessionId = sfEl ? sfEl.value : '';
+  var name = snEl ? snEl.value.trim().toLowerCase() : '';
   eduSigsFiltered = eduSigs.filter(function(g){
     if(sessionId && g.sessionId !== sessionId) return false;
     if(name && (g.worker||'').toLowerCase().indexOf(name)<0) return false;
@@ -2761,8 +2763,10 @@ function renderSafSessions(){
 }
 
 function filterSafSigs(){
-  var sessionId = document.getElementById('safSigFilter').value;
-  var name = document.getElementById('safSigNameFilter').value.trim().toLowerCase();
+  var sfEl = document.getElementById('safSigFilter');
+  var snEl = document.getElementById('safSigNameFilter');
+  var sessionId = sfEl ? sfEl.value : '';
+  var name = snEl ? snEl.value.trim().toLowerCase() : '';
   safSigsFiltered = safSigs.filter(function(g){
     if(sessionId && g.sessionId !== sessionId) return false;
     if(name && (g.worker||'').toLowerCase().indexOf(name)<0) return false;
