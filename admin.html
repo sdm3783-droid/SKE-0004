@@ -1605,6 +1605,7 @@ var EMPLOYEES = [
 var inactiveNames = []; /* 퇴사자 이름 목록 */
 var showInactive = false; /* 퇴사자 표시 토글 */
 var showOnlyPending = false; /* 미제출자만 표시 토글 */
+var expandedEmp = null;      /* 현재 펼쳐진 직원 이름 */
 
 var allData = [], filtered = [];
 var currentPage = 1, pageSize = 20;
@@ -1816,15 +1817,30 @@ function renderCheckTab(){
       var jColor  = {'정상':'#059669','관리대상자':'#d97706','통증호소자':'#dc2626'};
       var jBg     = {'정상':'rgba(16,185,129,.1)','관리대상자':'rgba(245,158,11,.12)','통증호소자':'rgba(239,68,68,.12)'};
 
-      html+='<div class="check-row" style="align-items:center;">'
-        +'<span class="check-emp-name" style="min-width:60px;">'+e.name+'</span>'
+      var isExpanded = (expandedEmp===e.name);
+      var canExpand  = !!survey;
+
+      html+='<div>';
+
+      /* 직원 행 */
+      html+='<div class="check-row" style="align-items:center;'
+        +(isExpanded?'background:#eff6ff;border-radius:8px 8px 0 0;border:2px solid #3b82f6;border-bottom:none;':'')
+        +'">'
+        +'<span class="check-emp-name" style="min-width:60px;'
+        +(canExpand?'color:#2563eb;cursor:pointer;font-weight:700;':'')
+        +'"'
+        +(canExpand?' onclick="toggleEmpDetail(\''+e.name+'\')"':'')
+        +'>'
+        +e.name
+        +(canExpand?'<span style="font-size:9px;margin-left:3px;color:#93c5fd;">'+(isExpanded?'▲':'▼')+'</span>':'')
+        +'</span>'
         +'<div style="display:flex;gap:12px;align-items:center;flex:1;flex-wrap:wrap;">'
 
         /* ① 증상조사 */
         +'<div style="display:flex;flex-direction:column;align-items:center;min-width:64px;gap:2px;">'
         +'<span style="font-size:10px;color:#64748b;font-weight:600;">📋 증상조사</span>'
         +(survey
-          ? '<span style="font-size:16px;" title="'+( survey.createdAt?new Date(survey.createdAt.seconds*1000).toLocaleDateString('ko-KR'):'' )+'">✅</span>'
+          ? '<span style="font-size:16px;" title="'+(survey.createdAt?new Date(survey.createdAt.seconds*1000).toLocaleDateString('ko-KR'):'')+'">✅</span>'
             +(judge?'<span style="padding:1px 6px;border-radius:6px;font-size:9px;font-weight:700;background:'+jBg[judge]+';color:'+jColor[judge]+'">'+judge+'</span>':'')
           : '<span style="font-size:16px;color:#e2e8f0;">☐</span><span style="font-size:10px;color:var(--red);">미제출</span>')
         +'</div>'
@@ -1857,6 +1873,15 @@ function renderCheckTab(){
         )
         +'</div>'
         +'</div>';
+
+      /* 아코디언 패널 */
+      if(isExpanded){
+        html+='<div style="border:2px solid #3b82f6;border-top:none;border-radius:0 0 8px 8px;overflow:hidden;margin-bottom:4px;">'
+          +buildDetailHTML(survey, hazard)
+          +'</div>';
+      }
+
+      html+='</div>';
     });
     html+='</div></div>';
   });
@@ -1923,6 +1948,111 @@ function togglePendingFilter(){
   var btn = document.getElementById('btnTogglePending');
   btn.textContent   = showOnlyPending ? '👥 전체 보기' : '❌ 미제출만 보기';
   btn.style.background = showOnlyPending ? '#2563eb' : '#dc2626';
+  renderCheckTab();
+}
+
+/* ══ 개선 권고 자동생성 ══ */
+function genRecommendations(survey, hazard){
+  var recs = [];
+  if(survey && survey.hasPain==='예' && survey.painParts && survey.painParts.length){
+    survey.painParts.forEach(function(part){
+      var d = survey.painData && survey.painData[part];
+      var j = judgePartNIOSH(d);
+      var partShort = part.split('/')[0];
+      if(j==='통증호소자'){
+        recs.push({level:'긴급', text: partShort+' 전문의 검진 권장'});
+      } else if(j==='관리대상자'){
+        recs.push({level:'권장', text: partShort+' 스트레칭 및 작업환경 개선 검토'});
+      } else if(d && d.level){
+        recs.push({level:'검토', text: partShort+' 예방적 스트레칭 권고'});
+      }
+    });
+  }
+  if(hazard && hazard.score){
+    var score = parseInt(hazard.score)||0;
+    if(score>=70) recs.push({level:'긴급', text:'작업환경 개선 우선 대상 (유해요인 '+score+'점)'});
+    else if(score>=50) recs.push({level:'권장', text:'작업방식 개선 검토 필요 (유해요인 '+score+'점)'});
+  }
+  if(!recs.length) recs.push({level:'검토', text:'특이사항 없음 ✅'});
+  return recs;
+}
+
+function buildDetailHTML(survey, hazard){
+  var LEVEL_BAR = {
+    '약한 통증':      {w:'25%', c:'#10b981'},
+    '중간 통증':      {w:'50%', c:'#f59e0b'},
+    '심한 통증':      {w:'75%', c:'#ef4444'},
+    '매우 심한 통증': {w:'100%', c:'#dc2626'}
+  };
+
+  /* ── 1열: 신체부위 통증 바 ── */
+  var col1 = '<div style="flex:1.3;background:#fff;border-radius:8px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);">'
+    +'<div style="font-size:9px;font-weight:700;color:#1e293b;margin-bottom:8px;">🦴 신체부위별 통증</div>';
+
+  if(!survey || survey.hasPain!=='예' || !survey.painParts || !survey.painParts.length){
+    col1 += '<div style="text-align:center;padding:16px;color:#10b981;font-size:12px;">✅ 통증 없음</div>';
+  } else {
+    PARTS.forEach(function(part){
+      var d       = survey.painData && survey.painData[part];
+      var hasPain = survey.painParts.indexOf(part)>=0;
+      var bar     = hasPain && d && d.level ? LEVEL_BAR[d.level] : null;
+      var w  = bar ? bar.w : '4%';
+      var c  = bar ? bar.c : '#e2e8f0';
+      var lbl = hasPain && d && d.level ? d.level.replace(' 통증','') : '없음';
+      var lc  = bar ? bar.c : '#94a3b8';
+      col1 += '<div style="display:flex;align-items:center;gap:5px;margin-bottom:5px;">'
+        +'<div style="font-size:8px;color:#64748b;width:36px;flex-shrink:0;">'+part.split('/')[0]+'</div>'
+        +'<div style="flex:1;background:#f1f5f9;border-radius:3px;height:9px;">'
+        +  '<div style="background:'+c+';width:'+w+';height:100%;border-radius:3px;transition:.4s;"></div>'
+        +'</div>'
+        +'<div style="font-size:8px;color:'+lc+';width:30px;text-align:right;">'+lbl+'</div>'
+        +'</div>';
+    });
+  }
+  col1 += '</div>';
+
+  /* ── 2열: 종합 판정 ── */
+  var judge  = survey ? judgeOverall(survey) : '미제출';
+  var jColor = {'정상':'#059669','관리대상자':'#d97706','통증호소자':'#dc2626','미제출':'#94a3b8'};
+  var jBg    = {'정상':'#dcfce7','관리대상자':'#fef3c7','통증호소자':'#fee2e2','미제출':'#f1f5f9'};
+  var painCount   = survey && survey.painParts ? survey.painParts.length : 0;
+  var hazardScore = hazard && hazard.score ? parseInt(hazard.score)||0 : null;
+
+  var col2 = '<div style="flex:0.9;background:#fff;border-radius:8px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);text-align:center;">'
+    +'<div style="font-size:9px;font-weight:700;color:#1e293b;margin-bottom:6px;">📊 종합 판정</div>'
+    +'<div style="font-size:28px;font-weight:900;color:'+(hazardScore!==null?jColor[judge]:'#94a3b8')+';line-height:1.1;">'+(hazardScore!==null?hazardScore:'-')+'</div>'
+    +'<div style="font-size:8px;color:#94a3b8;margin-bottom:5px;">'+(hazardScore!==null?'유해요인 점수':'유해요인 미작성')+'</div>'
+    +'<div style="background:'+jBg[judge]+';border-radius:20px;padding:3px 10px;display:inline-block;font-size:9px;font-weight:700;color:'+jColor[judge]+';margin-bottom:8px;">'+judge+'</div>'
+    +'<div style="border-top:1px solid #f1f5f9;padding-top:6px;">'
+    +'<div style="font-size:8px;color:#64748b;margin-bottom:2px;">통증 부위 수</div>'
+    +'<div style="font-size:13px;font-weight:700;color:'+(painCount>0?'#ef4444':'#10b981')+';">'+painCount+'개 부위</div>'
+    +'</div>'
+    +'</div>';
+
+  /* ── 3열: 개선 권고 ── */
+  var recs    = genRecommendations(survey, hazard);
+  var recBg   = {'긴급':'#fef2f2','권장':'#fefce8','검토':'#f0fdf4'};
+  var recBd   = {'긴급':'#ef4444','권장':'#f59e0b','검토':'#10b981'};
+  var recTc   = {'긴급':'#991b1b','권장':'#713f12','검토':'#065f46'};
+  var recIcon = {'긴급':'🚨','권장':'⚠️','검토':'💚'};
+
+  var col3 = '<div style="flex:1.3;background:#fff;border-radius:8px;padding:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);">'
+    +'<div style="font-size:9px;font-weight:700;color:#1e293b;margin-bottom:6px;">💡 개선 권고사항 '
+    +'<span style="font-size:7px;background:#dbeafe;color:#1d4ed8;border-radius:4px;padding:1px 5px;">자동생성</span></div>';
+  recs.forEach(function(r){
+    col3 += '<div style="background:'+recBg[r.level]+';border-radius:5px;padding:5px 7px;border-left:3px solid '+recBd[r.level]+';margin-bottom:4px;">'
+      +'<div style="font-size:7px;font-weight:700;color:'+recTc[r.level]+';margin-bottom:1px;">'+recIcon[r.level]+' '+r.level+'</div>'
+      +'<div style="font-size:8px;color:'+recTc[r.level]+';">'+r.text+'</div>'
+      +'</div>';
+  });
+  col3 += '</div>';
+
+  return '<div style="background:#eff6ff;padding:10px;display:flex;gap:8px;">'
+    +col1+col2+col3+'</div>';
+}
+
+function toggleEmpDetail(name){
+  expandedEmp = (expandedEmp===name) ? null : name;
   renderCheckTab();
 }
 
