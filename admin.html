@@ -355,6 +355,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="tb-btn" style="background:#2563eb;color:#fff;font-size:12px;" onclick="openAddEmpModal()">+ 신규 인원 추가</button>
         <button class="tb-btn" id="btnToggleInactive" style="background:#64748b;color:#fff;font-size:12px;" onclick="toggleInactiveView()">🚪 퇴사자 보기</button>
+        <button class="tb-btn" id="btnTogglePending" style="background:#dc2626;color:#fff;font-size:12px;" onclick="togglePendingFilter()">❌ 미제출만 보기</button>
       </div>
     </div>
     <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:13px;margin-bottom:10px">
@@ -1603,6 +1604,7 @@ var EMPLOYEES = [
 
 var inactiveNames = []; /* 퇴사자 이름 목록 */
 var showInactive = false; /* 퇴사자 표시 토글 */
+var showOnlyPending = false; /* 미제출자만 표시 토글 */
 
 var allData = [], filtered = [];
 var currentPage = 1, pageSize = 20;
@@ -1790,6 +1792,9 @@ function renderCheckTab(){
   var html='';
   Object.keys(deptMap).forEach(function(dept){
     var emps=deptMap[dept];
+    /* 미제출 필터 적용 */
+    if(showOnlyPending) emps=emps.filter(function(e){ return !submittedMap[e.name]; });
+    if(emps.length===0) return; /* 필터 후 인원 없으면 부서 섹션 숨김 */
     var dDone=emps.filter(function(e){return submittedMap[e.name];}).length;
     var dPct=Math.round(dDone/emps.length*100);
     html+='<div class="dept-section">'
@@ -1911,6 +1916,13 @@ function reinstateEmployee(id, name){
 function toggleInactiveView(){
   showInactive = !showInactive;
   document.getElementById('btnToggleInactive').textContent = showInactive ? '🙈 퇴사자 숨기기' : '🚪 퇴사자 보기';
+  renderCheckTab();
+}
+function togglePendingFilter(){
+  showOnlyPending = !showOnlyPending;
+  var btn = document.getElementById('btnTogglePending');
+  btn.textContent   = showOnlyPending ? '👥 전체 보기' : '❌ 미제출만 보기';
+  btn.style.background = showOnlyPending ? '#2563eb' : '#dc2626';
   renderCheckTab();
 }
 
@@ -3654,14 +3666,27 @@ window._deleteManualEmpFn = async function(id){
 
 window._loadFn = async function(){
   try{
+    /* 직원 + 증상조사 + 유해요인 + 예방보고서 병렬 로드 */
     await window._loadManualEmpsFn();
-    const snap = await getDocs(query(collection(db,'surveys'), orderBy('createdAt','desc')));
+    const [snapSurvey, snapHazard, snapReport] = await Promise.all([
+      getDocs(query(collection(db,'surveys'),        orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'hazard_surveys'), orderBy('createdAt','desc'))),
+      getDocs(query(collection(db,'reports'),        orderBy('createdAt','desc')))
+    ]);
     allData = [];
-    snap.forEach(d => allData.push(Object.assign({id:d.id}, d.data())));
+    snapSurvey.forEach(d => allData.push(Object.assign({id:d.id}, d.data())));
     filtered = allData.slice();
+
+    hazardData = [];
+    snapHazard.forEach(d => hazardData.push(Object.assign({id:d.id}, d.data())));
+    hazardFiltered = hazardData.slice();
+
+    reportData = [];
+    snapReport.forEach(d => reportData.push(Object.assign({id:d.id}, d.data())));
+
     updateAll(allData);
     renderTable();
-    console.log('✅ 로드 완료:', allData.length,'건');
+    console.log('✅ 로드 완료 — 증상조사:', allData.length,'건 | 유해요인:', hazardData.length,'건 | 예방보고서:', reportData.length,'건');
   } catch(e){
     console.error('❌ 오류:', e);
     document.getElementById('tblBody').innerHTML='<tr><td colspan="10" class="empty-msg">⚠️ '+e.message+'<br><small>Firestore 규칙에서 read를 허용해주세요</small></td></tr>';
