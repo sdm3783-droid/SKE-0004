@@ -940,7 +940,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   <!-- 직원별 서명 체크현황 -->
   <div class="card">
     <div class="card-title">☑️ 직원별 서명 현황</div>
-    <div id="eduCheckGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin-top:8px;"></div>
+    <div id="eduCheckGrid" style="margin-top:8px;"></div>
   </div>
 
   <!-- 서명 현황 -->
@@ -1005,7 +1005,7 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   <!-- 직원별 서명 체크현황 -->
   <div class="card">
     <div class="card-title">☑️ 직원별 서명 현황</div>
-    <div id="safCheckGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin-top:8px;"></div>
+    <div id="safCheckGrid" style="margin-top:8px;"></div>
   </div>
 
   <div class="card">
@@ -2580,33 +2580,29 @@ function filterEduSigs(){
 
 function renderEduCheckGrid(){
   var container = document.getElementById('eduCheckGrid');
-  if(!eduSessions.length){
-    container.innerHTML = '<p style="color:#94a3b8;font-size:13px;">등록된 교육 회차가 없습니다.</p>';
+  var activeSess = eduSessions.find(function(s){ return s.active; });
+  if(!activeSess){
+    container.innerHTML = '<p style="color:#94a3b8;font-size:13px;">활성화된 교육 회차가 없습니다.</p>';
     return;
   }
-  var sorted = eduSessions.slice().sort(function(a,b){ return (b.month||'').localeCompare(a.month||''); });
-  container.innerHTML = sorted.map(function(s){
-    var parts = (s.month||'').split('-');
-    var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : s.month;
-    var sessionSigs = eduSigs.filter(function(g){ return g.sessionId === s.id; });
-    var signedNames = sessionSigs.map(function(g){ return g.worker; });
-    var doneCount = EMPLOYEES.filter(function(e){ return signedNames.indexOf(e.name)>=0; }).length;
-    var grid = EMPLOYEES.map(function(e){
-      var done = signedNames.indexOf(e.name) >= 0;
-      return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;font-size:12px;font-weight:600;background:'+(done?'#dcfce7':'#fef2f2')+';border:1px solid '+(done?'#86efac':'#fca5a5')+';">'
-        +'<span style="font-size:14px;">'+(done?'✅':'❌')+'</span>'
-        +'<span style="color:'+(done?'#166534':'#991b1b')+';">'+e.name+'</span>'
-        +'</div>';
-    }).join('');
-    return '<div style="margin-bottom:20px;">'
-      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:8px 12px;background:#eff6ff;border-radius:8px;border-left:4px solid #3b82f6;">'
-      +'<span style="font-size:13px;font-weight:800;color:#1e40af;">'+monthLabel+' '+s.title+'</span>'
-      +'<span style="font-size:12px;color:#3b82f6;font-weight:700;">✅ '+doneCount+'명 / ❌ '+(EMPLOYEES.length-doneCount)+'명</span>'
-      +(s.active?'<span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">활성</span>':'')
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;">'+grid+'</div>'
+  var parts = (activeSess.month||'').split('-');
+  var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : activeSess.month;
+  var sessionSigs = eduSigs.filter(function(g){ return g.sessionId === activeSess.id; });
+  var signedNames = sessionSigs.map(function(g){ return g.worker; });
+  var doneCount = EMPLOYEES.filter(function(e){ return signedNames.indexOf(e.name)>=0; }).length;
+  var grid = EMPLOYEES.map(function(e){
+    var done = signedNames.indexOf(e.name) >= 0;
+    return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;font-size:12px;font-weight:600;background:'+(done?'#dcfce7':'#fef2f2')+';border:1px solid '+(done?'#86efac':'#fca5a5')+';">'
+      +'<span style="font-size:14px;">'+(done?'✅':'❌')+'</span>'
+      +'<span style="color:'+(done?'#166534':'#991b1b')+';">'+e.name+'</span>'
       +'</div>';
   }).join('');
+  container.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:8px 12px;background:#eff6ff;border-radius:8px;border-left:4px solid #3b82f6;">'
+    +'<span style="font-size:13px;font-weight:800;color:#1e40af;">'+monthLabel+' '+activeSess.title+'</span>'
+    +'<span style="font-size:12px;color:#3b82f6;font-weight:700;">✅ '+doneCount+'명 / ❌ '+(EMPLOYEES.length-doneCount)+'명</span>'
+    +'<span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">활성</span>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;">'+grid+'</div>';
 }
 
 function renderEduSigTable(){
@@ -2982,33 +2978,29 @@ function filterSafSigs(){
 
 function renderSafCheckGrid(){
   var container = document.getElementById('safCheckGrid');
-  if(!safSessions.length){
-    container.innerHTML = '<p style="color:#94a3b8;font-size:13px;">등록된 교육 회차가 없습니다.</p>';
+  var activeSess = safSessions.find(function(s){ return s.active; });
+  if(!activeSess){
+    container.innerHTML = '<p style="color:#94a3b8;font-size:13px;">활성화된 교육 회차가 없습니다.</p>';
     return;
   }
-  var sorted = safSessions.slice().sort(function(a,b){ return (b.month||'').localeCompare(a.month||''); });
-  container.innerHTML = sorted.map(function(s){
-    var parts = (s.month||'').split('-');
-    var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : s.month;
-    var sessionSigs = safSigs.filter(function(g){ return g.sessionId === s.id; });
-    var signedNames = sessionSigs.map(function(g){ return g.worker; });
-    var doneCount = EMPLOYEES.filter(function(e){ return signedNames.indexOf(e.name)>=0; }).length;
-    var grid = EMPLOYEES.map(function(e){
-      var done = signedNames.indexOf(e.name) >= 0;
-      return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;font-size:12px;font-weight:600;background:'+(done?'#dcfce7':'#fef2f2')+';border:1px solid '+(done?'#86efac':'#fca5a5')+';">'
-        +'<span style="font-size:14px;">'+(done?'✅':'❌')+'</span>'
-        +'<span style="color:'+(done?'#166534':'#991b1b')+';">'+e.name+'</span>'
-        +'</div>';
-    }).join('');
-    return '<div style="margin-bottom:20px;">'
-      +'<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:8px 12px;background:#f0fdf4;border-radius:8px;border-left:4px solid #16a34a;">'
-      +'<span style="font-size:13px;font-weight:800;color:#166534;">'+monthLabel+' '+s.title+'</span>'
-      +'<span style="font-size:12px;color:#16a34a;font-weight:700;">✅ '+doneCount+'명 / ❌ '+(EMPLOYEES.length-doneCount)+'명</span>'
-      +(s.active?'<span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">활성</span>':'')
-      +'</div>'
-      +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;">'+grid+'</div>'
+  var parts = (activeSess.month||'').split('-');
+  var monthLabel = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : activeSess.month;
+  var sessionSigs = safSigs.filter(function(g){ return g.sessionId === activeSess.id; });
+  var signedNames = sessionSigs.map(function(g){ return g.worker; });
+  var doneCount = EMPLOYEES.filter(function(e){ return signedNames.indexOf(e.name)>=0; }).length;
+  var grid = EMPLOYEES.map(function(e){
+    var done = signedNames.indexOf(e.name) >= 0;
+    return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;font-size:12px;font-weight:600;background:'+(done?'#dcfce7':'#fef2f2')+';border:1px solid '+(done?'#86efac':'#fca5a5')+';">'
+      +'<span style="font-size:14px;">'+(done?'✅':'❌')+'</span>'
+      +'<span style="color:'+(done?'#166534':'#991b1b')+';">'+e.name+'</span>'
       +'</div>';
   }).join('');
+  container.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:8px 12px;background:#f0fdf4;border-radius:8px;border-left:4px solid #16a34a;">'
+    +'<span style="font-size:13px;font-weight:800;color:#166534;">'+monthLabel+' '+activeSess.title+'</span>'
+    +'<span style="font-size:12px;color:#16a34a;font-weight:700;">✅ '+doneCount+'명 / ❌ '+(EMPLOYEES.length-doneCount)+'명</span>'
+    +'<span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">활성</span>'
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;">'+grid+'</div>';
 }
 
 function renderSafSigTable(){
