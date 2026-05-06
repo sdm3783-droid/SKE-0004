@@ -2847,7 +2847,11 @@ function printEduSignSheet(){
 
 function printEduForm(){
   var printWin = window.open('','_blank','width=900,height=700');
-  var html = document.getElementById('eduFormPrint').innerHTML;
+  /* input/textarea의 현재 값을 HTML 속성에 반영 (innerHTML 복사 시 JS값 손실 방지) */
+  var container = document.getElementById('eduFormPrint');
+  container.querySelectorAll('input').forEach(function(el){ el.setAttribute('value', el.value); });
+  container.querySelectorAll('textarea').forEach(function(el){ el.textContent = el.value; });
+  var html = container.innerHTML;
   [0,1,2].forEach(function(i){
     html = html.replace(
       'id="eduApvArea'+i+'" onclick="openEduApvSign('+i+')"',
@@ -3170,7 +3174,11 @@ function printSafSignSheet(){
 
 function printSafForm(){
   var printWin = window.open('','_blank','width=900,height=700');
-  var content = document.getElementById('safFormPrint').innerHTML;
+  /* input/textarea의 현재 값을 HTML 속성에 반영 (innerHTML 복사 시 JS값 손실 방지) */
+  var container = document.getElementById('safFormPrint');
+  container.querySelectorAll('input').forEach(function(el){ el.setAttribute('value', el.value); });
+  container.querySelectorAll('textarea').forEach(function(el){ el.textContent = el.value; });
+  var content = container.innerHTML;
   /* safApvArea에 저장된 서명 이미지로 교체 */
   var html = content;
   [0,1,2].forEach(function(i){
