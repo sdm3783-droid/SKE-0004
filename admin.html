@@ -284,18 +284,46 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
 
 <!-- 헤더 -->
 <div class="hdr" id="adminHdr" style="display:none">
-  <div class="hdr-left" style="gap:0;flex:1;">
-    <div id="hdrMusculo" onclick="switchSection('musculo')" style="display:flex;align-items:center;gap:8px;padding:6px 16px 6px 0;cursor:pointer;border-right:1px solid rgba(255,255,255,.25);margin-right:16px;opacity:1;">
+  <div class="hdr-left" style="gap:0;flex:1;overflow-x:auto;flex-wrap:nowrap;">
+    <div id="hdrEduDash" onclick="switchSection('edu-dash')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;border-right:1px solid rgba(255,255,255,.25);margin-right:16px;flex-shrink:0;">
+      <span style="font-size:18px">📊</span>
+      <span class="hdr-title">전체 교육 현황</span>
+    </div>
+    <div id="hdrMusculo" onclick="switchSection('musculo')" style="display:flex;align-items:center;gap:8px;padding:6px 16px 6px 0;cursor:pointer;border-right:1px solid rgba(255,255,255,.25);margin-right:16px;opacity:1;flex-shrink:0;">
       <span style="font-size:20px">🦴</span>
       <span class="hdr-title">근골격계 증상조사</span>
     </div>
-    <div id="hdrEdu" onclick="switchSection('edu')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;border-right:1px solid rgba(255,255,255,.25);margin-right:16px;">
+    <div id="hdrEdu" onclick="switchSection('edu')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;border-right:1px solid rgba(255,255,255,.25);margin-right:16px;flex-shrink:0;">
       <span style="font-size:18px">📚</span>
       <span class="hdr-title">정기안전보건교육</span>
     </div>
-    <div id="hdrSafety" onclick="switchSection('safety')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;">
+    <div id="hdrSafety" onclick="switchSection('safety')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;flex-shrink:0;">
       <span style="font-size:18px">🦺</span>
       <span class="hdr-title">산업안전교육</span>
+    </div>
+    <div id="hdrHarassment" onclick="switchSection('harassment')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;flex-shrink:0;">
+      <span style="font-size:18px">🚫</span>
+      <span class="hdr-title">성희롱예방교육</span>
+    </div>
+    <div id="hdrDisability" onclick="switchSection('disability')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;flex-shrink:0;">
+      <span style="font-size:18px">♿</span>
+      <span class="hdr-title">장애인 인식개선교육</span>
+    </div>
+    <div id="hdrPension" onclick="switchSection('pension')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;flex-shrink:0;">
+      <span style="font-size:18px">💰</span>
+      <span class="hdr-title">퇴직연금교육</span>
+    </div>
+    <div id="hdrPrivacy" onclick="switchSection('privacy')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;flex-shrink:0;">
+      <span style="font-size:18px">🔒</span>
+      <span class="hdr-title">개인정보보호교육</span>
+    </div>
+    <div id="hdrBullying" onclick="switchSection('bullying')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;flex-shrink:0;">
+      <span style="font-size:18px">🤝</span>
+      <span class="hdr-title">괴롭힘 예방교육</span>
+    </div>
+    <div id="hdrSerious" onclick="switchSection('serious')" style="display:flex;align-items:center;gap:8px;padding:6px 12px;cursor:pointer;opacity:.55;border-radius:8px;transition:.2s;flex-shrink:0;">
+      <span style="font-size:18px">⚠️</span>
+      <span class="hdr-title">중대재해처벌교육</span>
     </div>
   </div>
   <button class="logout-btn" onclick="doLogout()">로그아웃</button>
@@ -1034,6 +1062,25 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
   </div>
 </div>
 
+<!-- ══ TAB 전체 교육 현황 ══ -->
+<div class="tab-pane" id="tab-edu-dash">
+  <div style="background:linear-gradient(135deg,#1e293b,#334155);border-radius:14px;padding:16px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+    <div style="color:#fff;">
+      <div style="font-size:16px;font-weight:900;">📊 전체 교육 현황</div>
+      <div style="font-size:11px;opacity:.75;margin-top:2px;">모든 교육의 서명 완료 현황을 한눈에 확인합니다</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;">
+      <select id="dashYearFilter" class="tb-sel" onchange="renderEduDashboard()" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.3);"></select>
+      <button onclick="loadDashboardAll()" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🔄 새로고침</button>
+    </div>
+  </div>
+  <div id="dashLoadingMsg" style="text-align:center;padding:40px;color:#94a3b8;font-size:13px;">데이터를 불러오는 중...</div>
+  <div id="eduDashGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;"></div>
+</div>
+
+<!-- ══ TAB 추가 법정교육 6종 (JS로 동적 생성) ══ -->
+<div id="xEduTabContainer"></div>
+
 <!-- 산업안전교육 회차 등록/수정 모달 -->
 <div id="safSessionModal" style="position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;">
   <div class="modal-backdrop" onclick="closeSafSessionModal()"></div>
@@ -1051,10 +1098,15 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
       <div class="m-group"><div class="m-label">교육 제목 *</div><input id="saf-title" type="text" class="m-inp" placeholder="예: 산업안전교육 (3월)"></div>
       <div class="m-group"><div class="m-label">강사명</div><input id="saf-instructor" type="text" class="m-inp" placeholder="예: 신동민"></div>
       <div class="m-group">
-        <div class="m-label">교육자료 PDF 링크 (Google Drive)</div>
+        <div class="m-label">📄 교육자료 PDF 링크 (Google Drive)</div>
         <input id="saf-pdfUrl" type="url" class="m-inp" placeholder="https://drive.google.com/file/d/.../preview">
         <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:8px 10px;margin-top:6px;font-size:11px;color:#166534;line-height:1.6;">
           📌 Google Drive → 공유 → 링크 복사 후 <b>/view</b>를 <b>/preview</b>로 변경
+        </div>
+        <div class="m-label" style="margin-top:10px;">🎥 YouTube 영상 URL</div>
+        <input id="saf-youtubeUrl" type="url" class="m-inp" placeholder="https://www.youtube.com/watch?v=...">
+        <div style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:8px 10px;margin-top:6px;font-size:11px;color:#713f12;line-height:1.6;">
+          📌 YouTube 영상 URL 그대로 붙여넣기 (자동 변환됩니다)
         </div>
       </div>
       <div class="m-group" style="display:flex;align-items:center;gap:10px;">
@@ -1281,6 +1333,188 @@ tbody td{padding:8px 11px;font-size:12px;vertical-align:middle;}
       <button onclick="clearSafApvPopup()" style="flex:1;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🗑 지우기</button>
       <button onclick="saveSafApvSign()" style="flex:2;padding:10px;background:linear-gradient(135deg,#065f46,#059669);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✅ 저장</button>
       <button onclick="closeSafApvSignPopup()" style="flex:1;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 추가 법정교육 공유 모달 ══ -->
+<!-- 회차 등록/수정 모달 -->
+<div id="xEduSessionModal" style="position:fixed;inset:0;z-index:600;display:none;align-items:center;justify-content:center;padding:16px;">
+  <div class="modal-backdrop" onclick="closeXEduSessionModal()"></div>
+  <div class="modal-box">
+    <div class="modal-hd">
+      <div class="modal-title" id="xEduSessionModalTitle">새 교육 회차 등록</div>
+      <button class="modal-close" onclick="closeXEduSessionModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="xEduSessionDocId">
+      <input type="hidden" id="xEduSessionKey">
+      <div class="m-grid2">
+        <div class="m-group"><div class="m-label">교육 연도 *</div><input id="xEdu-month" type="number" class="m-inp" min="2020" max="2040" placeholder="예: 2026"></div>
+        <div class="m-group"><div class="m-label">교육일</div><input id="xEdu-eduDate" type="date" class="m-inp"></div>
+      </div>
+      <div class="m-group"><div class="m-label">교육 제목 *</div><input id="xEdu-title" type="text" class="m-inp" placeholder="예: 성희롱예방교육 (3월)"></div>
+      <div class="m-group"><div class="m-label">강사명</div><input id="xEdu-instructor" type="text" class="m-inp" placeholder="예: 신동민"></div>
+      <div class="m-group">
+        <div class="m-label">📄 교육자료 PDF 링크 (Google Drive)</div>
+        <input id="xEdu-pdfUrl" type="url" class="m-inp" placeholder="https://drive.google.com/file/d/.../preview">
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:8px 10px;margin-top:6px;font-size:11px;color:#166534;line-height:1.6;">
+          📌 Google Drive → 공유 → 링크 복사 후 <b>/view</b>를 <b>/preview</b>로 변경
+        </div>
+        <div class="m-label" style="margin-top:10px;">🎥 YouTube 영상 URL</div>
+        <input id="xEdu-youtubeUrl" type="url" class="m-inp" placeholder="https://www.youtube.com/watch?v=...">
+        <div style="background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:8px 10px;margin-top:6px;font-size:11px;color:#713f12;line-height:1.6;">
+          📌 YouTube 영상 URL 그대로 붙여넣기 (자동 변환됩니다)
+        </div>
+      </div>
+      <div class="m-group" style="display:flex;align-items:center;gap:10px;">
+        <input type="checkbox" id="xEdu-active" style="width:18px;height:18px;accent-color:#10b981;">
+        <label for="xEdu-active" style="font-size:13px;font-weight:700;color:#065f46;cursor:pointer;">✅ 이 회차를 활성화 (직원 서명 페이지에 표시)</label>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-cancel" onclick="closeXEduSessionModal()">취소</button>
+      <button class="btn-save" onclick="saveXEduSession()">💾 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 교육일지 모달 -->
+<div id="xEduFormModal" style="position:fixed;inset:0;z-index:800;display:none;align-items:flex-start;justify-content:center;padding:20px;background:rgba(0,0,0,.6);overflow-y:auto;">
+  <div style="background:#fff;border-radius:12px;width:100%;max-width:700px;box-shadow:0 20px 60px rgba(0,0,0,.3);margin:auto;">
+    <div style="padding:14px 18px;border-bottom:1px solid #dde3f0;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2;border-radius:12px 12px 0 0;">
+      <div style="font-size:14px;font-weight:800;" id="xEduFormModalTitle">📄 교육일지</div>
+      <div style="display:flex;gap:8px;">
+        <button onclick="saveXEduFormData()" style="padding:7px 16px;background:#16a34a;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">💾 저장</button>
+        <button onclick="printXEduForm()" style="padding:7px 16px;background:#065f46;color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🖨️ 인쇄</button>
+        <button onclick="closeXEduFormModal()" style="padding:7px 12px;background:#f1f5f9;color:#64748b;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✕ 닫기</button>
+      </div>
+    </div>
+    <div id="xEduFormPrint" style="padding:24px;font-family:'Noto Sans KR',sans-serif;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0;border:1.5px solid #333;border-bottom:none;">
+        <div style="display:flex;align-items:center;gap:14px;padding:14px 20px;flex:1;">
+          <div id="xEduFormIconEl" style="width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:#ede9fe;"></div>
+          <div id="xEduFormTitleEl" style="font-size:18px;font-weight:900;letter-spacing:2px;border:2px solid #555;padding:8px 20px;">교육일지</div>
+        </div>
+        <div style="border-left:1.5px solid #333;display:flex;flex-direction:column;min-width:210px;">
+          <div style="text-align:center;font-size:11px;font-weight:700;padding:4px 0;border-bottom:1px solid #333;background:#f0fdf4;">결 &nbsp; 재</div>
+          <div style="display:flex;flex:1;">
+            <div style="flex:1;border-right:1px solid #333;text-align:center;">
+              <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">담당</div>
+              <div id="xEduApvArea0" onclick="openXEduApvSign(0)" style="width:60px;height:60px;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafff8;">
+                <span style="font-size:9px;color:#aaa;">클릭서명</span>
+              </div>
+              <button onclick="clearXEduApvSig(0)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+            </div>
+            <div style="flex:1;border-right:1px solid #333;text-align:center;">
+              <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">검토</div>
+              <div id="xEduApvArea1" onclick="openXEduApvSign(1)" style="width:60px;height:60px;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafff8;">
+                <span style="font-size:9px;color:#aaa;">클릭서명</span>
+              </div>
+              <button onclick="clearXEduApvSig(1)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+            </div>
+            <div style="flex:1;text-align:center;">
+              <div style="font-size:10px;padding:3px 0;border-bottom:1px solid #ddd;background:#f0fdf4;">결재</div>
+              <div id="xEduApvArea2" onclick="openXEduApvSign(2)" style="width:60px;height:60px;margin:4px auto;border:1px dashed #aaa;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;background:#fafff8;">
+                <span style="font-size:9px;color:#aaa;">클릭서명</span>
+              </div>
+              <button onclick="clearXEduApvSig(2)" style="font-size:9px;padding:1px 6px;background:#fee2e2;border:none;border-radius:3px;cursor:pointer;margin-bottom:3px;">지우기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <table id="xEduFormTable" style="width:100%;border-collapse:collapse;border:1.5px solid #333;border-top:none;font-size:11.5px;">
+        <tr>
+          <td style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;width:100px;text-align:center;">사업장명</td>
+          <td colspan="3" style="padding:7px 10px;border:1px solid #aaa;"><input type="text" id="xf-company" value="신광전자" style="border:none;outline:none;width:100%;font-size:12px;font-family:'Noto Sans KR',sans-serif;"></td>
+        </tr>
+        <tr>
+          <td rowspan="3" style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:middle;">일 시</td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="xf-d1" placeholder="월/일" style="width:40px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> <span style="background:#d1fae5;padding:1px 5px;border-radius:3px;font-size:10px;">1차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="xf-t1s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="xf-t1e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="xf-h1" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="xf-d2" placeholder="월/일" style="width:40px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> <span style="background:#d1fae5;padding:1px 5px;border-radius:3px;font-size:10px;">2차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="xf-t2s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="xf-t2e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="xf-h2" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
+        </tr>
+        <tr>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="xf-d3" placeholder="월/일" style="width:40px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> <span style="background:#d1fae5;padding:1px 5px;border-radius:3px;font-size:10px;">3차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="xf-t3s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="xf-t3e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="xf-h3" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
+        </tr>
+        <tr>
+          <td rowspan="4" style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:middle;">교육 인원</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">구 분</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">남</td>
+          <td style="background:#f8faff;font-weight:700;font-size:10px;padding:5px 8px;border:1px solid #aaa;text-align:center;">여/계/비고</td>
+        </tr>
+        <tr>
+          <td style="font-size:11px;padding:5px 8px;border:1px solid #aaa;text-align:center;background:#fafbff;">대상 인원</td>
+          <td style="border:1px solid #aaa;"><input type="text" id="xf-tm" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="xf-tf" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+        </tr>
+        <tr>
+          <td style="font-size:11px;padding:5px 8px;border:1px solid #aaa;text-align:center;background:#fafbff;">참석인원</td>
+          <td style="border:1px solid #aaa;"><input type="text" id="xf-am" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="xf-af" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+        </tr>
+        <tr>
+          <td style="font-size:11px;padding:5px 8px;border:1px solid #aaa;text-align:center;background:#fafbff;">미참석 인원</td>
+          <td style="border:1px solid #aaa;"><input type="text" id="xf-nm" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+          <td style="border:1px solid #aaa;"><input type="text" id="xf-nf" style="width:100%;border:none;outline:none;text-align:center;font-size:11px;padding:4px;"></td>
+        </tr>
+        <tr>
+          <td style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;">교육주제</td>
+          <td colspan="3" style="padding:7px 10px;border:1px solid #aaa;"><input type="text" id="xf-subject" style="border:none;outline:none;width:100%;font-size:12px;font-family:'Noto Sans KR',sans-serif;"></td>
+        </tr>
+        <tr>
+          <td style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:top;">교육내용</td>
+          <td colspan="3" style="padding:10px 16px;border:1px solid #aaa;line-height:2.2;">
+            <div style="color:#065f46;margin-bottom:4px;">Ⅰ. &nbsp;<input type="text" id="xf-c1" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+            <div style="color:#065f46;margin-bottom:4px;">Ⅱ. &nbsp;<input type="text" id="xf-c2" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+            <div style="color:#065f46;margin-bottom:4px;">Ⅲ. &nbsp;<input type="text" id="xf-c3" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+            <div style="color:#065f46;">Ⅳ. &nbsp;<input type="text" id="xf-c4" style="border:none;border-bottom:1px solid #aaa;outline:none;width:80%;font-size:12px;font-family:'Noto Sans KR',sans-serif;color:#1e293b;"></div>
+          </td>
+        </tr>
+        <tr>
+          <td style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:middle;">교육장소/<br>강사</td>
+          <td style="border:1px solid #aaa;padding:6px 8px;"><input type="text" id="xf-place" placeholder="교육장소" style="border:none;outline:none;width:100%;font-size:12px;font-family:'Noto Sans KR',sans-serif;"></td>
+          <td colspan="2" style="border:1px solid #aaa;padding:6px 8px;"><input type="text" id="xf-instructor" placeholder="강사명 / 직위" style="border:none;outline:none;width:100%;font-size:12px;font-family:'Noto Sans KR',sans-serif;"></td>
+        </tr>
+        <tr>
+          <td style="background:#f0fdf4;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:top;">특이사항</td>
+          <td colspan="3" style="padding:6px;border:1px solid #aaa;"><textarea id="xf-special" rows="3" style="width:100%;border:none;outline:none;font-size:12px;font-family:'Noto Sans KR',sans-serif;resize:vertical;padding:4px;"></textarea></td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- 서명 확인 모달 -->
+<div id="xEduSigModal" style="position:fixed;inset:0;z-index:700;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.6);">
+  <div style="background:#fff;border-radius:14px;padding:20px;max-width:400px;width:100%;">
+    <div style="font-size:14px;font-weight:800;margin-bottom:12px;" id="xEduSigModalTitle">서명 확인</div>
+    <img id="xEduSigImg" src="" alt="서명" style="width:100%;border:1px solid #dde3f0;border-radius:8px;background:#fafbff;">
+    <div id="xEduSigModalInfo" style="font-size:12px;color:#64748b;margin-top:8px;"></div>
+    <button onclick="closeXEduSigModal()" style="margin-top:12px;width:100%;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">닫기</button>
+  </div>
+</div>
+
+<!-- 결재 서명 팝업 -->
+<div id="xEduApvSignPopup" style="position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(0,0,0,.7);">
+  <div style="background:#fff;border-radius:14px;padding:20px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,.4);">
+    <div style="font-size:14px;font-weight:800;margin-bottom:4px;" id="xEduApvSignTitle">담당 서명</div>
+    <div style="font-size:11px;color:#64748b;margin-bottom:12px;">손가락 또는 마우스로 서명해 주세요</div>
+    <div style="border:2px dashed #065f46;border-radius:10px;overflow:hidden;background:#fafff8;position:relative;margin-bottom:12px;">
+      <canvas id="xEduApvSignCanvas" style="width:100%;height:160px;display:block;touch-action:none;cursor:crosshair;"></canvas>
+      <div id="xEduApvSignHint" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;color:#aaa;font-size:13px;">여기에 서명하세요</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="clearXEduApvPopup()" style="flex:1;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🗑 지우기</button>
+      <button onclick="saveXEduApvSign()" style="flex:2;padding:10px;background:linear-gradient(135deg,#065f46,#059669);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✅ 저장</button>
+      <button onclick="closeXEduApvSignPopup()" style="flex:1;padding:10px;background:#f1f5f9;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">취소</button>
     </div>
   </div>
 </div>
@@ -1646,17 +1880,27 @@ function doLogout(){ if(confirm('로그아웃 하시겠습니까?')) location.re
 /* ── 탭 전환 ── */
 function switchSection(sec){
   /* 헤더 강조 */
+  document.getElementById('hdrEduDash').style.opacity    = sec==='edu-dash' ? '1' : '.55';
+  document.getElementById('hdrEduDash').style.background = sec==='edu-dash' ? 'rgba(255,255,255,.15)' : '';
   document.getElementById('hdrMusculo').style.opacity   = sec==='musculo' ? '1' : '.55';
   document.getElementById('hdrMusculo').style.background= sec==='musculo' ? '' : '';
   document.getElementById('hdrEdu').style.opacity       = sec==='edu' ? '1' : '.55';
   document.getElementById('hdrEdu').style.background    = sec==='edu' ? 'rgba(255,255,255,.15)' : '';
   document.getElementById('hdrSafety').style.opacity    = sec==='safety' ? '1' : '.55';
   document.getElementById('hdrSafety').style.background = sec==='safety' ? 'rgba(255,255,255,.15)' : '';
+  XEDU_TYPES.forEach(function(t){
+    var hdr = document.getElementById('hdr'+t.key.charAt(0).toUpperCase()+t.key.slice(1));
+    if(hdr){ hdr.style.opacity = sec===t.key ? '1' : '.55'; hdr.style.background = sec===t.key ? 'rgba(255,255,255,.15)' : ''; }
+  });
   /* 탭바 */
   document.getElementById('navTabs').style.display = sec==='musculo' ? 'block' : 'none';
   /* 탭 콘텐츠 */
   document.querySelectorAll('.tab-pane').forEach(function(p){ p.style.display='none'; p.classList.remove('active'); });
-  if(sec==='musculo'){
+  if(sec==='edu-dash'){
+    document.getElementById('tab-edu-dash').style.display = 'block';
+    document.getElementById('tab-edu-dash').classList.add('active');
+    loadDashboardAll();
+  } else if(sec==='musculo'){
     var activeTab = document.querySelector('#navTabs .nav-tab.active');
     var activeId = activeTab ? activeTab.getAttribute('onclick').match(/'([^']+)'\s*\)/)[1] : 'tab-overview';
     document.getElementById(activeId).style.display = 'block';
@@ -1669,6 +1913,13 @@ function switchSection(sec){
     document.getElementById('tab-safety').style.display = 'block';
     document.getElementById('tab-safety').classList.add('active');
     loadSafData();
+  } else {
+    var xType = XEDU_TYPES.find(function(t){ return t.key===sec; });
+    if(xType){
+      var tabEl = document.getElementById('tab-'+xType.key);
+      if(tabEl){ tabEl.style.display='block'; tabEl.classList.add('active'); }
+      loadXEduData(xType.key);
+    }
   }
   window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -3081,6 +3332,7 @@ function openSafSessionModal(docId){
   document.getElementById('saf-instructor').value = '';
   document.getElementById('saf-active').checked = false;
   document.getElementById('saf-pdfUrl').value = '';
+  document.getElementById('saf-youtubeUrl').value = '';
   if(docId){
     var s = safSessions.find(function(x){ return x.id===docId; });
     if(s){
@@ -3090,6 +3342,7 @@ function openSafSessionModal(docId){
       document.getElementById('saf-instructor').value = s.instructor||'';
       document.getElementById('saf-active').checked = !!s.active;
       document.getElementById('saf-pdfUrl').value = s.pdfUrl||'';
+      document.getElementById('saf-youtubeUrl').value = s.youtubeUrl||'';
     }
     document.getElementById('safSessionModalTitle').textContent = '🦺 교육 회차 수정';
   } else {
@@ -3270,6 +3523,492 @@ function printSafForm(){
 function saveSafSession(){ window._saveSafSessionFn && window._saveSafSessionFn(); }
 function deleteSafSession(id){ if(!confirm('이 교육 회차를 삭제하시겠습니까?')) return; window._deleteSafSessionFn && window._deleteSafSessionFn(id); }
 function deleteSafSig(id){ if(!confirm('이 서명을 삭제하시겠습니까?')) return; window._deleteSafSigFn && window._deleteSafSigFn(id); }
+
+/* ══ 전체 교육 현황 대시보드 ══ */
+var dashLoaded = false;
+
+function loadDashboardAll(){
+  dashLoaded = false;
+  document.getElementById('dashLoadingMsg').style.display = 'block';
+  document.getElementById('eduDashGrid').innerHTML = '';
+  window._loadDashboardFn && window._loadDashboardFn();
+}
+
+function renderEduDashboard(){
+  var yearSel = document.getElementById('dashYearFilter');
+  var selYear = yearSel ? yearSel.value : '';
+
+  var ALL_TYPES = [
+    { key:'edu',        label:'정기안전보건교육', icon:'📚', grad:'135deg,#1e40af,#2563eb',  sessions: eduSessions, sigs: eduSigs,  isMonthly: true  },
+    { key:'safety',     label:'산업안전교육',     icon:'🦺', grad:'135deg,#064e3b,#065f46',  sessions: safSessions, sigs: safSigs,  isMonthly: true  },
+    { key:'harassment', label:'성희롱예방교육',    icon:'🚫', grad:'135deg,#6d28d9,#7c3aed', isMonthly: false },
+    { key:'disability', label:'장애인 인식개선교육',icon:'♿', grad:'135deg,#0369a1,#0284c7', isMonthly: false },
+    { key:'pension',    label:'퇴직연금교육',      icon:'💰', grad:'135deg,#92400e,#b45309', isMonthly: false },
+    { key:'privacy',    label:'개인정보보호교육',   icon:'🔒', grad:'135deg,#0f766e,#0d9488', isMonthly: false },
+    { key:'bullying',   label:'괴롭힘 예방교육',   icon:'🤝', grad:'135deg,#9d174d,#be185d', isMonthly: false },
+    { key:'serious',    label:'중대재해처벌교육',   icon:'⚠️', grad:'135deg,#b91c1c,#dc2626', isMonthly: false }
+  ];
+
+  /* xEdu 데이터 병합 */
+  ALL_TYPES.forEach(function(t){
+    if(t.key !== 'edu' && t.key !== 'safety'){
+      t.sessions = xEduState[t.key] ? xEduState[t.key].sessions : [];
+      t.sigs     = xEduState[t.key] ? xEduState[t.key].sigs     : [];
+    }
+  });
+
+  /* 연도 필터 목록 구성 */
+  var years = new Set();
+  var curYear = String(new Date().getFullYear());
+  ALL_TYPES.forEach(function(t){
+    (t.sessions||[]).forEach(function(s){
+      var y = (s.month||'').split('-')[0];
+      if(y) years.add(y);
+    });
+  });
+  years.add(curYear);
+  var sortedYears = Array.from(years).sort(function(a,b){ return b-a; });
+  var prevVal = yearSel.value || curYear;
+  yearSel.innerHTML = sortedYears.map(function(y){
+    return '<option value="'+y+'"'+(y===prevVal?' selected':'')+'>'+y+'년</option>';
+  }).join('');
+  selYear = yearSel.value || curYear;
+
+  var total = EMPLOYEES ? EMPLOYEES.length : 0;
+  var cards = ALL_TYPES.map(function(t){
+    var sessions = t.sessions || [];
+    var sigs     = t.sigs     || [];
+
+    /* 선택 연도에 해당하는 세션 필터 */
+    var yearSessions = sessions.filter(function(s){
+      return (s.month||'').split('-')[0] === selYear || (!t.isMonthly && (s.month||'') === selYear);
+    });
+    var activeSess = yearSessions.find(function(s){ return s.active; }) || yearSessions[0];
+
+    var done = 0, pct = 0, periodLabel = '-';
+    if(activeSess){
+      var sessId = activeSess.id;
+      done = sigs.filter(function(g){ return g.sessionId === sessId; }).length;
+      pct  = total > 0 ? Math.round(done/total*100) : 0;
+      if(t.isMonthly){
+        var p = (activeSess.month||'').split('-');
+        periodLabel = p.length===2 ? p[0]+'년 '+parseInt(p[1])+'월' : activeSess.month;
+      } else {
+        periodLabel = (activeSess.month||'')+'년';
+      }
+    }
+
+    var hasActive = !!activeSess && activeSess.active;
+    var barColor  = pct>=80 ? '#10b981' : pct>=50 ? '#f59e0b' : '#ef4444';
+    var badgeHtml = hasActive
+      ? '<span style="background:rgba(255,255,255,.25);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">✅ 활성</span>'
+      : '<span style="background:rgba(0,0,0,.2);color:rgba(255,255,255,.7);padding:2px 8px;border-radius:10px;font-size:10px;">비활성</span>';
+
+    return '<div onclick="switchSection(\''+t.key+'\')" style="background:linear-gradient('+t.grad+');border-radius:14px;padding:16px;color:#fff;cursor:pointer;transition:.2s;box-shadow:0 4px 16px rgba(0,0,0,.15);" onmouseover="this.style.transform=\'translateY(-3px)\';this.style.boxShadow=\'0 8px 24px rgba(0,0,0,.25)\'" onmouseout="this.style.transform=\'\';this.style.boxShadow=\'0 4px 16px rgba(0,0,0,.15)\'">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">'
+        +'<div style="display:flex;align-items:center;gap:8px;">'
+          +'<span style="font-size:24px;">'+t.icon+'</span>'
+          +'<div>'
+            +'<div style="font-size:12px;font-weight:900;line-height:1.3;">'+t.label+'</div>'
+            +'<div style="font-size:10px;opacity:.75;">'+periodLabel+'</div>'
+          +'</div>'
+        +'</div>'
+        +badgeHtml
+      +'</div>'
+      +'<div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:8px;">'
+        +'<div>'
+          +'<span style="font-size:28px;font-weight:900;line-height:1;">'+(activeSess?done:'-')+'</span>'
+          +'<span style="font-size:13px;opacity:.8;"> / '+total+'명</span>'
+        +'</div>'
+        +'<div style="font-size:22px;font-weight:900;">'+(activeSess?pct+'%':'-')+'</div>'
+      +'</div>'
+      +'<div style="background:rgba(0,0,0,.2);border-radius:10px;height:8px;overflow:hidden;">'
+        +'<div style="background:'+barColor+';width:'+(activeSess?pct:0)+'%;height:100%;border-radius:10px;transition:.6s;box-shadow:0 0 8px '+barColor+'88;"></div>'
+      +'</div>'
+      +(yearSessions.length>1?'<div style="font-size:10px;opacity:.6;margin-top:6px;">이번 연도 '+yearSessions.length+'개 회차</div>':'')
+      +'</div>';
+  }).join('');
+
+  document.getElementById('eduDashGrid').innerHTML = cards;
+  document.getElementById('dashLoadingMsg').style.display = 'none';
+}
+
+/* ══ 추가 법정교육 6종 ══ */
+var XEDU_TYPES = [
+  { key:'harassment', label:'성희롱예방교육',     icon:'🚫', grad:'135deg,#6d28d9,#7c3aed' },
+  { key:'disability', label:'장애인 인식개선교육', icon:'♿', grad:'135deg,#0369a1,#0284c7' },
+  { key:'pension',    label:'퇴직연금교육',        icon:'💰', grad:'135deg,#92400e,#b45309' },
+  { key:'privacy',    label:'개인정보보호교육',     icon:'🔒', grad:'135deg,#0f766e,#0d9488' },
+  { key:'bullying',   label:'괴롭힘 예방교육',     icon:'🤝', grad:'135deg,#9d174d,#be185d' },
+  { key:'serious',    label:'중대재해처벌교육',     icon:'⚠️', grad:'135deg,#b91c1c,#dc2626' }
+];
+var xEduState = {};
+XEDU_TYPES.forEach(function(t){
+  xEduState[t.key] = { sessions:[], sigs:[], sigsFiltered:[], apvSigs:[null,null,null] };
+});
+var xEduActiveKey = null;
+var xEduApvCurrentIdx = 0;
+var xEduApvPopupCtx = null, xEduApvPopupDrawing = false, xEduApvPopupHasSig = false;
+
+function buildXEduTabHTML(cfg){
+  var k = cfg.key, l = cfg.label, ic = cfg.icon, gr = cfg.grad;
+  var signUrl = 'sign2.html?type='+k;
+  return '<div class="tab-pane" id="tab-'+k+'">'
+    +'<div style="background:linear-gradient('+gr+');border-radius:14px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">'
+      +'<div style="color:#fff;">'
+        +'<div style="font-size:14px;font-weight:900;">'+ic+' 직원 전자서명 페이지 ('+l+')</div>'
+        +'<div style="font-size:11px;opacity:.8;margin-top:2px;">아래 링크를 직원에게 공유하거나 QR코드로 만들어 배포하세요</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:8px;align-items:center;">'
+        +'<a href="'+signUrl+'" target="_blank" style="background:rgba(255,255,255,.2);color:#fff;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,.4);">🔗 서명 페이지 열기</a>'
+      +'</div>'
+    +'</div>'
+    +'<div class="card">'
+      +'<div class="card-title">📋 교육 회차 관리</div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">'
+        +'<button class="tb-btn tb-blue" onclick="openXEduSessionModal(\''+k+'\')">+ 새 교육 회차 등록</button>'
+        +'<button class="tb-btn tb-ghost" onclick="loadXEduData(\''+k+'\')">🔄 새로고침</button>'
+        +'<button class="tb-btn" style="background:#065f46;color:#fff;" onclick="openXEduFormModal(\''+k+'\')">📄 교육일지 양식 작성</button>'
+        +'<button class="tb-btn" style="background:#0f172a;color:#fff;" onclick="printXEduSignSheet(\''+k+'\')">🖨️ 교육서명지 인쇄</button>'
+      +'</div>'
+      +'<div class="tbl-wrap">'
+        +'<div class="tbl-hdr"><div class="tbl-count" id="'+k+'SessionCount">-</div></div>'
+        +'<div class="tbl-scroll">'
+          +'<table style="min-width:680px"><thead><tr><th>월</th><th>교육 제목</th><th>교육일</th><th>강사</th><th>서명수</th><th>상태</th><th>관리</th></tr></thead>'
+          +'<tbody id="'+k+'SessionTbody"><tr><td colspan="7" class="empty-msg">데이터를 불러오는 중...</td></tr></tbody></table>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
+    +'<div class="card">'
+      +'<div class="card-title">☑️ 직원별 서명 현황</div>'
+      +'<div id="'+k+'CheckGrid" style="margin-top:8px;"></div>'
+    +'</div>'
+    +'<div class="card">'
+      +'<div class="card-title">✍️ 전자서명 제출 현황</div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">'
+        +'<select id="'+k+'MonthFilter" class="tb-sel" onchange="filterXEduSigs(\''+k+'\')"><option value="">전체 월</option></select>'
+        +'<select id="'+k+'SigFilter" class="tb-sel" onchange="filterXEduSigs(\''+k+'\')"><option value="">전체 회차</option></select>'
+        +'<input type="text" id="'+k+'SigNameFilter" class="tb-inp" placeholder="이름 검색" oninput="filterXEduSigs(\''+k+'\')">'
+      +'</div>'
+      +'<div class="stat-grid" id="'+k+'SigStats"></div>'
+      +'<div class="tbl-wrap">'
+        +'<div class="tbl-hdr"><div class="tbl-count" id="'+k+'SigCount">-</div></div>'
+        +'<div class="tbl-scroll">'
+          +'<table style="min-width:660px"><thead><tr><th>이름</th><th>부서</th><th>교육 회차</th><th>서명일시</th><th>서명 확인</th><th>관리</th></tr></thead>'
+          +'<tbody id="'+k+'SigTbody"><tr><td colspan="6" class="empty-msg">제출된 서명이 없습니다.</td></tr></tbody></table>'
+        +'</div>'
+      +'</div>'
+    +'</div>'
+    +'</div>';
+}
+
+/* 탭 DOM 생성 */
+(function(){
+  var container = document.getElementById('xEduTabContainer');
+  if(!container) return;
+  container.innerHTML = XEDU_TYPES.map(buildXEduTabHTML).join('');
+})();
+
+function loadXEduData(key){ window._loadXEduFn && window._loadXEduFn(key); }
+
+function renderXEduSessions(key){
+  var st = xEduState[key];
+  document.getElementById(key+'SessionCount').textContent = '전체 '+st.sessions.length+'건';
+  if(!st.sessions.length){
+    document.getElementById(key+'SessionTbody').innerHTML = '<tr><td colspan="7" class="empty-msg">등록된 교육 회차가 없습니다.</td></tr>';
+    filterXEduSigs(key); return;
+  }
+  var monthSel = document.getElementById(key+'MonthFilter');
+  var curMonth = monthSel.value || String(new Date().getFullYear());
+  var months = [];
+  st.sessions.forEach(function(s){ if(s.month && months.indexOf(s.month)<0) months.push(s.month); });
+  months.sort(function(a,b){ return b.localeCompare(a); });
+  monthSel.innerHTML = '<option value="">전체 연도</option>';
+  months.forEach(function(m){
+    var lbl = m+'년';
+    monthSel.innerHTML += '<option value="'+m+'"'+(m===curMonth?' selected':'')+'>'+lbl+'</option>';
+  });
+  var sel = document.getElementById(key+'SigFilter'); var curVal = sel.value;
+  sel.innerHTML = '<option value="">전체 회차</option>';
+  st.sessions.forEach(function(s){
+    var lbl = (s.month||'')+'년';
+    sel.innerHTML += '<option value="'+s.id+'"'+(s.id===curVal?' selected':'')+'>'+lbl+' '+s.title+'</option>';
+  });
+  document.getElementById(key+'SessionTbody').innerHTML = st.sessions.map(function(s){
+    var lbl = (s.month||'')+'년';
+    var sigCount = st.sigs.filter(function(g){ return g.sessionId===s.id; }).length;
+    var badge = s.active
+      ? '<span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">✅ 활성</span>'
+      : '<span style="background:#f1f5f9;color:#94a3b8;padding:2px 8px;border-radius:10px;font-size:11px;">비활성</span>';
+    return '<tr><td style="font-weight:700;">'+lbl+'</td><td>'+(s.title||'-')+'</td><td>'+(s.eduDate||'-')+'</td><td>'+(s.instructor||'-')+'</td>'
+      +'<td style="text-align:center;font-weight:700;color:#065f46;">'+sigCount+'명</td><td>'+badge+'</td><td>'
+      +(s.pdfUrl?'<a href="'+s.pdfUrl+'" target="_blank" style="font-size:11px;color:#065f46;margin-right:6px;">📄PDF</a>':'')
+      +'<button class="btn-edit-sm" onclick="openXEduSessionModal(\''+key+'\',\''+s.id+'\')">✏️</button> '
+      +'<button class="btn-del-sm" onclick="deleteXEduSession(\''+key+'\',\''+s.id+'\')">🗑</button></td></tr>';
+  }).join('');
+  filterXEduSigs(key);
+}
+
+function filterXEduSigs(key){
+  var st = xEduState[key];
+  var month = (document.getElementById(key+'MonthFilter')||{}).value||'';
+  var sessionId = (document.getElementById(key+'SigFilter')||{}).value||'';
+  var name = ((document.getElementById(key+'SigNameFilter')||{}).value||'').trim().toLowerCase();
+  st.sigsFiltered = st.sigs.filter(function(g){
+    if(month && (g.sessionMonth||'') !== month) return false;
+    if(sessionId && g.sessionId !== sessionId) return false;
+    if(name && (g.worker||'').toLowerCase().indexOf(name)<0) return false;
+    return true;
+  });
+  renderXEduSigTable(key);
+}
+
+function renderXEduCheckGrid(key){
+  var st = xEduState[key]; var container = document.getElementById(key+'CheckGrid');
+  var activeSess = st.sessions.find(function(s){ return s.active; });
+  if(!activeSess){ container.innerHTML = '<p style="color:#94a3b8;font-size:13px;">활성화된 교육 회차가 없습니다.</p>'; return; }
+  var monthLabel = (activeSess.month||'')+'년';
+  var sessionSigs = st.sigs.filter(function(g){ return g.sessionId === activeSess.id; });
+  var signedNames = sessionSigs.map(function(g){ return g.worker; });
+  var doneCount = EMPLOYEES.filter(function(e){ return signedNames.indexOf(e.name)>=0; }).length;
+  var grid = EMPLOYEES.map(function(e){
+    var done = signedNames.indexOf(e.name)>=0;
+    return '<div style="display:flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;font-size:12px;font-weight:600;background:'+(done?'#dcfce7':'#fef2f2')+';border:1px solid '+(done?'#86efac':'#fca5a5')+';">'
+      +'<span style="font-size:14px;">'+(done?'✅':'❌')+'</span>'
+      +'<span style="color:'+(done?'#166534':'#991b1b')+';">'+e.name+'</span></div>';
+  }).join('');
+  container.innerHTML = '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:8px 12px;background:#f0fdf4;border-radius:8px;border-left:4px solid #16a34a;">'
+    +'<span style="font-size:13px;font-weight:800;color:#166534;">'+monthLabel+' '+activeSess.title+'</span>'
+    +'<span style="font-size:12px;color:#16a34a;font-weight:700;">✅ '+doneCount+'명 / ❌ '+(EMPLOYEES.length-doneCount)+'명</span>'
+    +'<span style="background:#dcfce7;color:#166534;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:700;">활성</span></div>'
+    +'<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;">'+grid+'</div>';
+}
+
+function renderXEduSigTable(key){
+  var st = xEduState[key];
+  document.getElementById(key+'SigCount').textContent = '전체 '+st.sigsFiltered.length+'건';
+  renderXEduCheckGrid(key);
+  var total = EMPLOYEES.length, signed = st.sigsFiltered.length;
+  document.getElementById(key+'SigStats').innerHTML =
+    '<div class="stat-card" style="min-width:100px;"><div class="stat-num c-blue">'+signed+'</div><div class="stat-lbl">서명 완료</div></div>'
+    +'<div class="stat-card" style="min-width:100px;"><div class="stat-num c-red">'+(total-signed<0?0:total-signed)+'</div><div class="stat-lbl">미서명 (전직원 기준)</div></div>'
+    +'<div class="stat-card" style="min-width:100px;"><div class="stat-num c-green">'+total+'</div><div class="stat-lbl">전체 직원</div></div>';
+  if(!st.sigsFiltered.length){
+    document.getElementById(key+'SigTbody').innerHTML = '<tr><td colspan="6" class="empty-msg">제출된 서명이 없습니다.</td></tr>'; return;
+  }
+  document.getElementById(key+'SigTbody').innerHTML = st.sigsFiltered.map(function(g, i){
+    var sess = st.sessions.find(function(s){ return s.id===g.sessionId; });
+    var dt = (sess&&sess.eduDate) ? sess.eduDate : (g.signedAt&&g.signedAt.toDate?g.signedAt.toDate().toLocaleDateString('ko-KR'):(g.signedAt||'-'));
+    var mLbl = (g.sessionMonth||'-')+'년';
+    return '<tr>'
+      +'<td style="cursor:pointer;" onclick="editXEduName(this,\''+key+'\',\''+g.id+'\',\''+( (g.worker||'').replace(/'/g,"\\'") )+'\')"><span style="border-bottom:1px dashed #94a3b8;font-weight:700;">'+(g.worker||'-')+'</span> ✏️</td>'
+      +'<td style="cursor:pointer;" onclick="editXEduDept(this,\''+key+'\',\''+g.id+'\',\''+( (g.dept||'').replace(/'/g,"\\'") )+'\')"><span style="border-bottom:1px dashed #94a3b8;">'+(g.dept||'-')+'</span> ✏️</td>'
+      +'<td style="font-size:11px;">'+mLbl+' '+(g.sessionTitle||'')+'</td>'
+      +'<td style="font-size:11px;">'+dt+'</td>'
+      +'<td style="text-align:center;"><button class="btn-detail" onclick="viewXEduSig(\''+key+'\','+i+')">서명보기</button></td>'
+      +'<td><button class="btn-del-sm" onclick="deleteXEduSig(\''+key+'\',\''+g.id+'\')">🗑</button></td></tr>';
+  }).join('');
+}
+
+function editXEduName(td, key, docId, currentName){
+  var newName = prompt('이름을 수정하세요:', currentName); if(newName===null) return;
+  newName = newName.trim(); if(!newName){ alert('이름을 입력해주세요.'); return; }
+  window._updateXEduNameFn && window._updateXEduNameFn(key, docId, newName, function(){
+    var g = xEduState[key].sigs.find(function(s){ return s.id===docId; });
+    if(g) g.worker = newName;
+    filterXEduSigs(key); td.innerHTML = '<span style="border-bottom:1px dashed #94a3b8;font-weight:700;">'+newName+'</span> ✏️';
+  });
+}
+
+function editXEduDept(td, key, docId, currentDept){
+  var newDept = prompt('부서명을 수정하세요:', currentDept); if(newDept===null) return;
+  newDept = newDept.trim(); if(!newDept){ alert('부서명을 입력해주세요.'); return; }
+  window._updateXEduDeptFn && window._updateXEduDeptFn(key, docId, newDept, function(){
+    var g = xEduState[key].sigs.find(function(s){ return s.id===docId; });
+    if(g) g.dept = newDept;
+    filterXEduSigs(key); td.innerHTML = '<span style="border-bottom:1px dashed #94a3b8;">'+newDept+'</span> ✏️';
+  });
+}
+
+function viewXEduSig(key, idx){
+  var g = xEduState[key].sigsFiltered[idx]; if(!g) return;
+  document.getElementById('xEduSigModalTitle').textContent = (g.worker||'-')+' 서명';
+  document.getElementById('xEduSigImg').src = g.signatureData||'';
+  document.getElementById('xEduSigModalInfo').textContent = (g.dept||'')+(g.sessionTitle?' | '+g.sessionTitle:'');
+  document.getElementById('xEduSigModal').style.display = 'flex';
+}
+function closeXEduSigModal(){ document.getElementById('xEduSigModal').style.display='none'; }
+
+function openXEduSessionModal(key, docId){
+  xEduActiveKey = key;
+  var cfg = XEDU_TYPES.find(function(t){ return t.key===key; })||{};
+  document.getElementById('xEduSessionDocId').value = docId||'';
+  document.getElementById('xEduSessionKey').value = key;
+  document.getElementById('xEduSessionModalTitle').textContent = (cfg.icon||'')+' '+(docId?'교육 회차 수정':'새 교육 회차 등록')+' ('+cfg.label+')';
+  if(docId){
+    var s = xEduState[key].sessions.find(function(s){ return s.id===docId; });
+    if(s){
+      document.getElementById('xEdu-month').value = s.month||'';
+      document.getElementById('xEdu-eduDate').value = s.eduDate||'';
+      document.getElementById('xEdu-title').value = s.title||'';
+      document.getElementById('xEdu-instructor').value = s.instructor||'';
+      document.getElementById('xEdu-pdfUrl').value = s.pdfUrl||'';
+      document.getElementById('xEdu-youtubeUrl').value = s.youtubeUrl||'';
+      document.getElementById('xEdu-active').checked = !!s.active;
+    }
+  } else {
+    ['xEdu-month','xEdu-eduDate','xEdu-title','xEdu-instructor','xEdu-pdfUrl','xEdu-youtubeUrl'].forEach(function(id){ document.getElementById(id).value=''; });
+    document.getElementById('xEdu-active').checked = false;
+  }
+  document.getElementById('xEduSessionModal').style.display = 'flex';
+}
+function closeXEduSessionModal(){ document.getElementById('xEduSessionModal').style.display='none'; }
+function saveXEduSession(){ var key=document.getElementById('xEduSessionKey').value; window._saveXEduSessionFn && window._saveXEduSessionFn(key); }
+function deleteXEduSession(key, id){ if(!confirm('이 교육 회차를 삭제하시겠습니까?')) return; window._deleteXEduSessionFn && window._deleteXEduSessionFn(key, id); }
+function deleteXEduSig(key, id){ if(!confirm('이 서명을 삭제하시겠습니까?')) return; window._deleteXEduSigFn && window._deleteXEduSigFn(key, id); }
+
+function openXEduFormModal(key){
+  xEduActiveKey = key;
+  var cfg = XEDU_TYPES.find(function(t){ return t.key===key; })||{};
+  document.getElementById('xEduFormModalTitle').textContent = '📄 '+cfg.label+' 교육일지';
+  document.getElementById('xEduFormIconEl').textContent = cfg.icon||'📚';
+  document.getElementById('xEduFormTitleEl').textContent = cfg.label+' 교육일지';
+  document.getElementById('xEduFormModal').style.display = 'flex';
+  var st = xEduState[key];
+  var activeSess = st.sessions.find(function(s){ return s.active; });
+  if(activeSess && activeSess.formData){ setTimeout(function(){ setXEduFormValues(activeSess.formData); }, 100); }
+  xEduState[key].apvSigs = [null, null, null];
+  [0,1,2].forEach(function(i){ renderXEduApvArea(i); });
+  if(activeSess){
+    var filtered = st.sigs.filter(function(g){ return g.sessionId===activeSess.id; });
+    var aM = filtered.filter(function(g){ return g.gender==='남'; }).length;
+    var aF = filtered.filter(function(g){ return g.gender==='여'; }).length;
+    var total = EMPLOYEES ? EMPLOYEES.length : 0;
+    document.getElementById('xf-am').value = aM; document.getElementById('xf-af').value = aF;
+    document.getElementById('xf-tm').value = total; document.getElementById('xf-tf').value = '';
+    document.getElementById('xf-nm').value = Math.max(0, total-aM-aF); document.getElementById('xf-nf').value = '';
+    if(activeSess.instructor) document.getElementById('xf-instructor').value = activeSess.instructor;
+    if(activeSess.eduDate) document.getElementById('xf-d1').value = activeSess.eduDate;
+  }
+}
+function closeXEduFormModal(){ document.getElementById('xEduFormModal').style.display='none'; }
+
+function getXEduFormValues(){
+  var ids = ['company','d1','t1s','t1e','h1','d2','t2s','t2e','h2','d3','t3s','t3e','h3','tm','tf','am','af','nm','nf','subject','c1','c2','c3','c4','place','instructor','special'];
+  var d={};
+  ids.forEach(function(id){ d[id]=document.getElementById('xf-'+id).value; });
+  return d;
+}
+function setXEduFormValues(d){
+  if(!d) return;
+  var ids = ['company','d1','t1s','t1e','h1','d2','t2s','t2e','h2','d3','t3s','t3e','h3','tm','tf','am','af','nm','nf','subject','c1','c2','c3','c4','place','instructor','special'];
+  ids.forEach(function(id){ var el=document.getElementById('xf-'+id); if(el&&d[id]!=null) el.value=d[id]; });
+}
+function saveXEduFormData(){
+  var key = xEduActiveKey; if(!key) return;
+  var st = xEduState[key]; var activeSess = st.sessions.find(function(s){ return s.active; });
+  if(!activeSess){ alert('활성화된 교육 회차가 없습니다.'); return; }
+  var data = getXEduFormValues();
+  window._saveXEduFormFn && window._saveXEduFormFn(key, activeSess.id, data, function(){ alert('✅ 저장 완료!'); });
+}
+
+function renderXEduApvArea(i){
+  var key = xEduActiveKey; if(!key) return;
+  var area = document.getElementById('xEduApvArea'+i); if(!area) return;
+  var sig = xEduState[key].apvSigs[i];
+  area.innerHTML = sig ? '<img src="'+sig+'" style="width:100%;height:100%;object-fit:contain;">'
+    : '<span style="font-size:9px;color:#aaa;">클릭서명</span>';
+}
+function openXEduApvSign(idx){
+  xEduApvCurrentIdx = idx;
+  var labels = ['담당','검토','결재'];
+  document.getElementById('xEduApvSignTitle').textContent = labels[idx]+' 서명';
+  document.getElementById('xEduApvSignPopup').style.display = 'flex';
+  xEduApvPopupCtx = null; xEduApvPopupDrawing = false; xEduApvPopupHasSig = false;
+  document.getElementById('xEduApvSignHint').style.opacity = '1';
+  setTimeout(function(){
+    var c = document.getElementById('xEduApvSignCanvas');
+    var r = c.getBoundingClientRect();
+    c.width = r.width * window.devicePixelRatio; c.height = r.height * window.devicePixelRatio;
+    xEduApvPopupCtx = c.getContext('2d');
+    xEduApvPopupCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    xEduApvPopupCtx.strokeStyle = '#1e293b'; xEduApvPopupCtx.lineWidth = 2.5;
+    xEduApvPopupCtx.lineCap = 'round'; xEduApvPopupCtx.lineJoin = 'round';
+    var key = xEduActiveKey;
+    if(key && xEduState[key].apvSigs[idx]){
+      var img = new Image(); img.onload = function(){ xEduApvPopupCtx.drawImage(img,0,0,r.width,r.height); }; img.src = xEduState[key].apvSigs[idx];
+    }
+    function getP(e){ var rb=c.getBoundingClientRect(); var s=e.touches?e.touches[0]:e; return {x:s.clientX-rb.left,y:s.clientY-rb.top}; }
+    c.onmousedown = function(e){ xEduApvPopupDrawing=true; var p=getP(e); xEduApvPopupCtx.beginPath(); xEduApvPopupCtx.moveTo(p.x,p.y); document.getElementById('xEduApvSignHint').style.opacity='0'; };
+    c.onmousemove = function(e){ if(!xEduApvPopupDrawing) return; var p=getP(e); xEduApvPopupCtx.lineTo(p.x,p.y); xEduApvPopupCtx.stroke(); xEduApvPopupHasSig=true; };
+    c.onmouseup = c.onmouseleave = function(){ xEduApvPopupDrawing=false; };
+    c.ontouchstart = function(e){ e.preventDefault(); xEduApvPopupDrawing=true; var p=getP(e); xEduApvPopupCtx.beginPath(); xEduApvPopupCtx.moveTo(p.x,p.y); document.getElementById('xEduApvSignHint').style.opacity='0'; };
+    c.ontouchmove = function(e){ e.preventDefault(); if(!xEduApvPopupDrawing) return; var p=getP(e); xEduApvPopupCtx.lineTo(p.x,p.y); xEduApvPopupCtx.stroke(); xEduApvPopupHasSig=true; };
+    c.ontouchend = function(){ xEduApvPopupDrawing=false; };
+  }, 100);
+}
+function clearXEduApvPopup(){
+  if(!xEduApvPopupCtx) return;
+  var c = document.getElementById('xEduApvSignCanvas'); var r = c.getBoundingClientRect();
+  xEduApvPopupCtx.clearRect(0,0,r.width,r.height); xEduApvPopupHasSig=false;
+  document.getElementById('xEduApvSignHint').style.opacity='1';
+}
+function saveXEduApvSign(){
+  if(!xEduApvPopupHasSig){ alert('서명을 먼저 해주세요.'); return; }
+  var c = document.getElementById('xEduApvSignCanvas');
+  if(xEduActiveKey) xEduState[xEduActiveKey].apvSigs[xEduApvCurrentIdx] = c.toDataURL('image/png');
+  renderXEduApvArea(xEduApvCurrentIdx); closeXEduApvSignPopup();
+}
+function closeXEduApvSignPopup(){ document.getElementById('xEduApvSignPopup').style.display='none'; }
+function clearXEduApvSig(i){
+  if(xEduActiveKey) xEduState[xEduActiveKey].apvSigs[i] = null;
+  renderXEduApvArea(i);
+}
+
+function printXEduSignSheet(key){
+  var st = xEduState[key];
+  var activeSess = st.sessions.find(function(s){ return s.active; });
+  var filtered = activeSess ? st.sigs.filter(function(g){ return g.sessionId===activeSess.id; }) : st.sigs;
+  var cfg = XEDU_TYPES.find(function(t){ return t.key===key; })||{};
+  var title = activeSess ? (activeSess.title||'') + ' (' + (activeSess.month||'') + ')' : '전체';
+  printSignSheetCommon(filtered, title, cfg.label);
+}
+
+function printSignSheetCommon(sigs, title, label){
+  var rows = sigs.map(function(g,i){
+    return '<tr><td style="padding:6px 8px;border:1px solid #ccc;">'+(i+1)+'</td>'
+      +'<td style="padding:6px 8px;border:1px solid #ccc;">'+(g.worker||'-')+'</td>'
+      +'<td style="padding:6px 8px;border:1px solid #ccc;">'+(g.dept||'-')+'</td>'
+      +'<td style="padding:6px 8px;border:1px solid #ccc;text-align:center;">'+(g.gender||'-')+'</td>'
+      +'<td style="padding:6px 8px;border:1px solid #ccc;"><img src="'+(g.signatureData||'')+'" style="height:30px;"></td>'
+      +'<td style="padding:6px 8px;border:1px solid #ccc;font-size:10px;">'+(g.signedAt&&g.signedAt.toDate?g.signedAt.toDate().toLocaleDateString('ko-KR'):(g.signedAt||''))+'</td>'
+      +'</tr>';
+  }).join('');
+  var win = window.open('','_blank','width=900,height=700');
+  win.document.write('<html><head><title>'+label+' 서명지</title><style>body{font-family:"Noto Sans KR",sans-serif;padding:20px;}table{border-collapse:collapse;width:100%;}th{background:#f0fdf4;padding:8px;border:1px solid #ccc;}</style></head><body>'
+    +'<h2 style="text-align:center;">'+label+' 서명지</h2><p style="text-align:center;">'+title+'</p>'
+    +'<table><thead><tr><th>번호</th><th>이름</th><th>부서</th><th>성별</th><th>서명</th><th>서명일시</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>');
+  win.document.close(); setTimeout(function(){ win.print(); }, 400);
+}
+
+function printXEduForm(){
+  var key = xEduActiveKey; if(!key) return;
+  var cfg = XEDU_TYPES.find(function(t){ return t.key===key; })||{};
+  var printWin = window.open('','_blank','width=900,height=700');
+  var el = document.getElementById('xEduFormPrint');
+  var html = el.innerHTML;
+  [0,1,2].forEach(function(i){
+    var sig = xEduActiveKey ? xEduState[xEduActiveKey].apvSigs[i] : null;
+    if(sig){
+      html = html.replace('id="xEduApvArea'+i+'" onclick="openXEduApvSign('+i+')"', 'id="xEduApvArea'+i+'" style="pointer-events:none;"');
+    }
+  });
+  printWin.document.write('<html><head><title>'+cfg.label+' 교육일지</title>'
+    +'<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet">'
+    +'<style>*{box-sizing:border-box;}body{font-family:"Noto Sans KR",sans-serif;padding:20px;}input,textarea{border:none!important;outline:none!important;font-family:"Noto Sans KR",sans-serif;}button{display:none!important;}@media print{button{display:none!important;}}</style>'
+    +'</head><body>'+html+'</body></html>');
+  printWin.document.close(); setTimeout(function(){ printWin.print(); }, 800);
+}
 
 /* ══ 유해요인조사표 (인원별 관리) ══ */
 var hazardData = [];
@@ -4223,7 +4962,9 @@ window._saveSafSessionFn = async function(){
     await batch.commit();
   }
   var pdfUrl = document.getElementById('saf-pdfUrl').value.trim();
-  if(pdfUrl) data.pdfUrl = pdfUrl;
+  if(pdfUrl) data.pdfUrl = pdfUrl; else delete data.pdfUrl;
+  var youtubeUrl = document.getElementById('saf-youtubeUrl').value.trim();
+  if(youtubeUrl) data.youtubeUrl = youtubeUrl; else delete data.youtubeUrl;
   try{
     if(docId){
       await updateDoc(doc(db,'safety_sessions',docId), data);
@@ -4282,6 +5023,141 @@ window._updateSafDeptFn = async function(id, newDept, cb){
     await updateDoc(doc(db,'safety_signatures',id), { dept: newDept });
     if(cb) cb();
   } catch(e){ alert('수정 오류: '+e.message); }
+};
+
+/* ══ 추가 법정교육 6종 Firebase ══ */
+window._loadXEduFn = async function(key){
+  try{
+    const [sessSnap, sigSnap] = await Promise.all([
+      getDocs(query(collection(db, key+'_sessions'), orderBy('createdAt','desc'))),
+      getDocs(query(collection(db, key+'_signatures'), orderBy('signedAt','desc')))
+    ]);
+    var st = xEduState[key];
+    st.sessions = []; sessSnap.forEach(d => st.sessions.push(Object.assign({id:d.id}, d.data())));
+    st.sigs = [];     sigSnap.forEach(d => st.sigs.push(Object.assign({id:d.id}, d.data())));
+    st.sigsFiltered = st.sigs.slice();
+    renderXEduSessions(key);
+    renderXEduSigTable(key);
+  } catch(e){ alert(key+' 교육 데이터 로드 오류: '+e.message); }
+};
+
+window._saveXEduSessionFn = async function(key){
+  var docId = document.getElementById('xEduSessionDocId').value;
+  var month = document.getElementById('xEdu-month').value;
+  var title = document.getElementById('xEdu-title').value.trim();
+  if(!month){ alert('교육 연도를 입력해주세요.'); return; }
+  if(!title){ alert('교육 제목을 입력해주세요.'); return; }
+  var data = {
+    month: String(month), title: title,
+    eduDate: document.getElementById('xEdu-eduDate').value,
+    instructor: document.getElementById('xEdu-instructor').value.trim(),
+    active: document.getElementById('xEdu-active').checked
+  };
+  var st = xEduState[key];
+  if(data.active){
+    const batch = writeBatch(db);
+    st.sessions.forEach(function(s){
+      if(s.id!==docId && s.active){ batch.update(doc(db, key+'_sessions', s.id), {active:false}); s.active=false; }
+    });
+    await batch.commit();
+  }
+  var pdfUrl = document.getElementById('xEdu-pdfUrl').value.trim();
+  if(pdfUrl) data.pdfUrl = pdfUrl; else delete data.pdfUrl;
+  var youtubeUrl = document.getElementById('xEdu-youtubeUrl').value.trim();
+  if(youtubeUrl) data.youtubeUrl = youtubeUrl; else delete data.youtubeUrl;
+  try{
+    if(docId){
+      await updateDoc(doc(db, key+'_sessions', docId), data);
+      var idx = st.sessions.findIndex(function(s){ return s.id===docId; });
+      if(idx>=0) Object.assign(st.sessions[idx], data);
+      alert('✅ 수정 완료!');
+    } else {
+      data.createdAt = Timestamp.now();
+      const ref = await addDoc(collection(db, key+'_sessions'), data);
+      st.sessions.unshift(Object.assign({id:ref.id}, data));
+      alert('✅ 등록 완료!');
+    }
+    closeXEduSessionModal();
+    renderXEduSessions(key);
+    filterXEduSigs(key);
+  } catch(e){ alert('저장 오류: '+e.message); }
+};
+
+window._deleteXEduSessionFn = async function(key, id){
+  try{
+    await deleteDoc(doc(db, key+'_sessions', id));
+    xEduState[key].sessions = xEduState[key].sessions.filter(function(s){ return s.id!==id; });
+    renderXEduSessions(key);
+    alert('🗑 삭제 완료!');
+  } catch(e){ alert('삭제 오류: '+e.message); }
+};
+
+window._deleteXEduSigFn = async function(key, id){
+  try{
+    await deleteDoc(doc(db, key+'_signatures', id));
+    xEduState[key].sigs = xEduState[key].sigs.filter(function(g){ return g.id!==id; });
+    filterXEduSigs(key);
+    alert('🗑 서명 삭제 완료!');
+  } catch(e){ alert('삭제 오류: '+e.message); }
+};
+
+window._saveXEduFormFn = async function(key, sessionId, data, cb){
+  try{
+    await updateDoc(doc(db, key+'_sessions', sessionId), { formData: data });
+    var sess = xEduState[key].sessions.find(function(s){ return s.id===sessionId; });
+    if(sess) sess.formData = data;
+    if(cb) cb();
+  } catch(e){ alert('저장 오류: '+e.message); }
+};
+
+window._updateXEduNameFn = async function(key, id, newName, cb){
+  try{
+    await updateDoc(doc(db, key+'_signatures', id), { worker: newName });
+    if(cb) cb();
+  } catch(e){ alert('수정 오류: '+e.message); }
+};
+
+window._updateXEduDeptFn = async function(key, id, newDept, cb){
+  try{
+    await updateDoc(doc(db, key+'_signatures', id), { dept: newDept });
+    if(cb) cb();
+  } catch(e){ alert('수정 오류: '+e.message); }
+};
+
+/* ══ 전체 교육 현황 대시보드 Firebase ══ */
+window._loadDashboardFn = async function(){
+  try{
+    const allKeys = [
+      { key:'edu',  sessColl:'edu_sessions',  sigColl:'edu_signatures'  },
+      { key:'safety', sessColl:'safety_sessions', sigColl:'safety_signatures' },
+      ...XEDU_TYPES.map(t=>({ key:t.key, sessColl:t.key+'_sessions', sigColl:t.key+'_signatures' }))
+    ];
+    const results = await Promise.all(allKeys.map(async function(t){
+      const [sessSnap, sigSnap] = await Promise.all([
+        getDocs(collection(db, t.sessColl)),
+        getDocs(collection(db, t.sigColl))
+      ]);
+      return {
+        key: t.key,
+        sessions: sessSnap.docs.map(d=>Object.assign({id:d.id},d.data())),
+        sigs: sigSnap.docs.map(d=>Object.assign({id:d.id},d.data()))
+      };
+    }));
+    results.forEach(function(r){
+      if(r.key==='edu'){
+        eduSessions = r.sessions; eduSigs = r.sigs;
+      } else if(r.key==='safety'){
+        safSessions = r.sessions; safSigs = r.sigs;
+      } else {
+        xEduState[r.key].sessions = r.sessions;
+        xEduState[r.key].sigs = r.sigs;
+      }
+    });
+    renderEduDashboard();
+  } catch(e){
+    console.error('❌ 대시보드 로드 오류:', e);
+    document.getElementById('dashLoadingMsg').textContent = '⚠️ 데이터 로드 실패: '+e.message;
+  }
 };
 
 /* ══ 유해요인조사표 Firebase ══ */
