@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>산업안전교육 - 전자서명</title>
+<title>교육 전자서명</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -97,9 +97,31 @@ body{font-family:'Noto Sans KR',sans-serif;background:#f0fdf4;color:#1e293b;min-
 
     <div class="card" id="step1Card">
       <div class="step-badge">📄 STEP 1 교육자료 확인</div>
-      <div class="pdf-notice">⚠️ 아래 교육자료를 끝까지 읽어보신 후 하단 체크박스를 체크해 주세요.</div>
+      <div class="pdf-notice">⚠️ 아래 교육자료를 끝까지 확인하신 후 하단 체크박스를 체크해 주세요.</div>
+      <!-- 탭 버튼 (PDF + 영상 둘 다 있을 때만 표시) -->
+      <div id="mediaTabBar" style="display:none;display:flex;gap:8px;margin-bottom:10px;">
+        <button id="tabBtnPdf" onclick="switchMediaTab('pdf')" style="flex:1;padding:8px;border:2px solid #065f46;border-radius:8px;background:#065f46;color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">📄 PDF 자료</button>
+        <button id="tabBtnVideo" onclick="switchMediaTab('video')" style="flex:1;padding:8px;border:2px solid #065f46;border-radius:8px;background:#fff;color:#065f46;font-size:12px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🎥 영상 자료</button>
+      </div>
       <div style="margin-bottom:10px;">
-        <iframe id="pdfFrame" src="" title="교육자료"></iframe>
+        <div id="pdfWrap"><iframe id="pdfFrame" src="" title="교육자료 PDF"></iframe></div>
+        <div id="videoWrap" style="display:none;">
+          <div style="border-radius:12px;overflow:hidden;background:#000;position:relative;cursor:pointer;" onclick="openYoutube()">
+            <img id="videoThumb" src="" alt="영상 썸네일" style="width:100%;display:block;opacity:.85;">
+            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;">
+              <div style="width:72px;height:72px;background:rgba(255,0,0,.9);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                <div style="width:0;height:0;border-top:20px solid transparent;border-bottom:20px solid transparent;border-left:34px solid #fff;margin-left:6px;"></div>
+              </div>
+              <div style="background:rgba(0,0,0,.7);color:#fff;font-size:13px;font-weight:700;padding:8px 20px;border-radius:20px;">▶ YouTube에서 영상 보기 (새 탭)</div>
+            </div>
+          </div>
+          <div style="margin-top:10px;text-align:center;">
+            <button onclick="openYoutube()" style="width:100%;padding:14px;background:linear-gradient(135deg,#ff0000,#cc0000);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">🎥 YouTube에서 영상 보기 (새 탭에서 열림)</button>
+          </div>
+          <div style="margin-top:8px;background:#fef9c3;border-radius:8px;padding:10px 12px;font-size:12px;color:#713f12;">
+            ⚠️ 영상을 모두 시청한 후 이 페이지로 돌아와 하단 체크박스를 체크해 주세요.
+          </div>
+        </div>
       </div>
       <label class="confirm-box" id="confirmBox">
         <input type="checkbox" id="confirmChk" onchange="onConfirmChange()">
@@ -157,6 +179,24 @@ body{font-family:'Noto Sans KR',sans-serif;background:#f0fdf4;color:#1e293b;min-
 </div>
 
 <script>
+var TYPE_CFG = {
+  'safety':     { label:'산업안전교육',     coll:'safety',     icon:'🦺', bg1:'#064e3b', bg2:'#065f46', border:'#d1fae5' },
+  'harassment': { label:'성희롱예방교육',    coll:'harassment', icon:'🚫', bg1:'#6d28d9', bg2:'#7c3aed', border:'#ede9fe' },
+  'disability': { label:'장애인 인식개선교육', coll:'disability', icon:'♿', bg1:'#0369a1', bg2:'#0284c7', border:'#bae6fd' },
+  'pension':    { label:'퇴직연금교육',      coll:'pension',    icon:'💰', bg1:'#92400e', bg2:'#b45309', border:'#fde68a' },
+  'privacy':    { label:'개인정보보호교육',   coll:'privacy',    icon:'🔒', bg1:'#0f766e', bg2:'#0d9488', border:'#99f6e4' },
+  'bullying':   { label:'괴롭힘 예방교육',   coll:'bullying',   icon:'🤝', bg1:'#9d174d', bg2:'#be185d', border:'#fbcfe8' },
+  'serious':    { label:'중대재해처벌교육',   coll:'serious',    icon:'⚠️', bg1:'#b91c1c', bg2:'#dc2626', border:'#fecaca' }
+};
+var typeKey = new URLSearchParams(location.search).get('type') || 'safety';
+var typeCfg = TYPE_CFG[typeKey] || TYPE_CFG['safety'];
+
+/* 테마 색상 적용 */
+document.querySelector('body').style.background = '#f0fdf4';
+document.querySelectorAll('.hdr').forEach(function(el){
+  el.style.background = 'linear-gradient(135deg,'+typeCfg.bg1+','+typeCfg.bg2+')';
+});
+
 var canvas, ctx, drawing = false, hasSig = false;
 
 function initCanvas(){
@@ -193,6 +233,26 @@ function highlightGender(){
   document.getElementById('genderLabelF').style.background  = !m ? '#fdf2f8' : '';
 }
 
+var _youtubeWatchUrl = '';
+
+function getYoutubeId(url){
+  if(!url) return '';
+  var m = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : '';
+}
+
+function openYoutube(){ if(_youtubeWatchUrl) window.open(_youtubeWatchUrl, '_blank'); }
+
+function switchMediaTab(tab){
+  var isPdf = tab==='pdf';
+  document.getElementById('pdfWrap').style.display   = isPdf ? 'block' : 'none';
+  document.getElementById('videoWrap').style.display = isPdf ? 'none'  : 'block';
+  document.getElementById('tabBtnPdf').style.background   = isPdf ? '#065f46' : '#fff';
+  document.getElementById('tabBtnPdf').style.color        = isPdf ? '#fff'    : '#065f46';
+  document.getElementById('tabBtnVideo').style.background = isPdf ? '#fff'    : '#065f46';
+  document.getElementById('tabBtnVideo').style.color      = isPdf ? '#065f46' : '#fff';
+}
+
 function onConfirmChange(){
   var checked = document.getElementById('confirmChk').checked;
   document.getElementById('step2Card').classList.toggle('locked', !checked);
@@ -207,6 +267,20 @@ import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.
 import { getFirestore, collection, getDocs, addDoc, query, where, Timestamp }
   from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+const M_TYPE_CFG = {
+  'safety':     { label:'산업안전교육',     coll:'safety',     icon:'🦺' },
+  'harassment': { label:'성희롱예방교육',    coll:'harassment', icon:'🚫' },
+  'disability': { label:'장애인 인식개선교육', coll:'disability', icon:'♿' },
+  'pension':    { label:'퇴직연금교육',      coll:'pension',    icon:'💰' },
+  'privacy':    { label:'개인정보보호교육',   coll:'privacy',    icon:'🔒' },
+  'bullying':   { label:'괴롭힘 예방교육',   coll:'bullying',   icon:'🤝' },
+  'serious':    { label:'중대재해처벌교육',   coll:'serious',    icon:'⚠️' }
+};
+const mTypeKey = new URLSearchParams(location.search).get('type') || 'safety';
+const mTypeCfg = M_TYPE_CFG[mTypeKey] || M_TYPE_CFG['safety'];
+const sessColl = mTypeCfg.coll + '_sessions';
+const sigColl  = mTypeCfg.coll + '_signatures';
+
 const cfg = {
   apiKey:"AIzaSyC93mYiLYMrF-5IsIzfYnlGQdnK0sdPEfE",
   authDomain:"ske-0004.firebaseapp.com",
@@ -220,10 +294,13 @@ const db  = getFirestore(app, '(default)');
 
 var activeSession = null;
 
+/* 헤더 타이틀 업데이트 */
+document.querySelector('.hdr-title').textContent = mTypeCfg.icon + ' ' + mTypeCfg.label + ' 전자서명';
+
 async function loadSession(){
   try{
     const snap = await getDocs(query(
-      collection(db,'safety_sessions'),
+      collection(db, sessColl),
       where('active','==',true)
     ));
     if(snap.empty){
@@ -236,16 +313,31 @@ async function loadSession(){
 
     var monthStr = activeSession.month || '';
     var parts = monthStr.split('-');
-    var label = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : monthStr;
+    var label = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : monthStr+'년';
     document.getElementById('sessionMonth').textContent = label;
-    document.getElementById('sessionTitle').textContent = activeSession.title || '산업안전교육';
+    document.getElementById('sessionTitle').textContent = activeSession.title || mTypeCfg.label;
     document.getElementById('sessionMeta').textContent = '교육일: '+(activeSession.eduDate||'')+(activeSession.instructor ? '  |  강사: '+activeSession.instructor : '');
-    document.getElementById('hdrSub').textContent = label+' '+(activeSession.title||'산업안전교육');
+    document.getElementById('hdrSub').textContent = label+' '+(activeSession.title||mTypeCfg.label);
 
-    if(activeSession.pdfUrl){
-      document.getElementById('pdfFrame').src = activeSession.pdfUrl;
-    } else {
-      document.querySelector('.pdf-notice').textContent = '⚠️ 교육자료 PDF가 등록되지 않았습니다. 관리자에게 문의하세요.';
+    var hasPdf   = !!activeSession.pdfUrl;
+    var hasVideo = !!activeSession.youtubeUrl;
+    if(hasPdf) document.getElementById('pdfFrame').src = activeSession.pdfUrl;
+    if(hasVideo){
+      var vid = getYoutubeId(activeSession.youtubeUrl);
+      _youtubeWatchUrl = activeSession.youtubeUrl;
+      if(vid){
+        document.getElementById('videoThumb').src = 'https://img.youtube.com/vi/'+vid+'/hqdefault.jpg';
+        _youtubeWatchUrl = 'https://www.youtube.com/watch?v='+vid;
+      }
+    }
+    if(hasPdf && hasVideo){
+      document.getElementById('mediaTabBar').style.display = 'flex';
+      switchMediaTab('pdf');
+    } else if(hasVideo && !hasPdf){
+      document.getElementById('pdfWrap').style.display   = 'none';
+      document.getElementById('videoWrap').style.display = 'block';
+    } else if(!hasPdf && !hasVideo){
+      document.querySelector('.pdf-notice').textContent = '⚠️ 교육자료가 등록되지 않았습니다. 관리자에게 문의하세요.';
     }
 
     document.getElementById('loadingScreen').classList.add('hide');
@@ -275,7 +367,7 @@ window.submitSign = async function(){
 
     /* 중복 제출 확인 */
     var dupSnap = await getDocs(query(
-      collection(db,'safety_signatures'),
+      collection(db, sigColl),
       where('sessionId','==', activeSession.id),
       where('worker','==', name)
     ));
@@ -284,7 +376,7 @@ window.submitSign = async function(){
       var parts2 = monthStr2.split('-');
       var label2 = parts2.length===2 ? parts2[0]+'년 '+parseInt(parts2[1])+'월' : monthStr2;
       document.getElementById('successInfo').innerHTML =
-        '<b>'+name+'</b>님은<br>'+label2+' '+(activeSession.title||'산업안전교육')+'<br>서명이 이미 완료된 상태입니다.';
+        '<b>'+name+'</b>님은<br>'+label2+' '+(activeSession.title||mTypeCfg.label)+'<br>서명이 이미 완료된 상태입니다.';
       document.getElementById('successScreen').style.background = 'linear-gradient(135deg,#fef9c3,#fef08a)';
       document.getElementById('successScreen').querySelector('.success-icon').textContent = '⚠️';
       document.getElementById('successScreen').querySelector('.success-title').textContent = '이미 제출하였습니다';
@@ -294,7 +386,7 @@ window.submitSign = async function(){
       return;
     }
 
-    await addDoc(collection(db,'safety_signatures'),{
+    await addDoc(collection(db, sigColl),{
       sessionId: activeSession.id,
       sessionMonth: activeSession.month,
       sessionTitle: activeSession.title,
@@ -307,9 +399,9 @@ window.submitSign = async function(){
 
     var monthStr = activeSession.month || '';
     var parts = monthStr.split('-');
-    var label = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : monthStr;
+    var label = parts.length===2 ? parts[0]+'년 '+parseInt(parts[1])+'월' : monthStr+'년';
     document.getElementById('successInfo').innerHTML =
-      '<b>'+name+'</b> ('+dept+')<br>'+label+' '+(activeSession.title||'산업안전교육')+'<br>'+
+      '<b>'+name+'</b> ('+dept+')<br>'+label+' '+(activeSession.title||mTypeCfg.label)+'<br>'+
       new Date().toLocaleString('ko-KR');
     document.getElementById('successScreen').classList.add('show');
 
