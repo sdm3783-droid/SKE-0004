@@ -24,7 +24,13 @@
   --sh-lg:0 24px 64px rgba(79,70,229,0.18),0 8px 24px rgba(0,0,0,0.08);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Pretendard Variable','Pretendard','Noto Sans KR',sans-serif;background:var(--bg);color:var(--text);}
+body{
+  font-family:'Pretendard Variable','Pretendard','Noto Sans KR',sans-serif;
+  background:var(--bg);
+  background-image:radial-gradient(ellipse 70% 50% at 10% 0%,rgba(99,102,241,.1) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 60% at 90% 100%,rgba(124,58,237,.08) 0%,transparent 60%);
+  min-height:100vh;color:var(--text);
+}
 
 /* 로그인 */
 #loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 45%,#7c3aed 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
@@ -58,17 +64,33 @@ body{font-family:'Pretendard Variable','Pretendard','Noto Sans KR',sans-serif;ba
 .tab-pane.active{display:block;}
 
 /* 카드 */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:14px;box-shadow:var(--sh);transition:.2s;}
-.card-title{font-size:14px;font-weight:800;margin-bottom:14px;color:var(--text);display:flex;align-items:center;gap:6px;letter-spacing:-0.3px;}
+.card{background:var(--surface);border:1px solid rgba(79,70,229,.09);border-radius:var(--r);padding:18px;margin-bottom:14px;box-shadow:var(--sh);transition:.25s;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;inset:0;border-radius:var(--r);background:linear-gradient(135deg,rgba(255,255,255,.6) 0%,transparent 55%);pointer-events:none;}
+.card:hover{box-shadow:var(--sh-md);transform:translateY(-2px);}
+.card-title{font-size:14px;font-weight:800;margin-bottom:14px;color:var(--text);display:flex;align-items:center;gap:6px;letter-spacing:-0.3px;position:relative;z-index:1;}
 
 /* 통계 */
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px;}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;text-align:center;box-shadow:var(--sh);transition:.25s;}
-.stat-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md);}
-.stat-num{font-size:28px;font-weight:900;letter-spacing:-1px;}
-.stat-lbl{font-size:11px;color:var(--text2);margin-top:4px;font-weight:500;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;margin-bottom:18px;}
+.stat-card{
+  background:var(--surface);border:1px solid rgba(79,70,229,.08);border-radius:var(--r);
+  padding:20px 16px 16px;text-align:center;
+  box-shadow:var(--sh);transition:.3s;
+  position:relative;overflow:hidden;
+  border-top:3px solid var(--border);
+}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(160deg,rgba(255,255,255,.7) 0%,transparent 55%);pointer-events:none;border-radius:inherit;}
+.stat-card:hover{transform:translateY(-5px) scale(1.025);box-shadow:var(--sh-lg);}
+.stat-num{font-size:30px;font-weight:900;letter-spacing:-1px;position:relative;z-index:1;}
+.stat-lbl{font-size:11px;color:var(--text2);margin-top:5px;font-weight:600;position:relative;z-index:1;}
 .c-blue{color:var(--accent);} .c-red{color:var(--red);} .c-green{color:var(--green);}
 .c-yellow{color:var(--yellow);} .c-purple{color:var(--accent2);} .c-orange{color:var(--orange);}
+/* 색상별 상단 강조선 */
+.stat-s-blue{border-top-color:var(--accent);box-shadow:var(--sh),0 -1px 0 0 rgba(79,70,229,.15);}
+.stat-s-green{border-top-color:var(--green);box-shadow:var(--sh),0 -1px 0 0 rgba(16,185,129,.15);}
+.stat-s-red{border-top-color:var(--red);box-shadow:var(--sh),0 -1px 0 0 rgba(239,68,68,.15);}
+.stat-s-orange{border-top-color:var(--orange);box-shadow:var(--sh),0 -1px 0 0 rgba(249,115,22,.15);}
+.stat-s-yellow{border-top-color:var(--yellow);box-shadow:var(--sh),0 -1px 0 0 rgba(245,158,11,.15);}
+.stat-s-purple{border-top-color:var(--accent2);box-shadow:var(--sh),0 -1px 0 0 rgba(124,58,237,.15);}
 
 /* 차트 */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px;}
@@ -369,25 +391,27 @@ tbody td{padding:10px 13px;font-size:12px;vertical-align:middle;}
 <!-- ══ TAB1 대시보드 ══ -->
 <div class="tab-pane active" id="tab-overview">
   <!-- 직원 페이지 배너 -->
-  <div style="background:linear-gradient(135deg,#1e3a8a,#1d4ed8);border-radius:14px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
-    <div style="color:#fff;">
-      <div style="font-size:14px;font-weight:900;">🦴 근골격계 증상조사 직원 페이지</div>
-      <div style="font-size:11px;opacity:.8;margin-top:2px;">아래 링크를 직원에게 공유하거나 QR코드로 만들어 배포하세요</div>
+  <div style="background:linear-gradient(135deg,#1e1b4b 0%,#3730a3 45%,#6d28d9 100%);border-radius:18px;padding:18px 22px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(79,70,229,.3),0 2px 8px rgba(0,0,0,.15);">
+    <div style="position:absolute;top:-30px;right:120px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none;"></div>
+    <div style="position:absolute;bottom:-40px;right:10px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none;"></div>
+    <div style="color:#fff;position:relative;">
+      <div style="font-size:15px;font-weight:900;letter-spacing:-.3px;">🦴 근골격계 증상조사 직원 페이지</div>
+      <div style="font-size:11px;opacity:.75;margin-top:3px;">아래 링크를 직원에게 공유하거나 QR코드로 만들어 배포하세요</div>
     </div>
-    <div style="display:flex;gap:8px;align-items:center;">
-      <a href="index.html" target="_blank" style="background:rgba(255,255,255,.2);color:#fff;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,.4);">📋 증상조사표 페이지 열기</a>
-      <a href="qr.html" target="_blank" style="background:rgba(255,255,255,.15);color:#fff;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,.4);">📱 QR 페이지 열기</a>
+    <div style="display:flex;gap:8px;align-items:center;position:relative;">
+      <a href="index.html" target="_blank" style="background:rgba(255,255,255,.15);color:#fff;padding:9px 18px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">📋 증상조사표 페이지 열기</a>
+      <a href="qr.html" target="_blank" style="background:rgba(255,255,255,.1);color:#fff;padding:9px 18px;border-radius:20px;font-size:12px;font-weight:700;text-decoration:none;border:1px solid rgba(255,255,255,.22);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">📱 QR 페이지 열기</a>
     </div>
   </div>
   <div class="stat-grid">
-    <div class="stat-card"><div class="stat-num c-blue"   id="st-total">-</div><div class="stat-lbl">전체 제출</div></div>
-    <div class="stat-card"><div class="stat-num c-green"  id="st-submitted">-</div><div class="stat-lbl">제출 완료</div></div>
-    <div class="stat-card"><div class="stat-num c-red"    id="st-pending">-</div><div class="stat-lbl">미제출</div></div>
-    <div class="stat-card"><div class="stat-num c-red"    id="st-pain">-</div><div class="stat-lbl">통증 경험자</div></div>
-    <div class="stat-card"><div class="stat-num c-orange" id="st-manage">-</div><div class="stat-lbl">관리대상자</div></div>
-    <div class="stat-card"><div class="stat-num c-red"    id="st-serious">-</div><div class="stat-lbl">통증호소자</div></div>
-    <div class="stat-card"><div class="stat-num c-yellow" id="st-heavy">-</div><div class="stat-lbl">매우 힘듦</div></div>
-    <div class="stat-card"><div class="stat-num c-purple" id="st-today">-</div><div class="stat-lbl">오늘 제출</div></div>
+    <div class="stat-card stat-s-blue">  <div class="stat-num c-blue"   id="st-total">-</div><div class="stat-lbl">전체 제출</div></div>
+    <div class="stat-card stat-s-green"> <div class="stat-num c-green"  id="st-submitted">-</div><div class="stat-lbl">제출 완료</div></div>
+    <div class="stat-card stat-s-red">   <div class="stat-num c-red"    id="st-pending">-</div><div class="stat-lbl">미제출</div></div>
+    <div class="stat-card stat-s-red">   <div class="stat-num c-red"    id="st-pain">-</div><div class="stat-lbl">통증 경험자</div></div>
+    <div class="stat-card stat-s-orange"><div class="stat-num c-orange" id="st-manage">-</div><div class="stat-lbl">관리대상자</div></div>
+    <div class="stat-card stat-s-red">   <div class="stat-num c-red"    id="st-serious">-</div><div class="stat-lbl">통증호소자</div></div>
+    <div class="stat-card stat-s-yellow"><div class="stat-num c-yellow" id="st-heavy">-</div><div class="stat-lbl">매우 힘듦</div></div>
+    <div class="stat-card stat-s-purple"><div class="stat-num c-purple" id="st-today">-</div><div class="stat-lbl">오늘 제출</div></div>
   </div>
   <div class="chart-grid">
     <div class="card"><div class="card-title">📍 통증 부위 분포</div><canvas id="chartParts" height="200"></canvas></div>
