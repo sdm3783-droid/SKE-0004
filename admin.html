@@ -1682,21 +1682,21 @@ tbody td{padding:10px 13px;font-size:12px;vertical-align:middle;}
 
         <!-- 일시 헤더 -->
         <tr>
-          <td rowspan="4" style="background:#f0f4ff;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:middle;">일시<br><span style="font-size:10px;font-weight:400;">(2026년도)</span></td>
-          <td colspan="5" style="padding:4px 8px;border:1px solid #aaa;background:#f8faff;font-size:10px;font-weight:700;">3월</td>
+          <td rowspan="4" style="background:#f0f4ff;font-weight:700;padding:7px 10px;border:1px solid #aaa;text-align:center;vertical-align:middle;">일시<br><span id="ef-year-label" style="font-size:10px;font-weight:400;">(2026년도)</span></td>
+          <td id="ef-month-header" colspan="5" style="padding:4px 8px;border:1px solid #aaa;background:#f8faff;font-size:10px;font-weight:700;">3월</td>
         </tr>
         <tr>
-          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">3월 &nbsp;<input type="text" id="ef-d1" style="width:28px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 일 &nbsp; <span style="background:#e0e7ff;padding:1px 5px;border-radius:3px;font-size:10px;">1차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><span id="ef-month-d1">3월</span> &nbsp;<input type="text" id="ef-d1" style="width:28px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 일 &nbsp; <span style="background:#e0e7ff;padding:1px 5px;border-radius:3px;font-size:10px;">1차</span></td>
           <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="ef-t1s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="ef-t1e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
           <td colspan="3" style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="ef-h1" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
         </tr>
         <tr>
-          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">3월 &nbsp;<input type="text" id="ef-d2" style="width:28px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 일 &nbsp; <span style="background:#e0e7ff;padding:1px 5px;border-radius:3px;font-size:10px;">2차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><span id="ef-month-d2">3월</span> &nbsp;<input type="text" id="ef-d2" style="width:28px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 일 &nbsp; <span style="background:#e0e7ff;padding:1px 5px;border-radius:3px;font-size:10px;">2차</span></td>
           <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="ef-t2s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="ef-t2e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
           <td colspan="3" style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="ef-h2" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
         </tr>
         <tr>
-          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">3월 &nbsp;<input type="text" id="ef-d3" style="width:28px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 일 &nbsp; <span style="background:#e0e7ff;padding:1px 5px;border-radius:3px;font-size:10px;">3차</span></td>
+          <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><span id="ef-month-d3">3월</span> &nbsp;<input type="text" id="ef-d3" style="width:28px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 일 &nbsp; <span style="background:#e0e7ff;padding:1px 5px;border-radius:3px;font-size:10px;">3차</span></td>
           <td style="padding:6px 8px;border:1px solid #aaa;font-size:11px;"><input type="text" id="ef-t3s" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> ~ <input type="text" id="ef-t3e" placeholder="00:00" style="width:38px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"></td>
           <td colspan="3" style="padding:6px 8px;border:1px solid #aaa;font-size:11px;">(<input type="text" id="ef-h3" style="width:24px;border:none;border-bottom:1px solid #999;outline:none;text-align:center;font-size:11px;"> 시간)</td>
         </tr>
@@ -3013,6 +3013,21 @@ function openEduFormModal(){
   if(activeSess && activeSess.formData){ setTimeout(function(){ setEduFormValues(activeSess.formData); }, 200); }
   eduApvSigs = [null, null, null];
   [0,1,2].forEach(function(i){ renderEduApvArea(i); });
+
+  /* 활성 세션 월·년도 자동 적용 */
+  if(activeSess && activeSess.month){
+    var parts = activeSess.month.split('-');
+    var yearStr = '(' + parts[0] + '년도)';
+    var monStr = parseInt(parts[1], 10) + '월';
+    var yearEl = document.getElementById('ef-year-label');
+    if(yearEl) yearEl.textContent = yearStr;
+    var mh = document.getElementById('ef-month-header');
+    if(mh) mh.textContent = monStr;
+    ['ef-month-d1','ef-month-d2','ef-month-d3'].forEach(function(id){
+      var el = document.getElementById(id);
+      if(el) el.textContent = monStr;
+    });
+  }
 
   var TOTAL = EMPLOYEES ? EMPLOYEES.length : 46;
   var activeSess = eduSessions.find(function(s){ return s.active; });
