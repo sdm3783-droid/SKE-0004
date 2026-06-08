@@ -2853,6 +2853,7 @@ function renderEduSessions(){
       +'<td>'+badge+'</td>'
       +'<td>'
         +(s.pdfUrl?'<a href="'+s.pdfUrl+'" target="_blank" style="font-size:11px;color:#2563eb;margin-right:6px;">📄PDF</a>':'')
+        +'<button class="btn-edit-sm" style="background:#7c3aed;color:#fff;" onclick="openEduFormModal(\''+s.id+'\')">📄일지</button> '
         +'<button class="btn-edit-sm" onclick="openEduSessionModal(\''+s.id+'\')">✏️</button> '
         +'<button class="btn-del-sm" onclick="deleteEduSession(\''+s.id+'\')">🗑</button>'
       +'</td></tr>';
@@ -3006,17 +3007,21 @@ var eduApvSigs = [null, null, null];
 var eduApvCurrentIdx = 0;
 var eduApvPopupCtx = null, eduApvPopupDrawing = false, eduApvPopupHasSig = false;
 
-function openEduFormModal(){
+var _eduFormSessId = null;
+function openEduFormModal(sessId){
   document.getElementById('eduFormModal').style.display = 'flex';
-  /* 저장된 데이터 불러오기 */
-  var activeSess = eduSessions.find(function(s){ return s.active; });
-  if(activeSess && activeSess.formData){ setTimeout(function(){ setEduFormValues(activeSess.formData); }, 200); }
+  var targetSess = sessId
+    ? eduSessions.find(function(s){ return s.id === sessId; })
+    : eduSessions.find(function(s){ return s.active; });
+  _eduFormSessId = targetSess ? targetSess.id : null;
+
   eduApvSigs = [null, null, null];
   [0,1,2].forEach(function(i){ renderEduApvArea(i); });
+  if(targetSess && targetSess.formData){ setTimeout(function(){ setEduFormValues(targetSess.formData); }, 200); }
 
-  /* 활성 세션 월·년도 자동 적용 */
-  if(activeSess && activeSess.month){
-    var parts = activeSess.month.split('-');
+  /* 세션 월·년도 자동 적용 */
+  if(targetSess && targetSess.month){
+    var parts = targetSess.month.split('-');
     var yearStr = '(' + parts[0] + '년도)';
     var monStr = parseInt(parts[1], 10) + '월';
     var yearEl = document.getElementById('ef-year-label');
@@ -3030,8 +3035,7 @@ function openEduFormModal(){
   }
 
   var TOTAL = EMPLOYEES ? EMPLOYEES.length : 46;
-  var activeSess = eduSessions.find(function(s){ return s.active; });
-  var filtered = activeSess ? eduSigs.filter(function(g){ return g.sessionId===activeSess.id; }) : eduSigs;
+  var filtered = targetSess ? eduSigs.filter(function(g){ return g.sessionId===targetSess.id; }) : eduSigs;
   var aM = filtered.filter(function(g){ return g.gender==='남'; }).length;
   var aF = filtered.filter(function(g){ return g.gender==='여'; }).length;
   var aT = filtered.length;
@@ -3071,10 +3075,10 @@ function setEduFormValues(d){
 }
 
 function saveEduFormData(){
-  var activeSess = eduSessions.find(function(s){ return s.active; });
-  if(!activeSess){ alert('활성화된 교육 회차가 없습니다.'); return; }
+  var sessId = _eduFormSessId;
+  if(!sessId){ alert('저장할 교육 회차가 없습니다.'); return; }
   var data = getEduFormValues();
-  window._saveEduFormFn && window._saveEduFormFn(activeSess.id, data, function(){
+  window._saveEduFormFn && window._saveEduFormFn(sessId, data, function(){
     alert('✅ 저장 완료!');
   });
 }
