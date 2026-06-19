@@ -121,6 +121,12 @@ function todayMatchCard(m){
 function renderNext(){
   const now=new Date();
   const todayStr=localDateStr(now);
+  // 한국전 라이브 감지 (킥오프 후 105분 이내, 결과 없음)
+  window._korLiveMatch=MATCHES.filter(m=>{
+    if(!m.kr||m.score)return false;
+    const diff=new Date(m.kst)-now;
+    return diff<=0&&diff>-105*60*1000;
+  }).sort((a,b)=>new Date(a.kst)-new Date(b.kst))[0]||null;
   const label=document.getElementById('next-label');
   const navTxt=document.getElementById('nav-today-txt');
   const box=document.getElementById('next');
@@ -187,17 +193,47 @@ function renderNext(){
 }
 
 /* ── 카운트다운 ── */
+let _korLiveTick=null;
+function _showKorLive(match){
+  if(_korLiveTick){clearTimeout(_korLiveTick);_korLiveTick=null;}
+  const panel=document.querySelector('.count-panel');
+  if(!panel)return;
+  const kickoff=new Date(match.kst);
+  const h=TEAMS[match.home],a=TEAMS[match.away];
+  const vs=`${h?h.emo:'🇰🇷'} vs ${a?a.emo:match.away}`;
+  function tick(){
+    const elapsed=Math.floor((new Date()-kickoff)/60000);
+    panel.innerHTML=`
+      <div class="count-live-inner">
+        <div class="count-live-badge">🔴 LIVE</div>
+        <div class="count-live-teams">${vs}</div>
+        <div class="count-live-elapsed">${elapsed}<span class="count-live-unit">분</span></div>
+        <a href="https://chzzk.naver.com/search?query=월드컵+한국" target="_blank" rel="noopener" class="count-chzzk-btn">📺 치지직 보러가기</a>
+      </div>
+    `;
+    _korLiveTick=setTimeout(tick,20000);
+  }
+  tick();
+}
 function startCountdown(target){
+  if(_korLiveTick){clearTimeout(_korLiveTick);_korLiveTick=null;}
+  if(window._korLiveMatch){_showKorLive(window._korLiveMatch);return;}
   const el=document.getElementById('countdown'),lb=document.getElementById('count-label');
-  if(!target){el.textContent='';lb.textContent='';return;}
+  if(!target){if(el)el.textContent='';if(lb)lb.textContent='';return;}
+  // 일반 카운트다운 - count-panel 원래 구조 복원
+  const panel=document.querySelector('.count-panel');
+  if(panel&&!panel.querySelector('#countdown')){
+    panel.innerHTML=`<div class="countdown-label" id="count-label">다음 한국전까지</div><div class="count-divider"><span></span><span></span></div><div id="countdown">--:--:--</div><div class="count-unit-row"><span>시간</span><span>분</span><span>초</span></div>`;
+  }
+  const el2=document.getElementById('countdown'),lb2=document.getElementById('count-label');
   function tick(){
     let diff=target-new Date();
-    if(diff<=0){el.textContent='킥오프!';lb.textContent='지금 경기 중';return;}
+    if(diff<=0){if(el2)el2.textContent='킥오프!';if(lb2)lb2.textContent='지금 경기 중';return;}
     const d=Math.floor(diff/86400000);diff%=86400000;
     const hh=String(Math.floor(diff/3600000)).padStart(2,"0");diff%=3600000;
     const mm=String(Math.floor(diff/60000)).padStart(2,"0");diff%=60000;
     const ss=String(Math.floor(diff/1000)).padStart(2,"0");
-    el.textContent=`${d>0?d+'일 ':''}${hh}:${mm}:${ss}`;
+    if(el2)el2.textContent=`${d>0?d+'일 ':''}${hh}:${mm}:${ss}`;
     setTimeout(tick,1000);
   }
   tick();

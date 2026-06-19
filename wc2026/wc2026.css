@@ -404,6 +404,15 @@ nav a[href="#standings"]:after{display:none}
 #countdown{display:block;font-family:'Noto Sans KR',sans-serif;font-size:clamp(2rem,6vw,2.8rem);font-weight:900;color:#f8e070;letter-spacing:.04em;text-align:center;padding:22px 20px 10px;animation:num-glow 2s ease-in-out infinite}
 .count-unit-row{display:flex;justify-content:center;gap:0;padding:0 20px 24px;font-size:.62rem;font-weight:700;color:rgba(246,211,101,.45);letter-spacing:.08em}
 .count-unit-row span{flex:1;text-align:center;text-transform:uppercase}
+/* ── 한국전 LIVE 카운트패널 ── */
+.count-live-inner{display:flex;flex-direction:column;align-items:center;padding:20px 16px 0;width:100%}
+.count-live-badge{display:inline-flex;align-items:center;gap:5px;font-size:.68rem;font-weight:900;letter-spacing:.1em;background:#dc2626;color:#fff;padding:4px 14px;border-radius:99px;margin-bottom:10px;box-shadow:0 0 10px rgba(220,38,38,.7),0 0 24px rgba(220,38,38,.35);animation:live-badge 1.1s ease-in-out infinite}
+.count-live-teams{font-size:.9rem;font-weight:700;color:rgba(255,255,255,.8);text-align:center;margin-bottom:8px;letter-spacing:.02em}
+.count-live-elapsed{font-family:'Black Han Sans',sans-serif;font-size:clamp(2.4rem,6vw,3.2rem);color:#f8e070;text-align:center;text-shadow:0 0 20px rgba(248,224,112,.65),0 0 40px rgba(248,224,112,.3);line-height:1;padding:4px 20px 0;animation:num-glow 2s ease-in-out infinite}
+.count-live-unit{font-size:1.5rem;font-weight:900;margin-left:6px;color:rgba(248,224,112,.8)}
+.count-chzzk-btn{display:block;margin:16px 20px 24px;padding:11px 16px;border-radius:13px;background:linear-gradient(135deg,#03C75A,#00A244);color:#fff;font-size:.85rem;font-weight:800;text-decoration:none;text-align:center;letter-spacing:.03em;box-shadow:0 4px 18px rgba(3,199,90,.4);transition:all .2s;position:relative;overflow:hidden}
+.count-chzzk-btn:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent);animation:fire-lick 2s linear infinite}
+.count-chzzk-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(3,199,90,.6)}
 .next-wrap{max-width:1180px;margin:-48px auto 0;padding:0 22px}
 .next-card{border:1px solid rgba(227,179,65,.22);border-top:1px solid rgba(227,179,65,.5);border-radius:22px;padding:24px 30px;background:linear-gradient(135deg,rgba(17,29,43,.98),rgba(10,20,32,.98));box-shadow:0 24px 60px rgba(0,0,0,.42)}
 .nc-label{color:var(--gold-2);margin-bottom:18px}
@@ -1379,6 +1388,81 @@ footer{background:#050b13;border-color:var(--border);color:#687687;margin-top:28
 .badge-orange{background:rgba(249,115,22,.15);color:#fb923c;border:1px solid rgba(249,115,22,.3)}
 .badge-yellow{background:rgba(234,179,8,.12);color:#fde047;border:1px solid rgba(234,179,8,.25)}
 .badge-dim{background:rgba(255,255,255,.06);color:var(--dim);border:1px solid rgba(255,255,255,.1)}
+/* 🔥 5연속 이상 적중 — 활활 타오르는 불꽃 배지 */
+.badge-fire{
+  background:linear-gradient(170deg,#b91c1c 0%,#dc2626 25%,#ea580c 55%,#f59e0b 80%,#fef08a 100%);
+  background-size:200% 200%;
+  color:#fef9c3;border:1px solid #f97316;
+  position:relative;overflow:hidden;
+  text-shadow:0 0 5px rgba(255,140,0,1),0 0 10px rgba(255,80,0,.7);
+  animation:fire-chip-flicker 2.4s ease-in-out infinite,fire-chip-bg 3.5s linear infinite;
+}
+.badge-fire::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 20%,rgba(255,240,120,.55) 48%,rgba(255,255,220,.7) 52%,transparent 80%);
+  animation:fire-lick 2s linear infinite;
+  pointer-events:none;
+}
+@keyframes fire-chip-bg{
+  0%{background-position:0% 100%}
+  33%{background-position:100% 0%}
+  66%{background-position:60% 80%}
+  100%{background-position:0% 100%}
+}
+@keyframes fire-chip-flicker{
+  0%  {filter:brightness(1)   saturate(1.2);box-shadow:0 0 4px rgba(249,115,22,.6),0 0 8px rgba(220,38,38,.3);border-color:#f97316}
+  14% {filter:brightness(1.5) saturate(1.9);box-shadow:0 0 10px rgba(255,160,0,1),0 0 20px rgba(255,80,0,.6),0 0 30px rgba(255,200,0,.25);border-color:#fbbf24}
+  28% {filter:brightness(.9)  saturate(1.1);box-shadow:0 0 3px rgba(249,115,22,.5),0 0 6px rgba(220,38,38,.2);border-color:#f97316}
+  45% {filter:brightness(1.7) saturate(2.1);box-shadow:0 0 14px rgba(255,180,0,1),0 0 28px rgba(255,100,0,.75),0 0 42px rgba(255,220,0,.35);border-color:#fde047}
+  60% {filter:brightness(1.1) saturate(1.3);box-shadow:0 0 6px rgba(249,115,22,.65),0 0 12px rgba(220,38,38,.3);border-color:#fb923c}
+  78% {filter:brightness(1.6) saturate(2);  box-shadow:0 0 12px rgba(255,150,0,.95),0 0 24px rgba(255,70,0,.65),0 0 38px rgba(255,200,0,.3);border-color:#fbbf24}
+  100%{filter:brightness(1)   saturate(1.2);box-shadow:0 0 4px rgba(249,115,22,.6),0 0 8px rgba(220,38,38,.3);border-color:#f97316}
+}
+@keyframes fire-lick{
+  0%  {transform:translateX(-150%) skewX(-10deg);opacity:0}
+  15% {opacity:1}
+  85% {opacity:.9}
+  100%{transform:translateX(210%) skewX(-10deg);opacity:0}
+}
+/* 메인배지가 fire일 때 — 더 강렬한 불꽃 */
+.rank-main-badge.badge-fire{
+  background:linear-gradient(160deg,#991b1b 0%,#dc2626 20%,#ea580c 50%,#f59e0b 75%,#fef08a 100%);
+  background-size:300% 300%;
+  color:#fef9c3;border:1.5px solid #f97316;
+  text-shadow:0 0 8px rgba(255,160,0,1),0 0 18px rgba(255,100,0,.8),0 0 30px rgba(255,60,0,.5);
+  animation:fire-main-flicker 2.2s ease-in-out infinite,fire-main-bg 3.2s linear infinite,fire-main-bob 2.8s ease-in-out infinite;
+}
+.rank-main-badge.badge-fire::after{
+  content:"";position:absolute;inset:0;border-radius:999px;
+  background:linear-gradient(105deg,transparent 15%,rgba(255,240,130,.5) 46%,rgba(255,255,230,.8) 50%,rgba(255,240,130,.5) 54%,transparent 85%);
+  animation:fire-lick 1.6s linear infinite;
+  pointer-events:none;
+}
+@keyframes fire-main-bg{
+  0%  {background-position:0% 100%}
+  25% {background-position:100% 0%}
+  50% {background-position:80% 60%}
+  75% {background-position:20% 100%}
+  100%{background-position:0% 100%}
+}
+@keyframes fire-main-flicker{
+  0%  {filter:brightness(1)   saturate(1.3);box-shadow:0 0 10px rgba(249,115,22,.7),0 0 24px rgba(220,38,38,.4),0 0 44px rgba(251,146,60,.2),0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.2)}
+  12% {filter:brightness(1.5) saturate(2);  box-shadow:0 0 22px rgba(255,170,0,1),0 0 48px rgba(255,90,0,.8),0 0 80px rgba(255,220,0,.4),0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.2)}
+  25% {filter:brightness(.92) saturate(1.1);box-shadow:0 0 8px rgba(249,115,22,.6),0 0 18px rgba(220,38,38,.3),0 0 30px rgba(251,146,60,.15),0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.2)}
+  40% {filter:brightness(1.8) saturate(2.3);box-shadow:0 0 30px rgba(255,190,0,1),0 0 60px rgba(255,100,0,.9),0 0 100px rgba(255,230,0,.45),0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.2)}
+  55% {filter:brightness(1.1) saturate(1.4);box-shadow:0 0 12px rgba(249,115,22,.65),0 0 26px rgba(220,38,38,.35),0 0 48px rgba(251,146,60,.2),0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.2)}
+  70% {filter:brightness(1.6) saturate(2.1);box-shadow:0 0 24px rgba(255,160,0,.95),0 0 52px rgba(255,80,0,.75),0 0 88px rgba(255,210,0,.38),0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.2)}
+  85% {filter:brightness(1.2) saturate(1.5);box-shadow:0 0 14px rgba(249,115,22,.7),0 0 30px rgba(220,38,38,.4),0 0 54px rgba(251,146,60,.22),0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.2)}
+  100%{filter:brightness(1)   saturate(1.3);box-shadow:0 0 10px rgba(249,115,22,.7),0 0 24px rgba(220,38,38,.4),0 0 44px rgba(251,146,60,.2),0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.2)}
+}
+@keyframes fire-main-bob{
+  0%  {transform:translateY(-1px) scale(1)}
+  22% {transform:translateY(-5px) scale(1.08)}
+  45% {transform:translateY(-2px) scale(1.03)}
+  68% {transform:translateY(-6px) scale(1.1)}
+  85% {transform:translateY(-3px) scale(1.05)}
+  100%{transform:translateY(-1px) scale(1)}
+}
 .rank-badges{display:flex;gap:4px;flex-wrap:wrap;margin:3px 0 0 42px}
 .rank-main-badge{
   position:relative;display:inline-flex;align-items:center;gap:4px;max-width:150px;

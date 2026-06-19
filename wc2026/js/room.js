@@ -2,7 +2,7 @@
 const CHAMP_OPEN     = new Date('2026-06-28T14:00:00+09:00'); // 32강 대진 확정 후
 const CHAMP_DEADLINE = new Date('2026-06-29T04:00:00+09:00'); // 32강 첫 경기 시작 전
 const CHAMP_COINS = 20;
-function champReady(){ return new Date() >= CHAMP_OPEN; }
+function champReady(){ return new Date() >= CHAMP_OPEN || localStorage.getItem('wc2026-preview')==='1'; }
 function champLocked(){ return new Date() >= CHAMP_DEADLINE; }
 function getChampionWinner(){
   const final=KO.find(k=>k.id===104);
@@ -30,7 +30,7 @@ async function cancelChampPick(){
 
 /* ── BOOST 배팅 상수 ── */
 const BOOST_OPEN = new Date('2026-06-28T14:00:00+09:00');
-function isBoostOpen(){ return new Date() >= BOOST_OPEN; }
+function isBoostOpen(){ return new Date() >= BOOST_OPEN || localStorage.getItem('wc2026-preview')==='1'; }
 function boostMultiplier(round){
   if(round==='32강') return 3;
   if(round==='16강') return 5;
@@ -776,7 +776,7 @@ function calcBadges(nick, preds){
     if(!preds[k]){streak=0;return;}
     if(matchResult(m)===preds[k]){streak++;maxStreak=Math.max(maxStreak,streak);}else streak=0;
   });
-  if(maxStreak>=5) badges.push({icon:'🔥',label:`${maxStreak}연속 적중`,cls:'badge-orange'});
+  if(maxStreak>=5) badges.push({icon:'🔥',label:`${maxStreak}연속 적중`,cls:'badge-fire'});
   else if(maxStreak>=3) badges.push({icon:'✨',label:`${maxStreak}연속 적중`,cls:'badge-yellow'});
   // 우승 예측 성공
   const champW=getChampionWinner();
@@ -878,10 +878,45 @@ function calcBetPnl(nick){
   }
   return pnl;
 }
+function playCoinJingle(count=1){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    for(let i=0;i<Math.min(count,4);i++){
+      const t=ctx.currentTime+i*0.08;
+      const osc=ctx.createOscillator();
+      const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.type='sine';
+      osc.frequency.setValueAtTime(1400+Math.random()*300,t);
+      osc.frequency.exponentialRampToValueAtTime(700,t+0.12);
+      gain.gain.setValueAtTime(0.22,t);
+      gain.gain.exponentialRampToValueAtTime(0.001,t+0.18);
+      osc.start(t);osc.stop(t+0.18);
+    }
+  }catch(e){}
+}
+function popCoinEffect(){
+  // 화면 우상단 코인 튀김 파티클
+  for(let i=0;i<6;i++){
+    const el=document.createElement('div');
+    el.textContent='🪙';
+    el.style.cssText=`position:fixed;right:${60+Math.random()*80}px;top:${14+Math.random()*30}px;font-size:${14+Math.random()*10}px;pointer-events:none;z-index:9999;animation:coin-pop .7s ease-out forwards;animation-delay:${i*60}ms`;
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),800+i*60);
+  }
+}
+if(!document.getElementById('coin-pop-style')){
+  const s=document.createElement('style');
+  s.id='coin-pop-style';
+  s.textContent=`@keyframes coin-pop{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(${Math.random()>0.5?'':'-'}${20+Math.random()*40}px,-${40+Math.random()*60}px) scale(.4);opacity:0}}`;
+  document.head.appendChild(s);
+}
 async function saveBet(koId,val,amount,multiplier){
   if(!ROOM_CODE||!ROOM_NICK)return;
   MY_BETS[koId]={val,amount,multiplier,settled:false};
   saveBetsLocal();
+  playCoinJingle(Math.min(amount,4));
+  popCoinEffect();
   const ref=getDb().collection('wc2026_rooms').doc(ROOM_CODE).collection('predictions').doc(ROOM_NICK);
   await ref.set({[`bet-${koId}`]:MY_BETS[koId]},{merge:true});
 }

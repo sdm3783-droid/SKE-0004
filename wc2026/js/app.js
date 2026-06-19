@@ -7,6 +7,10 @@ function showPage(id){
   document.querySelectorAll('.sb-nav a').forEach(a=>{
     a.classList.toggle('nav-active',a.getAttribute('href')==='#'+id);
   });
+  if(window.innerWidth<=640){
+    const hero=document.getElementById('top');
+    if(hero)hero.style.display=id==='next-wrap'?'':'none';
+  }
   window.scrollTo(0,0);
   if(id==='bracket')setTimeout(()=>{typeof drawBracketLines==='function'&&drawBracketLines();},80);
 }
@@ -139,7 +143,7 @@ function showBoostAnnouncePopup(){
 
 /* ── 신기능 공지 팝업 ── */
 function showAnnouncePopup(){
-  if(localStorage.getItem('wc2026-announce-v3'))return;
+  if(localStorage.getItem('wc2026-announce-v4'))return;
   const el=document.getElementById('announce-popup');
   el.innerHTML=`
     <div class="announce-overlay" onclick="if(event.target===this)closeAnnouncePopup()">
@@ -191,7 +195,7 @@ function showAnnouncePopup(){
       </div>
     </div>`;
   el.style.display='';
-  localStorage.setItem('wc2026-announce-v3','1');
+  localStorage.setItem('wc2026-announce-v4','1');
   if(window.twemoji)twemoji.parse(el);
 }
 function closeAnnouncePopup(){

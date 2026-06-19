@@ -1,4 +1,4 @@
-const CACHE = 'wc2026-v20260618-2';
+const CACHE = 'wc2026-v20260619-1';
 
 self.addEventListener('install', () => self.skipWaiting());
 
