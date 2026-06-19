@@ -223,6 +223,7 @@ function _showKorLive(match){
         <a href="https://chzzk.naver.com/search?query=월드컵+한국" target="_blank" rel="noopener" class="count-chzzk-btn">📺 치지직 보러가기</a>
       </div>
     `;
+    if(window.twemoji)twemoji.parse(panel);
     _korLiveTick=setTimeout(tick,20000);
   }
   tick();
