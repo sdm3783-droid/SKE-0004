@@ -89,7 +89,7 @@ function rerender(){
 /* ── BOOST 오픈 팝업 ── */
 function showBoostAnnouncePopup(){
   if(!isBoostOpen())return;
-  if(localStorage.getItem('wc2026-boost-announce-v1'))return;
+  if(sessionStorage.getItem('wc2026-boost-announce-v1'))return;
   const el=document.getElementById('announce-popup');
   el.innerHTML=`
     <div class="announce-overlay" onclick="if(event.target===this)closeAnnouncePopup()">
@@ -137,13 +137,13 @@ function showBoostAnnouncePopup(){
       </div>
     </div>`;
   el.style.display='';
-  localStorage.setItem('wc2026-boost-announce-v1','1');
+  sessionStorage.setItem('wc2026-boost-announce-v1','1');
   if(window.twemoji)twemoji.parse(el);
 }
 
 /* ── 신기능 공지 팝업 ── */
 function showAnnouncePopup(){
-  if(localStorage.getItem('wc2026-announce-v4'))return;
+  if(sessionStorage.getItem('wc2026-announce-v4'))return;
   const el=document.getElementById('announce-popup');
   el.innerHTML=`
     <div class="announce-overlay" onclick="if(event.target===this)closeAnnouncePopup()">
@@ -195,7 +195,7 @@ function showAnnouncePopup(){
       </div>
     </div>`;
   el.style.display='';
-  localStorage.setItem('wc2026-announce-v4','1');
+  sessionStorage.setItem('wc2026-announce-v4','1');
   if(window.twemoji)twemoji.parse(el);
 }
 function closeAnnouncePopup(){
