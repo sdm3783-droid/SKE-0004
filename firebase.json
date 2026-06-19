@@ -3,65 +3,47 @@
     "rules": "firestore.rules"
   },
   "hosting": {
-    "predeploy": ["node -e \"const fs=require('fs');const f='wc2026/sw.js';const s=fs.readFileSync(f,'utf8');fs.writeFileSync(f,s.replace(/wc2026-v[0-9A-Za-z-]+/,'wc2026-v'+Date.now()));console.log('SW cache version bumped')\""],
-    "public": "wc2026",
+    "site": "ske-0004-gms",
+    "public": ".",
     "ignore": [
       "firebase.json",
+      ".firebaserc",
       "**/.*",
-      "**/node_modules/**",
-      "**/package*.json",
+      "node_modules/**",
+      "package.json",
+      "package-lock.json",
       "**/*.py",
       "**/*.log",
       "**/*.excalidraw",
       "script_test.js",
       "tmp_html_plan/**",
-      "handoff/**",
       "자료실/**",
-      "docs/**"
+      "docs/**",
+      "wc2026/**",
+      "resume_신동민.html",
+      "SKE-0004-architecture.*",
+      "firestore.rules"
     ],
     "headers": [
       {
         "source": "/index.html",
-        "headers": [
-          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
-        ]
+        "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
       },
       {
         "source": "/",
-        "headers": [
-          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
-        ]
+        "headers": [{ "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }]
       },
       {
         "source": "**/*.css",
-        "headers": [
-          { "key": "Cache-Control", "value": "no-cache, max-age=0, must-revalidate" }
-        ]
+        "headers": [{ "key": "Cache-Control", "value": "no-cache, max-age=0, must-revalidate" }]
       },
       {
         "source": "**/*.js",
-        "headers": [
-          { "key": "Cache-Control", "value": "no-cache, max-age=0, must-revalidate" }
-        ]
-      },
-      {
-        "source": "/manifest.json",
-        "headers": [
-          { "key": "Cache-Control", "value": "no-cache, max-age=0, must-revalidate" }
-        ]
-      },
-      {
-        "source": "/sw.js",
-        "headers": [
-          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
-        ]
+        "headers": [{ "key": "Cache-Control", "value": "no-cache, max-age=0, must-revalidate" }]
       }
     ],
     "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
+      { "source": "**", "destination": "/index.html" }
     ]
   }
 }
