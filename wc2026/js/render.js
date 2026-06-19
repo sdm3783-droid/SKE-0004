@@ -203,11 +203,23 @@ function _showKorLive(match){
   const vs=`${h?h.emo:'🇰🇷'} vs ${a?a.emo:match.away}`;
   function tick(){
     const elapsed=Math.floor((new Date()-kickoff)/60000);
+    let halfLabel,elapsedHtml;
+    if(elapsed<45){
+      halfLabel='전반전';
+      elapsedHtml=`${elapsed}<span class="count-live-unit">분</span>`;
+    }else if(elapsed<60){
+      halfLabel='하프타임';
+      elapsedHtml=`<span style="font-size:1.6rem">⏸</span>`;
+    }else{
+      halfLabel='후반전';
+      elapsedHtml=`${elapsed-60}<span class="count-live-unit">분</span>`;
+    }
     panel.innerHTML=`
       <div class="count-live-inner">
         <div class="count-live-badge">🔴 LIVE</div>
         <div class="count-live-teams">${vs}</div>
-        <div class="count-live-elapsed">${elapsed}<span class="count-live-unit">분</span></div>
+        <div class="count-live-half">${halfLabel}</div>
+        <div class="count-live-elapsed">${elapsedHtml}</div>
         <a href="https://chzzk.naver.com/search?query=월드컵+한국" target="_blank" rel="noopener" class="count-chzzk-btn">📺 치지직 보러가기</a>
       </div>
     `;
