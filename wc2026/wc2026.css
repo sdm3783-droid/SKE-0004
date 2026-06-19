@@ -1381,7 +1381,27 @@ footer{background:#050b13;border-color:var(--border);color:#687687;margin-top:28
 
 /* ── 배지 시스템 ── */
 .badge-chip{display:inline-flex;align-items:center;gap:3px;font-size:.58rem;font-weight:800;padding:2px 7px;border-radius:99px;white-space:nowrap;vertical-align:middle;line-height:1.35;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
-.badge-gold{background:rgba(227,179,65,.2);color:var(--gold);border:1px solid rgba(227,179,65,.35)}
+.badge-gold{
+  background:linear-gradient(135deg,rgba(255,214,102,.28),rgba(227,179,65,.18),rgba(255,214,102,.28));
+  background-size:200% auto;
+  color:#ffe27a;border:1px solid rgba(255,214,102,.55);
+  position:relative;overflow:hidden;
+  text-shadow:0 0 6px rgba(255,210,80,.7);
+  animation:coin-chip-glow 2s ease-in-out infinite,coin-chip-bg 3s linear infinite;
+}
+.badge-gold::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(105deg,transparent 30%,rgba(255,255,200,.55) 48%,rgba(255,255,240,.8) 52%,transparent 70%);
+  animation:fire-shine 2.5s linear infinite;
+  pointer-events:none;
+}
+@keyframes coin-chip-glow{
+  0%,100%{box-shadow:0 0 4px rgba(255,200,60,.5),0 0 8px rgba(227,179,65,.25);border-color:rgba(255,214,102,.55)}
+  50%{box-shadow:0 0 10px rgba(255,210,80,.9),0 0 20px rgba(227,179,65,.5),0 0 30px rgba(255,200,60,.2);border-color:rgba(255,230,120,.9)}
+}
+@keyframes coin-chip-bg{
+  0%{background-position:0% 50%}100%{background-position:200% 50%}
+}
 .badge-red{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
 .badge-green{background:rgba(74,222,128,.12);color:#4ade80;border:1px solid rgba(74,222,128,.25)}
 .badge-purple{background:rgba(168,85,247,.15);color:#d8b4fe;border:1px solid rgba(168,85,247,.3)}
@@ -1480,6 +1500,27 @@ footer{background:#050b13;border-color:var(--border);color:#687687;margin-top:28
 .room-rank-row.top1 .rank-main-badge{
   background:linear-gradient(135deg,rgba(255,214,102,.28),rgba(227,179,65,.14));
   color:#ffe8a3;border-color:rgba(255,214,102,.52);
+}
+/* 💎 코인왕 메인배지 강조 */
+.rank-main-badge.badge-gold{
+  background:linear-gradient(135deg,#3d2a00 0%,#7a5000 35%,#c8860a 65%,#f6d365 100%);
+  background-size:250% 250%;
+  color:#fff8c5;border:1.5px solid rgba(255,214,102,.75);
+  text-shadow:0 0 8px rgba(255,210,80,1),0 0 18px rgba(255,180,40,.6);
+  animation:coin-main-glow 2s ease-in-out infinite,coin-main-bg 2.8s linear infinite,badge-float 2.4s ease-in-out infinite;
+}
+.rank-main-badge.badge-gold::after{
+  content:"";position:absolute;inset:0;border-radius:999px;
+  background:linear-gradient(105deg,transparent 15%,rgba(255,255,200,.45) 46%,rgba(255,255,240,.75) 50%,rgba(255,255,200,.45) 54%,transparent 85%);
+  animation:fire-shine 2s linear infinite;
+  pointer-events:none;
+}
+@keyframes coin-main-glow{
+  0%,100%{box-shadow:0 0 12px rgba(255,200,60,.65),0 0 28px rgba(227,179,65,.35),0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.2)}
+  50%{box-shadow:0 0 22px rgba(255,220,80,1),0 0 48px rgba(227,179,65,.65),0 0 72px rgba(255,200,60,.3),0 8px 22px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.2)}
+}
+@keyframes coin-main-bg{
+  0%{background-position:0% 100%}50%{background-position:100% 0%}100%{background-position:0% 100%}
 }
 @keyframes badge-float{
   0%,100%{transform:translateY(-1px)}
